@@ -35,19 +35,19 @@ export const BarberSelectMenu = () => {
       <div className='flex gap-4 px-4'>
         <Link
           className='bg-slate-500 p-2 text-white'
-          href={`?${createQueryString({ searchParams, key: 'payment', value: 'pix' })}`}
+          href={`?${createQueryString({ searchParams, key: 'payment', value: 'PIX' })}`}
         >
           PIX
         </Link>
         <Link
           className='bg-slate-500 p-2 text-white'
-          href={`?${createQueryString({ searchParams, key: 'payment', value: 'card' })}`}
+          href={`?${createQueryString({ searchParams, key: 'payment', value: 'CARD' })}`}
         >
           Cartão de credito
         </Link>
         <Link
           className='bg-slate-500 p-2 text-white'
-          href={`?${createQueryString({ searchParams, key: 'payment', value: 'cash' })}`}
+          href={`?${createQueryString({ searchParams, key: 'payment', value: 'CASH' })}`}
         >
           Dinheiro
         </Link>

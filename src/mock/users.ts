@@ -1,8 +1,9 @@
 import { z } from 'zod';
 
-export const statusOptions = ['PAID', 'PENDING', 'CANCELED', 'CONFIRMED'] as const;
-export const workingHours = [8, 9, 10, 11, 12, 14, 15, 16, 17, 18] as const;
-export const paymentOptions = ['pix', 'card', 'cash'] as const;
+export const statusOptions = ['PAID', 'PENDING', 'CANCELED', 'CONFIRMED', 'BREAK'] as const;
+export const workingHours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
+export const paymentOptions = ['PIX', 'CARD', 'CASH'] as const;
+export const roleOptions = ['USER', 'EMPLOYEE'] as const;
 
 export const haircutSchema = z.object({
   id: z.string(),
@@ -35,7 +36,7 @@ export const userSchema = z
     phone: z.string(),
     password: z.string(),
     email: z.string().email(),
-    role: z.enum(['USER', 'EMPLOYEE'] as const),
+    role: z.enum(roleOptions),
   })
   .and(userDiscriminatedUnionSchema);
 
@@ -83,7 +84,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 8),
         status: 'CONFIRMED',
-        paymentMethod: 'card',
+        paymentMethod: 'CARD',
         id: crypto.randomUUID(),
         clientId: '111.111.111-00',
         employeeId: '111.111.111-11',
@@ -97,7 +98,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 9),
         status: 'CONFIRMED',
-        paymentMethod: 'pix',
+        paymentMethod: 'PIX',
         id: crypto.randomUUID(),
         clientId: '111.111.222-00',
         employeeId: '111.111.111-11',
@@ -112,7 +113,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 18),
         status: 'PENDING',
-        paymentMethod: 'card',
+        paymentMethod: 'CARD',
         id: crypto.randomUUID(),
         clientId: '111.111.333-00',
         employeeId: '111.111.111-11',
@@ -126,7 +127,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 16),
         status: 'CONFIRMED',
-        paymentMethod: 'cash',
+        paymentMethod: 'CASH',
         id: crypto.randomUUID(),
         clientId: '111.111.222-00',
         employeeId: '111.111.111-11',
@@ -141,7 +142,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 12),
         status: 'PENDING',
-        paymentMethod: 'cash',
+        paymentMethod: 'CASH',
         id: crypto.randomUUID(),
         clientId: '111.111.111-00',
         employeeId: '111.111.111-11',
@@ -165,7 +166,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 15),
         status: 'CANCELED',
-        paymentMethod: 'pix',
+        paymentMethod: 'PIX',
         id: crypto.randomUUID(),
         clientId: '111.111.111-00',
         employeeId: '111.111.111-22',
@@ -180,7 +181,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate(), 10),
         status: 'PAID',
-        paymentMethod: 'pix',
+        paymentMethod: 'PIX',
         id: crypto.randomUUID(),
         clientId: '111.111.333-00',
         employeeId: '111.111.111-22',
@@ -194,7 +195,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 12),
         status: 'PENDING',
-        paymentMethod: 'cash',
+        paymentMethod: 'CASH',
         id: crypto.randomUUID(),
         clientId: '111.111.333-00',
         employeeId: '111.111.111-22',
@@ -208,7 +209,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 8),
         status: 'PENDING',
-        paymentMethod: 'card',
+        paymentMethod: 'CARD',
         id: crypto.randomUUID(),
         clientId: '111.111.111-00',
         employeeId: '111.111.111-22',
@@ -222,7 +223,7 @@ export const users: User[] = [
       {
         date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1, 14),
         status: 'PENDING',
-        paymentMethod: 'pix',
+        paymentMethod: 'PIX',
         id: crypto.randomUUID(),
         clientId: '111.111.111-00',
         employeeId: '111.111.111-22',

@@ -33,7 +33,7 @@ export const Schedule = ({ session, scheduleId }: { session: Session; scheduleId
       {schedule?.status === 'PENDING' && (
         <button onClick={() => updateScheduleStatus('CONFIRMED', schedule.id)}>Confirmar</button>
       )}
-      {schedule?.status === 'PENDING' && schedule.paymentMethod === 'cash' && (
+      {schedule?.status === 'PENDING' && schedule.paymentMethod === 'CASH' && (
         <button onClick={() => updateScheduleStatus('PAID', schedule.id)}>Pago</button>
       )}
     </div>
