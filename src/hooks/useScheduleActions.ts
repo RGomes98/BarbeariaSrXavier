@@ -1,8 +1,8 @@
-import { Session } from '@/helpers/getSession';
 import { validateDate, validateEmployee } from '@/helpers/validateSearchParams';
+import { useSearchParams } from 'next/navigation';
+import { Session } from '@/helpers/getSession';
 import { Employee, Status } from '@/mock/users';
 import { useStore } from '@/store';
-import { useSearchParams } from 'next/navigation';
 
 export const useScheduleActions = (session: Session) => {
   const updateDatabase = useStore().updateDatabase;
@@ -30,25 +30,14 @@ export const useScheduleActions = (session: Session) => {
       ?.schedules.find(({ id }) => id === scheduleId);
 
     if (!schedule) return;
-
-    switch (status) {
-      case 'PAID':
-        schedule.status = 'PAID';
-        break;
-      case 'CANCELED':
-        schedule.status = 'CANCELED';
-        break;
-      case 'CONFIRMED':
-        schedule.status = 'CONFIRMED';
-        break;
-    }
+    schedule.status = status;
 
     updateDatabase(database);
   };
 
   const getSchedule = (scheduleId: string) => {
     return database
-      .find((employee): employee is Employee => employee.cpf === session?.id)
+      .find((employee): employee is Employee => employee.cpf === session?.id && employee.role === 'EMPLOYEE')
       ?.schedules.find(({ id }) => id === scheduleId);
   };
 
