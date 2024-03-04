@@ -1,6 +1,6 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
 import { useRouter, useSearchParams } from 'next/navigation';
-import type { Employee, Haircut } from '@/mock/users';
+import type { Employee, Haircut, Status } from '@/mock/users';
 import type { Session } from '@/helpers/getSession';
 import { useStore } from '@/store';
 
@@ -11,7 +11,7 @@ export const useBarberShopActions = () => {
   const { push } = useRouter();
 
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), 'Barber1');
-  const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'card');
+  const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
   const scheduleDate = validateDate(searchParams.get('date'), new Date());
 
   const employee = database.find((employee): employee is Employee => {
@@ -22,12 +22,18 @@ export const useBarberShopActions = () => {
     return new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), scheduleDate.getDate(), hour);
   };
 
-  const scheduleHaircut = (session: Session, haircut: Haircut, scheduleHour: Date) => {
+  const getEmployeeCurrentHourSchedule = (hour: number) => {
+    return employee?.schedules.find(({ date }) => {
+      return date.getTime() === getCurrentSchedule(hour).getTime();
+    });
+  };
+
+  const scheduleHaircut = (session: Session, haircut: Haircut, scheduleHour: Date, status: Status) => {
     if (!session) return push('/entrar');
 
     employee?.schedules.push({
+      status: status,
       haircut: haircut,
-      status: 'PENDING',
       date: scheduleHour,
       clientId: session.id,
       id: crypto.randomUUID(),
@@ -39,5 +45,12 @@ export const useBarberShopActions = () => {
     updateDatabase(database);
   };
 
-  return { employee, scheduleDate, paymentMethod, scheduleHaircut, getCurrentSchedule };
+  return {
+    employee,
+    scheduleDate,
+    paymentMethod,
+    scheduleHaircut,
+    getCurrentSchedule,
+    getEmployeeCurrentHourSchedule,
+  };
 };
