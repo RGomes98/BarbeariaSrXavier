@@ -1,7 +1,7 @@
 'use client';
 
+import { createDateInputQueryString, createQueryString } from '@/helpers/createQueryString';
 import { formatDate, formatDateShort, formatToDateTime } from '@/utils/date';
-import { createQueryString } from '@/helpers/createQueryString';
 import { useScheduleActions } from '@/hooks/useScheduleActions';
 import { Session } from '@/helpers/getSession';
 import { Fragment } from 'react';
@@ -11,16 +11,14 @@ import Link from 'next/link';
 export const ReceivedSchedules = ({ session }: { session: Session }) => {
   const { searchParams, scheduleEmployee, scheduleDate, filterAllSchedules } = useScheduleActions(session);
 
-  const handleDateChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const date = `${event.target.value} GMT-3`;
-    const queryString = `?${createQueryString({ searchParams, key: 'date', value: date })}`;
-    window.history.pushState(null, '', queryString);
-  };
-
   return (
     <Fragment>
       <div className='flex gap-4 px-4'>
-        <input onChange={handleDateChange} value={formatToDateTime(scheduleDate)} type='date' />
+        <input
+          onChange={(event) => createDateInputQueryString({ event, searchParams })}
+          value={formatToDateTime(scheduleDate)}
+          type='date'
+        />
         <Link
           className='bg-slate-500 p-2 text-white'
           href={`?${createQueryString({ searchParams, key: 'employee', value: 'Barber1' })}`}
