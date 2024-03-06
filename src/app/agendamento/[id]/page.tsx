@@ -1,4 +1,4 @@
-import { Schedule } from '@/components/Schedule/Schedule';
+import { Schedule } from '@/components/Schedule';
 import { getSession } from '@/helpers/getSession';
 
 export default function Page({ params: { id } }: { params: { id: string } }) {

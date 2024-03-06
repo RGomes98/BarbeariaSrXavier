@@ -1,5 +1,5 @@
-import { BarberSelectMenu } from '@/components/BarberSelectMenu/BarberSelectMenu';
-import { BarberSchedules } from '@/components/BarberSchedules/BarberSchedules';
+import { BarberSelectMenu } from '@/components/BarberSelectMenu';
+import { BarberSchedules } from '@/components/BarberSchedules';
 import { haircuts } from '@/mock/haircuts';
 import { redirect } from 'next/navigation';
 import { Fragment } from 'react';

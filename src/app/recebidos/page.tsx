@@ -1,4 +1,4 @@
-import { ReceivedSchedules } from '@/components/ReceivedSchedules/ReceivedSchedules';
+import { ReceivedSchedules } from '@/components/ReceivedSchedules';
 import { getSession } from '@/helpers/getSession';
 
 export default function Page() {
