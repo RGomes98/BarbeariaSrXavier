@@ -5,7 +5,7 @@ import { Fragment, RefObject, createRef, useRef } from 'react';
 import { formatDate, formatDateShort } from '@/utils/date';
 import { Haircut, workingHours } from '@/mock/users';
 import { type Session } from '@/helpers/getSession';
-import { Modal } from '@/components/Modal/Modal';
+import { Modal } from '@/components/Modal';
 import { useMounted } from '@/hooks/useMounted';
 
 export const BarberSchedules = ({ haircut, session }: { haircut: Haircut; session: Session }) => {
@@ -61,18 +61,18 @@ export const BarberSchedules = ({ haircut, session }: { haircut: Haircut; sessio
                     : (currentHourSchedule.status === 'BREAK' && 'HORARIO DE ALMOÇO') || 'HORARIO RESERVADO'}
                 </button>
                 <Modal modalRef={modalRef}>
-                  {paymentMethod === 'CASH' && (
-                    <Fragment>
-                      <h1>Pagar agendamentos com dinheiro na hora</h1>
-                      <button onClick={handleHideModal}>Fechar</button>
-                      <button onClick={handleScheduleHaircut}>Confirmar</button>
-                    </Fragment>
-                  )}
                   {session?.role === 'EMPLOYEE' && (
                     <Fragment>
                       <h1>Deseja Marcar esse horario como horario de almoço?</h1>
                       <button onClick={handleHideModal}>Fechar</button>
                       <button onClick={handleScheduleBreak}>Confirmar</button>
+                    </Fragment>
+                  )}
+                  {paymentMethod === 'CASH' && session?.role !== 'EMPLOYEE' && (
+                    <Fragment>
+                      <h1>Pagar agendamentos com dinheiro na hora</h1>
+                      <button onClick={handleHideModal}>Fechar</button>
+                      <button onClick={handleScheduleHaircut}>Confirmar</button>
                     </Fragment>
                   )}
                   {paymentMethod !== 'CASH' && session?.role !== 'EMPLOYEE' && (
