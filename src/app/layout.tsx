@@ -1,9 +1,8 @@
-import { Inter } from 'next/font/google';
+import { ThemeProvider } from '@/ThemeProvider';
+import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 
 import '@/stylesheets/globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Barber Shop',
@@ -16,8 +15,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <body className={inter.className}>{children}</body>
+    <html lang='pt-BR'>
+      <body className={GeistSans.className}>
+        <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
