@@ -1,15 +1,17 @@
 import { logout } from '@/server-actions/session-action';
+import { ThemeButton } from '@/components/ThemeButton';
 import { getSession } from '@/helpers/getSession';
 import { haircuts } from '@/mock/haircuts';
+import { Fragment } from 'react';
 
 import Link from 'next/link';
-import { Fragment } from 'react';
 
 export default function Home() {
   const session = getSession();
 
   return (
     <div className='flex flex-col items-start'>
+      <ThemeButton />
       {session?.role === 'EMPLOYEE' && (
         <Link href='/recebidos' className='mb-6 bg-slate-500 p-4'>
           Recebidos
