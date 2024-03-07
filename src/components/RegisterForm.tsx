@@ -8,6 +8,10 @@ import { RegisterSchema } from '@/lib/schemas';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
 import { formatCPF } from '@/utils/cpf';
+import { createUser } from '@/services/CreateUserAccount';
+import { redirect } from 'next/navigation';
+
+import { AccountType, UserData } from '@/models/UserData';
 
 export const RegisterForm = () => {
   const form = useForm<RegisterSchema>({
@@ -15,9 +19,11 @@ export const RegisterForm = () => {
     defaultValues: { cpf: '', name: '', phone: '', email: '', password: '', confirmPassword: '' },
   });
 
-  function onSubmit(values: RegisterSchema) {
-    console.log(values);
-    //SignUp
+  async function onSubmit(values: RegisterSchema) {
+    const userData = await createUser(values);
+    if(userData !== undefined	){
+      redirect('/');
+    }
   }
 
   return (

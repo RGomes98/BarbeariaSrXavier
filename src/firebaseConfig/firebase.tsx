@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import { getDatabase } from "firebase/database";
-import { Firestore } from "firebase/firestore";
+import { Firestore, getFirestore } from "firebase/firestore";
 
 import firebase from 'firebase/app';
 
@@ -23,7 +23,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+export const app = initializeApp(firebaseConfig);
+//const analytics = getAnalytics(app);
 export const auth = getAuth(app);
 export const database = getDatabase(app);
+export const firestore = getFirestore(app);

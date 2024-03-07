@@ -11,7 +11,7 @@ export default function Page() {
       <div className='border-r border-zinc-800 bg-zinc-900 py-10 pl-[10%] pr-10 max-lg:hidden'>
         <div className='flex items-center gap-4 text-white'>
           <Scissors className='size-8' />
-          <h1 className='text-3xl font-bold'>Barber Shop</h1>
+          <h1 className='text-3xl font-bold'>Barbearia Sr. Xavier</h1>
         </div>
       </div>
       <div className='flex flex-col items-center justify-center py-10 pl-10 pr-[10%] max-lg:pr-10'>

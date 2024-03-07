@@ -6,17 +6,33 @@ import { Button } from '@/components/ui/button';
 import { LoginSchema } from '@/lib/schemas';
 import { Input } from '@/components/ui/input';
 import { useForm } from 'react-hook-form';
+import { login } from '@/services/LoginService';
+import { redirect } from 'next/dist/server/api-utils';
+import { getHairCut, getHairCuts } from '@/services/GetHairCuts';
+import { getBarber, getBarbers } from '@/services/getBarbers';
+import { createAppointment } from '@/services/CreateAppointment';
+import { PayType } from '@/models/Appointment';
+import { AccountType } from '@/models/UserData';
+import {createPaymentLink, requestPaymentLink } from '@/services/CreatePaymentLink';
 
 export const LoginForm = () => {
-  const form = useForm<LoginSchema>({
-    resolver: zodResolver(LoginSchema),
-    defaultValues: { email: '', password: '' },
-  });
+    const form = useForm<LoginSchema>({
+      resolver: zodResolver(LoginSchema),
+      defaultValues: { email: '', password: '' },
+    });
 
-  function onSubmit(values: LoginSchema) {
-    console.log(values);
-    //SignIn
-  }
+   async function onSubmit(values: LoginSchema) {
+
+    //  const userData = await login(values.email, values.password);
+    //  if(userData !== undefined) {
+    //   //logado
+      
+    //  }else{
+    //   //problema pra fazer login
+    //  }
+    const data = await createPaymentLink(PayType.PIX, 100.00);
+    console.log(data);
+    }
 
   return (
     <Form {...form}>

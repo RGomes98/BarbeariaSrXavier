@@ -1,10 +1,10 @@
+import { HairCut } from "./HairCut";
 import { UserData } from "./UserData";
-import { HairCut } from "./hairCut";
 
 export interface Appointment {
     id: string;
     date: Date;
-    price: Int16Array;
+    price: Number;
     user : UserData;
     haircut: HairCut;
     barber: UserData;

@@ -9,7 +9,7 @@ import Link from 'next/link';
 export default function Home() {
   const session = getSession();
 
-  return (
+    return (
     <div className='flex flex-col items-start'>
       <ThemeButton />
       {session?.role === 'EMPLOYEE' && (

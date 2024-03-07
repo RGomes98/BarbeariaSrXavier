@@ -1,56 +1,52 @@
-import { redirect } from 'next/navigation';
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
-
-import { getDatabase, ref, child, get } from "firebase/database";
-
-import {auth, database} from '../../firebase';
-
-import firebase from 'firebase/app';
-import { UserData } from '@/models/UserData';
-
-export const getAppoiments = () => {
-
-    const dbRef = ref(database);
-    const user = auth.currentUser
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
 
 
-    get(child(dbRef, `appointments/${user?.uid}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            // snapshot gonna be a array of appointments 
-            // on firebase will be appointments -> userID -> randomtimestamp -> appointment
-          console.log(snapshot.val());
-          redirect("/")
+import { Appointment } from '@/models/Appointment'; // Import the Appoiment type
+import { firestore } from "@/firebaseConfig/firebase";
 
-        } else {
-          console.log("No data available");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
 
-        
+
+
+
+const convertDocsToModel = (docs: any[]) => {
+  return docs.map(doc => {
+    const data = doc.data();
+    return {
+      id: doc.id,
+      ...data
+    } as Appointment;
+  });
+};
+
+
+export const getAppoiments = async() => {
+
+  const docSnap = await getDocs(collection(firestore, "appointments"));
+    
+  if (docSnap.size > 0) {
+    console.log(docSnap.docs[0].data());
+    return convertDocsToModel(docSnap.docs);
+  } else {
+    console.log("No such document!");
+  }      
        
   };
 
 
-  export const getAppoiment = (id : string) => {
 
-    const dbRef = ref(database);
-    const user = auth.currentUser
+  export const getAppoiment = async(id : string) => {
+    const q = query(collection(firestore, "appointments"), where("id", "==", id));
 
-    get(child(dbRef, `appointments/${user?.uid}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-            // snapshot gonna be a array of appointments 
-            // on firebase will be appointments -> userID -> randomtimestamp -> appointment
-            // need to filter bytimeStamp
-          console.log(snapshot.val());
-        redirect("/")
-        } else {
-          console.log("No data available");
-        }
-      }).catch((error) => {
-        console.error(error);
-      });
-           
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const data = doc.data();
+      return {
+        id: doc.id,
+        ...data
+      } as Appointment;
+    } else {
+      console.log("No such document!");
+    }
   };
+

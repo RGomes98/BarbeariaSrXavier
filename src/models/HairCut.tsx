@@ -1,7 +1,7 @@
 export interface HairCut {
-    id: string;
+    id: number;
     name: string;
     description: string;
-    price: Int16Array;
+    price: Number;
     photoUri: string[];
 }

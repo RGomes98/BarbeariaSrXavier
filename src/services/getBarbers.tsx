@@ -5,6 +5,7 @@ import { collection, addDoc, doc, getDocs, query, where } from "firebase/firesto
 import { getDatabase, ref, child, get } from "firebase/database";
 
 import {auth, database, firestore} from '../firebaseConfig/firebase';
+import { AccountType } from '@/models/UserData';
 
 import firebase from 'firebase/app';
 import { UserData } from '@/models/UserData';
@@ -18,35 +19,36 @@ import { HairCut } from '@/models/HairCut';
       return {
         id: doc.id,
         ...data
-      } as HairCut;
+      } as UserData;
     });
   };
 
-  export const getHairCuts = async() => {
+  export const getBarbers = async() => {
 
-    const docSnap = await getDocs(collection(firestore, "haircuts"));
-    
-    if (docSnap.size > 0) {
-     // console.log(docSnap.docs[0].data());
-      return convertDocsToModel(docSnap.docs);
+    const q = query(collection(firestore, "users"), where("accountType", "==", AccountType.BARBER));
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.size > 0) {
+      return convertDocsToModel(querySnapshot.docs);
     } else {
       console.log("No such document!");
     }
   };
   
 
-  export const getHairCut = async(id : number) => {
-    const q = query(collection(firestore, "haircuts"), where("id", "==", id));
+
+export const getBarber = async(id : Number) => {
+    const q = query(collection(firestore, "users"), where("accountType", "==", AccountType.BARBER), where("id", "==", id));
 
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
-      const doc = querySnapshot.docs[0];
-      const data = doc.data();
-      return {
-        id: doc.id,
-        ...data
-      } as HairCut;
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        return {
+            id: doc.id,
+            ...data
+        } as HairCut;
     } else {
-      console.log("No such document!");
+        console.log("No such document!");
     }
-  };
+};
