@@ -1,29 +1,28 @@
-import { logout } from '@/server-actions/session-action';
+'use client';
+
+import { useAuthState } from 'react-firebase-hooks/auth';
 import { ThemeButton } from '@/components/ThemeButton';
-import { getSession } from '@/helpers/getSession';
+import { auth } from '@/firebaseConfig/firebase';
 import { haircuts } from '@/mock/haircuts';
+import { signOut } from 'firebase/auth';
 import { Fragment } from 'react';
 
 import Link from 'next/link';
 
 export default function Home() {
-  const session = getSession();
+  const [user] = useAuthState(auth);
 
-    return (
+  return (
     <div className='flex flex-col items-start'>
       <ThemeButton />
-      {session?.role === 'EMPLOYEE' && (
+      {/* {session?.role === 'EMPLOYEE' && (
         <Link href='/recebidos' className='mb-6 bg-slate-500 p-4'>
           Recebidos
         </Link>
-      )}
-      {session ? (
+      )} */}
+      {user ? (
         <Fragment>
-          <form action={logout}>
-            <button type='submit' className='mb-6 bg-slate-500 p-4'>
-              Sair
-            </button>
-          </form>
+          <button onClick={() => signOut(auth)}>SAIR</button>
           <Link href='/agendamentos' className='mb-6 bg-slate-500 p-4'>
             Agendamentos
           </Link>
