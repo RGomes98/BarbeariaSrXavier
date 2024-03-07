@@ -1,38 +1,36 @@
 'use client';
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { auth } from '@/firebaseConfig/firebase';
 import { Button } from '@/components/ui/button';
-import { LoginSchema } from '@/lib/schemas';
 import { Input } from '@/components/ui/input';
+import { LoginSchema } from '@/lib/schemas';
 import { useForm } from 'react-hook-form';
-import { login } from '@/services/LoginService';
-import { redirect } from 'next/dist/server/api-utils';
-import { getHairCut, getHairCuts } from '@/services/GetHairCuts';
-import { getBarber, getBarbers } from '@/services/getBarbers';
-import { createAppointment } from '@/services/CreateAppointment';
-import { PayType } from '@/models/Appointment';
-import { AccountType } from '@/models/UserData';
-import {createPaymentLink, requestPaymentLink } from '@/services/CreatePaymentLink';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 export const LoginForm = () => {
-    const form = useForm<LoginSchema>({
-      resolver: zodResolver(LoginSchema),
-      defaultValues: { email: '', password: '' },
-    });
+  const form = useForm<LoginSchema>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: { email: '', password: '' },
+  });
+  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
+  const [user] = useAuthState(auth);
+  const { push } = useRouter();
 
-   async function onSubmit(values: LoginSchema) {
+  useEffect(() => {
+    if (user) push('/');
+  }, [user, push]);
 
-    //  const userData = await login(values.email, values.password);
-    //  if(userData !== undefined) {
-    //   //logado
-      
-    //  }else{
-    //   //problema pra fazer login
-    //  }
-    const data = await createPaymentLink(PayType.PIX, 100.00);
-    console.log(data);
-    }
+  async function onSubmit(formData: LoginSchema) {
+    const user = await signInWithEmailAndPassword(formData.email, formData.password);
+    if (!user) return console.error('Ocorreu um erro ao entrar na sua conta.'); // Mostrar um toast
+
+    // Mostrar um toast se o usuario logar
+    push('/'); // Redirecionar pra home se o usuario logar
+  }
 
   return (
     <Form {...form}>
