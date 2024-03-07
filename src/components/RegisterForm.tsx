@@ -1,17 +1,18 @@
 'use client';
 
+import { useAuthState, useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { createUserAccount } from '@/services/CreateUserAccount';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatPhoneNumber } from '@/utils/phone';
+import { auth } from '@/firebaseConfig/firebase';
 import { Button } from '@/components/ui/button';
 import { RegisterSchema } from '@/lib/schemas';
 import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { formatCPF } from '@/utils/cpf';
-import { createUser } from '@/services/CreateUserAccount';
-import { redirect } from 'next/navigation';
-
-import { AccountType, UserData } from '@/models/UserData';
+import { useEffect } from 'react';
 
 export const RegisterForm = () => {
   const form = useForm<RegisterSchema>({
@@ -19,11 +20,22 @@ export const RegisterForm = () => {
     defaultValues: { cpf: '', name: '', phone: '', email: '', password: '', confirmPassword: '' },
   });
 
-  async function onSubmit(values: RegisterSchema) {
-    const userData = await createUser(values);
-    if(userData !== undefined	){
-      redirect('/');
-    }
+  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
+  const [user] = useAuthState(auth);
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (user) push('/');
+  }, [user, push]);
+
+  async function onSubmit(formData: RegisterSchema) {
+    const user = await createUserWithEmailAndPassword(formData.email, formData.password);
+
+    if (!user) return console.error('Ocorreu um erro ao criar sua conta.'); // Mostrar um toast
+    const { status, message } = createUserAccount(formData, user);
+
+    console.log(message); //Mostrar um toast
+    if (status === 'success') push('/'); //Redireciona pra home se conta for criada
   }
 
   return (
