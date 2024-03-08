@@ -3,15 +3,14 @@
 import { useAuthState, useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { createUserAccount } from '@/services/CreateUserAccount';
+import { formatCPF, formatPhoneNumber } from '@/utils/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { formatPhoneNumber } from '@/utils/phone';
 import { auth } from '@/firebaseConfig/firebase';
 import { Button } from '@/components/ui/button';
 import { RegisterSchema } from '@/lib/schemas';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { formatCPF } from '@/utils/cpf';
 import { useEffect } from 'react';
 
 export const RegisterForm = () => {

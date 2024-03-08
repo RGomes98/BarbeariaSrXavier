@@ -13,8 +13,13 @@ export const ThemeButton = () => {
 
   return (
     isMounted && (
-      <Button variant='ghost' size='icon' onClick={() => setTheme(isDarkModeActive ? 'light' : 'dark')}>
-        {isDarkModeActive ? <SunIcon /> : <MoonIcon />}
+      <Button
+        size='icon'
+        variant='ghost'
+        className='text-white'
+        onClick={() => setTheme(isDarkModeActive ? 'light' : 'dark')}
+      >
+        {isDarkModeActive ? <SunIcon /> : <MoonIcon className='text-slate-800' />}
       </Button>
     )
   );
