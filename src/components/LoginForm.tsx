@@ -1,35 +1,30 @@
 'use client';
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { useAuthState, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import { type Login, LoginSchema } from '@/lib/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { auth } from '@/firebaseConfig/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { LoginSchema } from '@/lib/schemas';
-import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { SignIn } from '@/services/SignIn';
+import { useForm } from 'react-hook-form';
 
 export const LoginForm = () => {
-  const form = useForm<LoginSchema>({
+  const form = useForm<Login>({
     resolver: zodResolver(LoginSchema),
     defaultValues: { email: '', password: '' },
   });
-  const [signInWithEmailAndPassword] = useSignInWithEmailAndPassword(auth);
-  const [user] = useAuthState(auth);
-  const { push } = useRouter();
 
-  useEffect(() => {
-    if (user) push('/');
-  }, [user, push]);
+  const { push, refresh } = useRouter();
 
-  async function onSubmit(formData: LoginSchema) {
-    const user = await signInWithEmailAndPassword(formData.email, formData.password);
-    if (!user) return console.error('Ocorreu um erro ao entrar na sua conta.'); // Mostrar um toast
-
-    // Mostrar um toast se o usuario logar
-    push('/'); // Redirecionar pra home se o usuario logar
+  function onSubmit(formData: Login) {
+    SignIn({
+      formData,
+      onSuccess: () => {
+        push('/');
+        refresh();
+      },
+    });
   }
 
   return (
