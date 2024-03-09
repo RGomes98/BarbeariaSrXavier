@@ -8,7 +8,6 @@ const ClientEnvSchema = z.object({
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_APP_ID: z.string(),
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: z.string(),
-  NEXT_PUBLIC_CLIENT_EMAIL: z.string(),
 });
 
 export const clientEnv = ClientEnvSchema.parse({
@@ -19,5 +18,4 @@ export const clientEnv = ClientEnvSchema.parse({
   NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
   NEXT_PUBLIC_FIREBASE_APP_ID: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
-  NEXT_PUBLIC_CLIENT_EMAIL: process.env.NEXT_PUBLIC_CLIENT_EMAIL,
 });
