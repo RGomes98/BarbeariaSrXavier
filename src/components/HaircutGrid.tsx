@@ -28,7 +28,7 @@ export const HaircutGrid = ({ search }: { search: string }) => {
           {CURRENT_PAGE_ITEMS.length === 0 && <span>Nenhum corte encontrado.</span>}
           {CURRENT_PAGE_ITEMS.map(({ id, name, photoUri, price }, index) => {
             return (
-              <Card key={index} className='flex w-full items-start overflow-hidden'>
+              <Card key={index} className='flex w-full select-none items-start overflow-hidden'>
                 <Link href={`corte/${id}`} className='flex w-full transform flex-col gap-4 pb-4'>
                   <div className='relative h-80 w-full rounded-sm'>
                     <Image fill quality={100} src={photoUri} alt='haircut-image' className='object-cover' />
