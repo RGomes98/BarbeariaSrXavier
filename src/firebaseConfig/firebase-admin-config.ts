@@ -1,16 +1,14 @@
-import { initializeApp, getApps, cert } from 'firebase-admin/app';
-import { clientEnv } from '@/env';
+import { initializeApp, getApps, cert, getApp } from 'firebase-admin/app';
+import { serverEnv } from '@/lib/env/server';
 
 const firebaseAdminConfig = {
-    credential: cert({
-        projectId: clientEnv.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-        clientEmail: clientEnv.NEXT_PUBLIC_CLIENT_EMAIL,
-        privateKey: clientEnv.NEXT_PRIVATE_KEY
-      })
-}
+  credential: cert({
+    projectId: serverEnv.FIREBASE_PROJECT_ID,
+    clientEmail: serverEnv.FIREBASE_CLIENT_EMAIL,
+    privateKey: serverEnv.FIREBASE_PRIVATE_KEY
+      ? serverEnv.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n')
+      : undefined,
+  }),
+};
 
-export function customInitApp() {
-    if (getApps().length <= 0) {
-        initializeApp(firebaseAdminConfig);
-    }
-}
+export const initApp = () => (!getApps().length ? initializeApp(firebaseAdminConfig) : getApp());

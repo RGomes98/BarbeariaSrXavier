@@ -1,8 +1,8 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getDatabase } from 'firebase/database';
+import { clientEnv } from '@/lib/env/client';
 import { getAuth } from 'firebase/auth';
-import { clientEnv } from '@/env';
 
 const firebaseConfig = {
   apiKey: clientEnv.NEXT_PUBLIC_FIREBASE_API_KEY,
