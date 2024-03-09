@@ -1,3 +1,4 @@
+import { Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$/;
@@ -26,5 +27,16 @@ export const RegisterSchema = z
     path: ['confirmPassword'],
   });
 
-export type RegisterSchema = z.infer<typeof RegisterSchema>;
-export type LoginSchema = z.infer<typeof LoginSchema>;
+export const UserSchema = z.object({
+  cpf: z.string(),
+  cellphone: z.string(),
+  createdAt: z.instanceof(Timestamp),
+  name: z.string(),
+  accountType: z.enum(['USER', 'ADMIN', 'BARBER'] as const),
+  email: z.string().email(),
+  id: z.string(),
+});
+
+export type Register = z.infer<typeof RegisterSchema>;
+export type Login = z.infer<typeof LoginSchema>;
+export type User = z.infer<typeof UserSchema>;

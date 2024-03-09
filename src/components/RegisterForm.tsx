@@ -3,18 +3,18 @@
 import { useAuthState, useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { createUserAccount } from '@/services/CreateUserAccount';
+import { type Register, RegisterSchema } from '@/lib/schemas';
 import { formatCPF, formatPhoneNumber } from '@/utils/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { auth } from '@/firebaseConfig/firebase';
 import { Button } from '@/components/ui/button';
-import { RegisterSchema } from '@/lib/schemas';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 
 export const RegisterForm = () => {
-  const form = useForm<RegisterSchema>({
+  const form = useForm<Register>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: { cpf: '', name: '', phone: '', email: '', password: '', confirmPassword: '' },
   });
@@ -27,7 +27,7 @@ export const RegisterForm = () => {
     if (user) push('/');
   }, [user, push]);
 
-  async function onSubmit(formData: RegisterSchema) {
+  async function onSubmit(formData: Register) {
     const user = await createUserWithEmailAndPassword(formData.email, formData.password);
 
     if (!user) return console.error('Ocorreu um erro ao criar sua conta.'); // Mostrar um toast

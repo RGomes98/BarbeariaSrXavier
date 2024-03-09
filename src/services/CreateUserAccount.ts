@@ -2,10 +2,12 @@ import { firestore } from '../firebaseConfig/firebase';
 import type { UserCredential } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { AccountType } from '@/models/UserData';
-import { RegisterSchema } from '@/lib/schemas';
+import { Register } from '@/lib/schemas';
 
-export const createUserAccount = (registerData: RegisterSchema, userCredentials: UserCredential) => {
+export const createUserAccount = (registerData: Register, userCredentials: UserCredential) => {
   //temos que criptografar o cpf, telefone e email do cara no banco de dados, pq se alguem roubar o banco de dados, ele vai ter acesso a esses dados
+
+  //fazer pelo servidor
 
   try {
     setDoc(doc(firestore, 'users', userCredentials.user.uid), {
