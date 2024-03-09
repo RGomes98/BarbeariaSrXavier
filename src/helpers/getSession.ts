@@ -1,10 +1,17 @@
-import { type NextRequest } from 'next/server';
+import { GetUserById } from '@/services/GetUserById';
+import type { User } from '@/lib/schemas';
 import { cookies } from 'next/headers';
-import { User } from '@/mock/users';
+import { auth } from 'firebase-admin';
 
-export type Session = { id: string; name: string; role: User['role'] } | null;
+export type Session = { name: string; accountType: User['accountType'] } | null;
 
-export const getSession = (request?: NextRequest): Session => {
-  if (!request) return JSON.parse(cookies().get('session')?.value || String(null));
-  return JSON.parse(request.cookies.get('session')?.value || String(null));
+export const getSession = async () => {
+  const session = cookies().get('session');
+  if (!session) return null;
+
+  const decodedToken = await auth().verifySessionCookie(session.value, true);
+  const { data, status } = await GetUserById(decodedToken.uid);
+
+  if (status !== 200) return null;
+  return { name: data.name, accountType: data.accountType };
 };
