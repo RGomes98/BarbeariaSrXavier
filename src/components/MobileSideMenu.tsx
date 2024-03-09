@@ -1,4 +1,6 @@
+import { SignOutButton } from './SignOutButton';
 import { Button } from '@/components/ui/button';
+import { Session } from '@/helpers/getSession';
 import { Menu } from 'lucide-react';
 import { Fragment } from 'react';
 import { Logo } from './Logo';
@@ -13,7 +15,7 @@ import {
 
 import Link from 'next/link';
 
-export const MobileSideMenu = ({ session, isLoggedIn }: { session: string; isLoggedIn: boolean }) => {
+export const MobileSideMenu = ({ session }: { session: Session }) => {
   return (
     <Sheet>
       <SheetTrigger className='ml-auto md:hidden' asChild>
@@ -28,19 +30,19 @@ export const MobileSideMenu = ({ session, isLoggedIn }: { session: string; isLog
           </SheetTitle>
         </SheetHeader>
         <div className='grid gap-4 py-6'>
-          {isLoggedIn && (
+          {session && (
             <Fragment>
               <Button variant='ghost' className='font-bold'>
                 <Link href='/agendamentos'>Agendamentos</Link>
               </Button>
-              {session === 'ADMIN' && (
+              {session.accountType !== 'USER' && (
                 <Button variant='ghost' className='font-bold'>
                   <Link href='/recebidos'>Recebidos</Link>
                 </Button>
               )}
             </Fragment>
           )}
-          {!isLoggedIn && (
+          {!session && (
             <Fragment>
               <Button variant='ghost' className='font-bold'>
                 <Link href='/entrar'>Entrar</Link>
@@ -51,13 +53,7 @@ export const MobileSideMenu = ({ session, isLoggedIn }: { session: string; isLog
             </Fragment>
           )}
         </div>
-        <SheetFooter>
-          {isLoggedIn && (
-            <Button className='w-full font-bold'>
-              <Link href='/sair'>Sair</Link>
-            </Button>
-          )}
-        </SheetFooter>
+        <SheetFooter>{session && <SignOutButton />}</SheetFooter>
       </SheetContent>
     </Sheet>
   );

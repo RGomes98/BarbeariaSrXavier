@@ -14,9 +14,9 @@ export const Schedule = ({ session, scheduleId }: { session: Session; scheduleId
 
   const schedule = getSchedule(scheduleId);
 
-  useEffect(() => {
-    if (isMounted && !schedule) push('/');
-  }, [push, schedule, isMounted]);
+  // useEffect(() => {
+  //   if (isMounted && !schedule) push('/');
+  // }, [push, schedule, isMounted]);
 
   return isMounted ? (
     <div className='flex flex-col gap-4 '>

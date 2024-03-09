@@ -15,7 +15,7 @@ export const Schedules = ({ session }: { session: Session }) => {
     <div className='flex flex-col gap-4 '>
       {isMounted &&
         getSchedules()?.map(({ id, haircut, date, status, clientId, paymentMethod }) => {
-          return session?.role === 'EMPLOYEE' ? (
+          return session?.accountType !== 'USER' ? (
             <Link key={id} href={`/agendamento/${id}`} className='bg-slate-500 '>
               <p>Corte: {haircut.name}</p>
               <p>Preço: {haircut.price}</p>

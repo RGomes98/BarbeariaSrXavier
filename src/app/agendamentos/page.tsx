@@ -1,7 +1,7 @@
-import { Schedules } from '@/components/Schedules/Schedules';
+import { Schedules } from '@/components/Schedules';
 import { getSession } from '@/helpers/getSession';
 
-export default function Page() {
-  const session = getSession();
+export default async function Page() {
+  const session = await getSession();
   return <Schedules session={session} />;
 }

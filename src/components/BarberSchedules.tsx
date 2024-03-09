@@ -61,21 +61,21 @@ export const BarberSchedules = ({ haircut, session }: { haircut: Haircut; sessio
                     : (currentHourSchedule.status === 'BREAK' && 'HORARIO DE ALMOÇO') || 'HORARIO RESERVADO'}
                 </button>
                 <Modal modalRef={modalRef}>
-                  {session?.role === 'EMPLOYEE' && (
+                  {session?.accountType !== 'USER' && (
                     <Fragment>
                       <h1>Deseja Marcar esse horario como horario de almoço?</h1>
                       <button onClick={handleHideModal}>Fechar</button>
                       <button onClick={handleScheduleBreak}>Confirmar</button>
                     </Fragment>
                   )}
-                  {paymentMethod === 'CASH' && session?.role !== 'EMPLOYEE' && (
+                  {paymentMethod === 'CASH' && session?.accountType === 'USER' && (
                     <Fragment>
                       <h1>Pagar agendamentos com dinheiro na hora</h1>
                       <button onClick={handleHideModal}>Fechar</button>
                       <button onClick={handleScheduleHaircut}>Confirmar</button>
                     </Fragment>
                   )}
-                  {paymentMethod !== 'CASH' && session?.role !== 'EMPLOYEE' && (
+                  {paymentMethod !== 'CASH' && session?.accountType === 'USER' && (
                     <Fragment>
                       <h1>Deseja Confirmar com o agendamento?</h1>
                       <button onClick={handleHideModal}>Fechar</button>

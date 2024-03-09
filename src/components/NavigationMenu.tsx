@@ -1,22 +1,21 @@
+import { getSession } from '@/helpers/getSession';
 import { MobileSideMenu } from './MobileSideMenu';
+import { SignOutButton } from './SignOutButton';
 import { Button } from './ui/button';
 import { Fragment } from 'react';
 
 import Link from 'next/link';
 
-export const NavigationMenu = () => {
-  let isLoggedIn = false;
-  let session = 'USER';
+export const NavigationMenu = async () => {
+  const session = await getSession();
 
   return (
     <Fragment>
       <div className='ml-auto flex items-center max-md:hidden'>
-        {isLoggedIn && (
+        {session && (
           <Fragment>
-            <Button variant='ghost'>
-              <Link href='/sair'>Sair</Link>
-            </Button>
-            {session === 'ADMIN' && (
+            <SignOutButton />
+            {session.accountType !== 'USER' && (
               <Button variant='ghost'>
                 <Link href='/recebidos'>Recebidos</Link>
               </Button>
@@ -26,7 +25,7 @@ export const NavigationMenu = () => {
             </Button>
           </Fragment>
         )}
-        {!isLoggedIn && (
+        {!session && (
           <Fragment>
             <Button variant='ghost'>
               <Link href='/entrar'>Entrar</Link>
@@ -37,7 +36,7 @@ export const NavigationMenu = () => {
           </Fragment>
         )}
       </div>
-      <MobileSideMenu isLoggedIn={isLoggedIn} session={session} />
+      <MobileSideMenu session={session} />
     </Fragment>
   );
 };

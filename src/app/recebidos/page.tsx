@@ -1,7 +1,7 @@
 import { ReceivedSchedules } from '@/components/ReceivedSchedules';
 import { getSession } from '@/helpers/getSession';
 
-export default function Page() {
-  const session = getSession();
+export default async function Page() {
+  const session = await getSession();
   return <ReceivedSchedules session={session} />;
 }
