@@ -6,12 +6,14 @@ import { useMounted } from '@/hooks/useMounted';
 import { Card } from '@/components/ui/card';
 import { useState, Fragment } from 'react';
 import { haircuts } from '@/mock/haircuts';
+import { useStore } from '@/store';
 
 import Image from 'next/image';
 import Link from 'next/link';
 
-export const HaircutGrid = ({ search }: { search: string }) => {
+export const HaircutGrid = () => {
   const [data, setData] = useState(haircuts);
+  const search = useStore().searchBar;
 
   const filteredData = data.filter(({ name }) => {
     return search.trim().length ? name.toLowerCase().includes(search.toLowerCase()) : name === name;
