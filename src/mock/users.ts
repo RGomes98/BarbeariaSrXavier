@@ -1,17 +1,10 @@
+import { HaircutSchema } from '@/lib/schemas';
 import { z } from 'zod';
 
 export const statusOptions = ['PAID', 'PENDING', 'CANCELED', 'CONFIRMED', 'BREAK'] as const;
 export const workingHours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
 export const paymentOptions = ['PIX', 'CARD', 'CASH'] as const;
 export const roleOptions = ['USER', 'EMPLOYEE'] as const;
-
-export const haircutSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string(),
-  price: z.coerce.number(),
-  photoUri: z.array(z.string()) ,
-});
 
 export const paymentMethodSchema = z.enum(paymentOptions);
 
@@ -20,7 +13,7 @@ export const scheduleSchema = z.object({
   clientId: z.string(),
   date: z.coerce.date(),
   employeeId: z.string(),
-  haircut: haircutSchema,
+  haircut: HaircutSchema,
   status: z.enum(statusOptions),
   paymentMethod: paymentMethodSchema,
 });
@@ -45,7 +38,7 @@ export type PaymentMethod = (typeof paymentOptions)[number];
 export type Employee = User & { schedules: Schedule[] };
 export type Schedule = z.infer<typeof scheduleSchema>;
 export type Status = (typeof statusOptions)[number];
-export type Haircut = z.infer<typeof haircutSchema>;
+export type Haircut = z.infer<typeof HaircutSchema>;
 export type User = z.infer<typeof userSchema>;
 
 export const users: User[] = [
@@ -90,12 +83,13 @@ export const users: User[] = [
         clientId: '111.111.111-00',
         employeeId: '111.111.111-11',
         haircut: {
-          id: '3',
+          id: 3,
           name: 'Layered Cut',
           description: 'A versatile hairstyle with layers of varying lengths to add volume and texture.',
           price: 60.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -106,13 +100,14 @@ export const users: User[] = [
         clientId: '111.111.222-00',
         employeeId: '111.111.111-11',
         haircut: {
-          id: '2',
+          id: 2,
           name: 'Bob Cut',
           description:
             'A classic short-to-medium hairstyle where hair is typically cut straight around the head.',
           price: 50.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -123,12 +118,13 @@ export const users: User[] = [
         clientId: '111.111.333-00',
         employeeId: '111.111.111-11',
         haircut: {
-          id: '3',
+          id: 3,
           name: 'Layered Cut',
           description: 'A versatile hairstyle with layers of varying lengths to add volume and texture.',
           price: 60.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -139,13 +135,14 @@ export const users: User[] = [
         clientId: '111.111.222-00',
         employeeId: '111.111.111-11',
         haircut: {
-          id: '2',
+          id: 2,
           name: 'Bob Cut',
           description:
             'A classic short-to-medium hairstyle where hair is typically cut straight around the head.',
           price: 50.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -156,12 +153,13 @@ export const users: User[] = [
         clientId: '111.111.111-00',
         employeeId: '111.111.111-11',
         haircut: {
-          id: '1',
+          id: 1,
           name: 'Pixie Cut',
           description: 'Short hairstyle where hair is cropped close to the head.',
           price: 40.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
     ],
@@ -182,13 +180,14 @@ export const users: User[] = [
         clientId: '111.111.111-00',
         employeeId: '111.111.111-22',
         haircut: {
-          id: '2',
+          id: 2,
           name: 'Bob Cut',
           description:
             'A classic short-to-medium hairstyle where hair is typically cut straight around the head.',
           price: 50.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -199,12 +198,13 @@ export const users: User[] = [
         clientId: '111.111.333-00',
         employeeId: '111.111.111-22',
         haircut: {
-          id: '1',
+          id: 1,
           name: 'Pixie Cut',
           description: 'Short hairstyle where hair is cropped close to the head.',
           price: 40.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -215,12 +215,13 @@ export const users: User[] = [
         clientId: '111.111.333-00',
         employeeId: '111.111.111-22',
         haircut: {
-          id: '3',
+          id: 3,
           name: 'Layered Cut',
           description: 'A versatile hairstyle with layers of varying lengths to add volume and texture.',
           price: 60.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -231,12 +232,13 @@ export const users: User[] = [
         clientId: '111.111.111-00',
         employeeId: '111.111.111-22',
         haircut: {
-          id: '1',
+          id: 1,
           name: 'Pixie Cut',
           description: 'Short hairstyle where hair is cropped close to the head.',
           price: 40.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
       {
@@ -247,12 +249,13 @@ export const users: User[] = [
         clientId: '111.111.111-00',
         employeeId: '111.111.111-22',
         haircut: {
-          id: '1',
+          id: 1,
           name: 'Pixie Cut',
           description: 'Short hairstyle where hair is cropped close to the head.',
           price: 40.0,
-          photoUri:
+          photoUri: [
             'https://imgs.search.brave.com/RRxiaVLlMLt97kwMvNXvsDqEIBy-hiJE9097bRbEdso/rs:fit:860:0:0/g:ce/aHR0cHM6Ly9ibG9n/Lm5ld29sZG1hbi5j/b20uYnIvd3AtY29u/dGVudC91cGxvYWRz/LzIwMjAvMDIvQ29y/dGUtRGUtQ2FiZWxv/LU1hc2N1bGluby1T/bGlja2VkLUJhY2st/b3UtUGFyYS1UcmFz/LTkuanBn',
+          ],
         },
       },
     ],
