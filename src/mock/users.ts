@@ -10,7 +10,7 @@ export const haircutSchema = z.object({
   name: z.string(),
   description: z.string(),
   price: z.coerce.number(),
-  photoUri: z.string().url(),
+  photoUri: z.array(z.string()) ,
 });
 
 export const paymentMethodSchema = z.enum(paymentOptions);
