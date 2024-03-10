@@ -6,6 +6,14 @@ export const workingHours = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
 export const paymentOptions = ['PIX', 'CARD', 'CASH'] as const;
 export const roleOptions = ['USER', 'EMPLOYEE'] as const;
 
+export const haircutSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  price: z.coerce.number(),
+  photoUri: z.array(z.string().url()),
+});
+
 export const paymentMethodSchema = z.enum(paymentOptions);
 
 export const scheduleSchema = z.object({
