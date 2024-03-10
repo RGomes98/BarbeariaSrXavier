@@ -1,12 +1,15 @@
 import { NavigationMenu } from '@/components/NavigationMenu';
 import { HaircutGrid } from '@/components/HaircutGrid';
 import { ThemeButton } from '@/components/ThemeButton';
+import { getHaircuts } from '@/services/GetHairCuts';
 import { SearchBar } from '@/components/SearchBar';
 import { Navbar } from '@/components/Navbar';
 import { Logo } from '@/components/Logo';
 import { Fragment } from 'react';
 
-export default function Home() {
+export default async function Home() {
+  const haircuts = await getHaircuts();
+
   return (
     <Fragment>
       <Navbar>
@@ -19,7 +22,7 @@ export default function Home() {
           <h1 className='text-4xl font-semibold max-md:text-3xl'>Cortes</h1>
           <SearchBar />
         </div>
-        <HaircutGrid />
+        <HaircutGrid haircuts={haircuts} />
       </div>
     </Fragment>
   );

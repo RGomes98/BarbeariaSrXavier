@@ -1,33 +1,23 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
+import { HaircutSchema, HaircutsSchema } from '@/lib/schemas';
 import { firestore } from '../firebaseConfig/firebase';
-import { HairCut } from '@/models/HairCut';
+import { redirect } from 'next/navigation';
 
-const convertDocsToModel = (docs: any[]) => {
-  return docs.map((doc) => {
-    const data = doc.data();
-    return { id: doc.id, ...data } as HairCut;
-  });
-};
-
-export const getHairCuts = async () => {
+export const getHaircuts = async () => {
   const docSnap = await getDocs(collection(firestore, 'haircuts'));
+  const haircuts = HaircutsSchema.safeParse(docSnap.docs.map((doc) => doc.data()));
 
-  if (docSnap.size > 0) {
-    return convertDocsToModel(docSnap.docs);
-  } else {
-    console.log('No such document!');
-  }
+  if (!haircuts.success) throw new Error('invalid haircuts data structure');
+  return haircuts.data;
 };
 
-export const getHairCut = async (id: number) => {
-  const q = query(collection(firestore, 'haircuts'), where('id', '==', id));
+export const getHaircut = async (id: number) => {
+  try {
+    const q = query(collection(firestore, 'haircuts'), where('id', '==', id));
+    const haircut = HaircutSchema.parse((await getDocs(q)).docs[0]?.data());
 
-  const querySnapshot = await getDocs(q);
-  if (!querySnapshot.empty) {
-    const doc = querySnapshot.docs[0];
-    const data = doc.data();
-    return { id: doc.id, ...data };
-  } else {
-    console.log('No such document!');
+    return haircut;
+  } catch (error) {
+    redirect('/');
   }
 };
