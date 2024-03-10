@@ -1,14 +1,11 @@
 import { BarberSelectMenu } from '@/components/BarberSelectMenu';
 import { BarberSchedules } from '@/components/BarberSchedules';
+import { getHaircut } from '@/services/GetHairCuts';
 import { getSession } from '@/helpers/getSession';
-import { haircuts } from '@/mock/haircuts';
-import { redirect } from 'next/navigation';
 import { Fragment } from 'react';
 
 export default async function Page({ params: { id } }: { params: { id: string } }) {
-  const haircut = haircuts.find((haircurt) => haircurt.id === id);
-  if (!haircut) redirect('/');
-
+  const haircut = await getHaircut(Number(id));
   const session = await getSession();
 
   return (
