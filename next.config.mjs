@@ -4,7 +4,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*',
+        hostname: 'console.firebase.google.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
       },
     ],
   },
