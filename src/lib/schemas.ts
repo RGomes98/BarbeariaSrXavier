@@ -37,6 +37,17 @@ export const UserSchema = z.object({
   id: z.string(),
 });
 
+export const HaircutSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  price: z.number(),
+  description: z.string(),
+  photoUri: z.array(z.string().url()),
+});
+
+export const HaircutsSchema = z.array(HaircutSchema);
+
 export type Register = z.infer<typeof RegisterSchema>;
+export type Haircut = z.infer<typeof HaircutSchema>;
 export type Login = z.infer<typeof LoginSchema>;
 export type User = z.infer<typeof UserSchema>;
