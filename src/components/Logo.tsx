@@ -2,12 +2,9 @@
 
 import { useMounted } from '@/hooks/useMounted';
 import { usePathname } from 'next/navigation';
-import { Poppins } from 'next/font/google';
 import { Scissors } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { cn } from '@/lib/utils';
-
-const poppins = Poppins({ subsets: ['latin'], fallback: ['system-ui'], weight: ['500'] });
 
 export const Logo = ({ className }: JSX.IntrinsicElements['div']) => {
   const { isMounted } = useMounted();
@@ -19,7 +16,7 @@ export const Logo = ({ className }: JSX.IntrinsicElements['div']) => {
   return (
     <div
       className={cn(
-        `flex items-center gap-4 whitespace-nowrap text-2xl text-gray-200 ${poppins.className}`,
+        'font-poppins flex items-center gap-4 whitespace-nowrap text-2xl text-gray-200',
         className,
         { 'text-slate-800': isNotAtLoginPage && isMounted },
       )}
