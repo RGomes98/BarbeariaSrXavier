@@ -3,6 +3,12 @@ import { User } from './lib/schemas';
 
 export async function middleware(request: NextRequest) {
   const session = request.cookies.get('session');
+
+  if (['/entrar', '/registrar'].some((path) => request.nextUrl.pathname.startsWith(path))) {
+    if (session) return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.next();
+  }
+
   if (!session) return NextResponse.redirect(new URL('/entrar', request.url));
 
   const userAuthentication = await fetch(`${request.nextUrl.origin}/api/auth`, {
@@ -21,4 +27,6 @@ export async function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-export const config = { matcher: ['/recebidos', '/agendamentos', '/agendamento/:path*'] };
+export const config = {
+  matcher: ['/entrar', '/registrar', '/recebidos', '/agendamentos', '/agendamento/:path*'],
+};
