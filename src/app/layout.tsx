@@ -1,6 +1,6 @@
+import { Poppins, Raleway } from 'next/font/google';
 import { ThemeProvider } from '@/ThemeProvider';
 import { GeistSans } from 'geist/font/sans';
-import { Poppins } from 'next/font/google';
 import type { Metadata } from 'next';
 
 import '@/stylesheets/globals.css';
@@ -17,6 +17,13 @@ const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
 });
 
+const raleway = Raleway({
+  subsets: ['latin'],
+  fallback: ['system-ui'],
+  variable: '--font-raleway',
+  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='pt-BR'>
-      <body className={`${GeistSans.className} ${poppins.variable}`}>
+      <body className={`${GeistSans.className} ${poppins.variable} ${raleway.variable}`}>
         <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>

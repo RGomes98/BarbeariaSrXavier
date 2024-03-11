@@ -8,10 +8,10 @@ export const SearchBar = () => {
   const setSearchBar = useStore().setSearchBar;
 
   return (
-    <div className='relative flex max-w-96 items-center max-sm:max-w-full'>
+    <div className='relative flex w-full max-w-[275px] items-center max-sm:max-w-full'>
       <Input
         onChange={(event) => setSearchBar(event.target.value)}
-        placeholder='Pesquisar...'
+        placeholder='Busque pelo nome do corte...'
         className='w-full'
       />
       <Search className='absolute right-3 size-5 opacity-70' />

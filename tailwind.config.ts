@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       fontFamily: {
+        raleway: ['var(--font-raleway)'],
         poppins: ['var(--font-poppins)'],
       },
       colors: {
