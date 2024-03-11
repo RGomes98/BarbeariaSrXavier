@@ -1,7 +1,7 @@
 'use client';
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { Haircut, workingHours } from '@/mock/users';

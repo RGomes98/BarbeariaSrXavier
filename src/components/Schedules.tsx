@@ -1,19 +1,19 @@
 'use client';
 
-import { useScheduleActions } from '@/hooks/useScheduleActions';
+// import { useScheduleActions } from '@/hooks/useScheduleActions';
 import type { Session } from '@/helpers/getSession';
-import { useMounted } from '@/hooks/useMounted';
-import { formatDate } from '@/utils/date';
+// import { useMounted } from '@/hooks/useMounted';
+// import { formatDate } from '@/utils/date';
 
-import Link from 'next/link';
+// import Link from 'next/link';
 
 export const Schedules = ({ session }: { session: Session }) => {
-  const { getSchedules } = useScheduleActions(session);
-  const { isMounted } = useMounted();
+  // const { getSchedules } = useScheduleActions(session);
+  // const { isMounted } = useMounted();
 
   return (
     <div className='flex flex-col gap-4 '>
-      {isMounted &&
+      {/* {isMounted &&
         getSchedules()?.map(({ id, haircut, date, status, clientId, paymentMethod }) => {
           return session?.accountType !== 'USER' ? (
             <Link key={id} href={`/agendamento/${id}`} className='bg-slate-500 '>
@@ -32,7 +32,7 @@ export const Schedules = ({ session }: { session: Session }) => {
               <p>Status {status}</p>
             </div>
           );
-        })}
+        })} */}
     </div>
   );
 };

@@ -1,18 +1,18 @@
 'use client';
 
-import { useScheduleActions } from '@/hooks/useScheduleActions';
+// import { useScheduleActions } from '@/hooks/useScheduleActions';
 import type { Session } from '@/helpers/getSession';
 import { useMounted } from '@/hooks/useMounted';
-import { useRouter } from 'next/navigation';
-import { formatDate } from '@/utils/date';
-import { useEffect } from 'react';
+// import { useRouter } from 'next/navigation';
+// import { formatDate } from '@/utils/date';
+// import { useEffect } from 'react';
 
 export const Schedule = ({ session, scheduleId }: { session: Session; scheduleId: string }) => {
-  const { getSchedule, updateScheduleStatus } = useScheduleActions(session);
+  // const { getSchedule, updateScheduleStatus } = useScheduleActions(session);
   const { isMounted } = useMounted();
-  const { push } = useRouter();
+  // const { push } = useRouter();
 
-  const schedule = getSchedule(scheduleId);
+  // const schedule = getSchedule(scheduleId);
 
   // useEffect(() => {
   //   if (isMounted && !schedule) push('/');
@@ -20,7 +20,7 @@ export const Schedule = ({ session, scheduleId }: { session: Session; scheduleId
 
   return isMounted ? (
     <div className='flex flex-col gap-4 '>
-      <p>Cliente: {schedule?.clientId}</p>
+      {/* <p>Cliente: {schedule?.clientId}</p>
       <p>Status: {schedule?.status}</p>
       <p>Data: {formatDate(schedule?.date || new Date())}</p>
       <p>Corte: {schedule?.haircut.name}</p>
@@ -35,7 +35,7 @@ export const Schedule = ({ session, scheduleId }: { session: Session; scheduleId
       )}
       {schedule?.status === 'PENDING' && schedule.paymentMethod === 'CASH' && (
         <button onClick={() => updateScheduleStatus('PAID', schedule.id)}>Pago</button>
-      )}
+      )} */}
     </div>
   ) : null;
 };
