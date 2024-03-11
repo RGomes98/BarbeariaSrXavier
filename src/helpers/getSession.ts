@@ -10,8 +10,10 @@ export const getSession = async () => {
   if (!session) return null;
 
   const decodedToken = await auth().verifySessionCookie(session.value, true);
-  const { data, status } = await GetUserById(decodedToken.uid);
+  if (!decodedToken) return null;
 
+  const { data, status } = await GetUserById(decodedToken.uid);
   if (status !== 200) return null;
+
   return { name: data.name, accountType: data.accountType };
 };
