@@ -29,13 +29,11 @@ export const useBarberShopActions = () => {
   };
 
   const scheduleHaircut = (session: Session, haircut: Haircut, scheduleHour: Date, status: Status) => {
-    if (!session) return push('/entrar');
-
     employee?.schedules.push({
+      clientId: '',
       status: status,
       haircut: haircut,
       date: scheduleHour,
-      clientId: session.id,
       id: crypto.randomUUID(),
       employeeId: employee.cpf,
       paymentMethod: paymentMethod,
