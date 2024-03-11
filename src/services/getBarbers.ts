@@ -18,9 +18,11 @@ export const getBarbers = async () => {
   const querySnapshot = await getDocs(q);
 
   if (querySnapshot.size > 0) {
+    console.log('Document data:', querySnapshot.docs.map((doc) => doc.data()));
     return convertDocsToModel(querySnapshot.docs);
   } else {
     console.log('No such document!');
+    return [];
   }
 };
 
