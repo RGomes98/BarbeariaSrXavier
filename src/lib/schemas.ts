@@ -48,6 +48,7 @@ export const BarberSchema = z.object({
   createdAt: z.instanceof(Timestamp),
   accountType: z.literal('BARBER'),
   email: z.string().email(),
+  phone: z.string(),
   cpf: z.string(),
 });
 
@@ -59,10 +60,48 @@ export const HaircutSchema = z.object({
   photoUri: z.array(z.string().url()),
 });
 
+export const ScheduleSchema = z.object({
+  haircut: HaircutSchema,
+  date: z.instanceof(Timestamp),
+  ispaid: z.boolean(),
+  payType: z.string(),
+  id: z.string(),
+  price: z.number(),
+  user: UserSchema.omit({ id: true }),
+  barber: BarberSchema.omit({ id: true, accountType: true, createdAt: true }),
+});
+
+export const TestSchema = z.array(
+  z.object({
+    id: z.string(),
+    name: z.string(),
+    createdAt: z.instanceof(Timestamp),
+    accountType: z.literal('BARBER'),
+    email: z.string().email(),
+    cpf: z.string(),
+    appointments: z.array(ScheduleSchema),
+  }),
+);
+
+const Test2Schema = z.object({
+  id: z.string(),
+  name: z.string(),
+  createdAt: z.instanceof(Timestamp),
+  accountType: z.literal('BARBER'),
+  email: z.string().email(),
+  cpf: z.string(),
+  appointments: z.array(ScheduleSchema),
+});
+
+export type Test = z.infer<typeof TestSchema>;
+export type Test2 = z.infer<typeof Test2Schema>;
+
+export const SchedulesSchema = z.array(ScheduleSchema);
 export const HaircutsSchema = z.array(HaircutSchema);
 export const BarbersSchema = z.array(BarberSchema);
 
 export type AccountType = z.infer<typeof AccountTypeSchema>;
+export type Schedule = z.infer<typeof ScheduleSchema>;
 export type Register = z.infer<typeof RegisterSchema>;
 export type Haircut = z.infer<typeof HaircutSchema>;
 export type Barber = z.infer<typeof BarberSchema>;

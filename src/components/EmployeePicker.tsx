@@ -1,7 +1,7 @@
 import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validateEmployee } from '@/helpers/validateSearchParams';
 import { useSearchParams } from 'next/navigation';
-import { Barber } from '@/lib/schemas';
+import { Barber, Test } from '@/lib/schemas';
 
 import {
   Select,
@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const EmployeePicker = ({ barbers }: { barbers: Barber[] }) => {
+export const EmployeePicker = ({ barbers }: { barbers: Test }) => {
   const searchParams = useSearchParams();
   const validEmployees = barbers.map(({ name }) => name);
   const paymentMethod = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);

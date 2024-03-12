@@ -1,19 +1,20 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
+import { createAppointment } from '@/services/CreateAppointment';
 import type { Haircut, Status } from '@/mock/users';
 import { type Session } from '@/helpers/getSession';
-
 import { useSearchParams } from 'next/navigation';
+import { PayType } from '@/models/Appointment';
+import { Timestamp } from 'firebase/firestore';
 import { UserData } from '@/models/UserData';
-import { Barber } from '@/lib/schemas';
+import { Test } from '@/lib/schemas';
 
-export const useBarberShopActions = (barbers: Barber[]) => {
+export const useBarberShopActions = (barbers: Test) => {
   const searchParams = useSearchParams();
 
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
   const scheduleDate = validateDate(searchParams.get('date'), new Date());
   const validEmployees = barbers.map(({ name }) => name);
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
-
   const employee = barbers.find(({ name }) => name === scheduleEmployee);
 
   const getCurrentSchedule = (hour: number) => {
@@ -21,9 +22,10 @@ export const useBarberShopActions = (barbers: Barber[]) => {
   };
 
   const getEmployeeCurrentHourSchedule = (hour: number) => {
-    // return employee?.schedules.find(({ date }) => {
-    //   return date.getTime() === getCurrentSchedule(hour).getTime();
-    // });
+    return employee?.appointments.find(({ date }) => {
+      const timeObj = new Timestamp(date.seconds, date.nanoseconds);
+      return timeObj.toDate().getTime() === getCurrentSchedule(hour).getTime();
+    });
   };
 
   const scheduleHaircut = (
@@ -33,13 +35,14 @@ export const useBarberShopActions = (barbers: Barber[]) => {
     status: Status,
     userData: UserData,
   ) => {
-    // createAppointment(employee, haircut, userData, PayType.PIX, scheduleHour);
+    createAppointment(haircut, userData, PayType.PIX, scheduleHour, employee);
   };
 
   return {
     scheduleDate,
     paymentMethod,
     scheduleHaircut,
+    scheduleEmployee,
     getCurrentSchedule,
     getEmployeeCurrentHourSchedule,
   };
