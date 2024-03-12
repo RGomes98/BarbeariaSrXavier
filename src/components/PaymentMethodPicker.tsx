@@ -2,7 +2,7 @@ import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validatePaymentMethod } from '@/helpers/validateSearchParams';
 import { formatPaymentMethod } from '@/utils/caption';
 import { useSearchParams } from 'next/navigation';
-import { PaymentMethod } from '@/mock/users';
+import { paymentMethods } from '@/lib/schemas';
 
 import {
   Select,
@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const PaymentMethodPicker = ({ paymentMethods }: { paymentMethods: PaymentMethod[] }) => {
+export const PaymentMethodPicker = () => {
   const searchParams = useSearchParams();
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
 
