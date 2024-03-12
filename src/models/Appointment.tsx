@@ -1,3 +1,4 @@
+import { Employee } from "@/mock/users";
 import { HairCut } from "./HairCut";
 import { UserData } from "./UserData";
 
@@ -7,7 +8,7 @@ export interface Appointment {
     price: Number;
     user : UserData;
     haircut: HairCut;
-    barber: UserData;
+    barber: Employee;
     payType:PayType ;
     ispaid: boolean;
 }

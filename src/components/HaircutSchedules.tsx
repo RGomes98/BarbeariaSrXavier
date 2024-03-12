@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { Haircut, workingHours } from '@/mock/users';
-import { type Session } from '@/helpers/getSession';
+import { getSession, getSessionUser, type Session } from '@/helpers/getSession';
 import { HaircutOptions } from './HaircutOptions';
 import { useMounted } from '@/hooks/useMounted';
 
@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { AccountType } from '@/models/UserData';
 
 export const HaircutSchedules = ({ haircut, session }: { haircut: Haircut; session: Session }) => {
   const {
@@ -54,13 +55,14 @@ export const HaircutSchedules = ({ haircut, session }: { haircut: Haircut; sessi
             const isEmployeeBusy = currentHourSchedule;
 
             const handleScheduleHaircut = () => {
-              if (!session) return;
-              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'PENDING');
+            //  if (!session) return;
+
+              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'PENDING', {accountType: AccountType.USER, name: "Teste", id: "123", cpf: "123", email: "teste@teste", cellphone: "123", createdAt: new Date()});
             };
 
             const handleScheduleBreak = () => {
-              if (!session) return;
-              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'BREAK');
+             // if (!session) return;
+              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'BREAK',  {accountType: AccountType.USER, name: "Teste", id: "123", cpf: "123", email: "teste@teste", cellphone: "123", createdAt: new Date()});
             };
 
             return (

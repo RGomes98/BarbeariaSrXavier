@@ -2,6 +2,7 @@ import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../firebaseConfig/firebase';
 import { AccountType } from '@/models/UserData';
 import { UserData } from '@/models/UserData';
+import { Employee } from '@/mock/users';
 
 const convertDocsToModel = (docs: any[]) => {
   return docs.map((doc) => {
@@ -9,13 +10,16 @@ const convertDocsToModel = (docs: any[]) => {
     return {
       id: doc.id,
       ...data,
-    } as UserData;
+    } as Employee;
   });
 };
 
+ 
 export const getBarbers = async () => {
-  const q = query(collection(firestore, 'users'), where('accountType', '==', AccountType.BARBER));
+  const q = query(collection(firestore, 'users'), where('accountType', '==', AccountType.BARBER ));
+  console.log(AccountType.BARBER);
   const querySnapshot = await getDocs(q);
+  console.log(querySnapshot);
 
   if (querySnapshot.size > 0) {
     console.log('Document data:', querySnapshot.docs.map((doc) => doc.data()));

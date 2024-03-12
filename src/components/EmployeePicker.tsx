@@ -12,9 +12,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const EmployeePicker = ({ employees }: { employees: Employee['name'][] }) => {
+export const EmployeePicker = ({ employees }: { employees: Employee[] }) => {
   const searchParams = useSearchParams();
   const paymentMethod = validateEmployee(searchParams.get('employee'), 'Barber1');
+
+  console.log(employees);
 
   return (
     <div className='flex w-[190px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
@@ -31,8 +33,8 @@ export const EmployeePicker = ({ employees }: { employees: Employee['name'][] })
           <SelectGroup>
             {employees.map((employeeOption) => {
               return (
-                <SelectItem key={employeeOption} value={employeeOption}>
-                  {employeeOption}
+                <SelectItem key={employeeOption.name} value={employeeOption.name}>
+                  {employeeOption.name}
                 </SelectItem>
               );
             })}

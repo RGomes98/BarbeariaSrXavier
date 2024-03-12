@@ -1,7 +1,7 @@
 'use client';
 
 import { PaymentMethodPicker } from './PaymentMethodPicker';
-import type { PaymentMethod } from '@/mock/users';
+import type { Employee, PaymentMethod } from '@/mock/users';
 import { EmployeePicker } from './EmployeePicker';
 import { DatePicker } from './DatePicker';
 import { useEffect, useState } from 'react';
@@ -10,7 +10,7 @@ import { UserData } from '@/models/UserData';
 
 export const HaircutOptions = () => {
   const paymentMethods = ['PIX', 'CASH', 'CARD'] as PaymentMethod[];
-  const [employees, setEmployees] = useState<string[]>([]);
+  const [employees, setEmployees] = useState<Employee[]>([]);
 
   useEffect(() => {
     getCurrentBarbers()   
@@ -18,8 +18,9 @@ export const HaircutOptions = () => {
 
   async function getCurrentBarbers() {
     const barbers = await getBarbers();
-    let arr = barbers.map((barber: UserData) => barber.name)
-    setEmployees(arr)
+    // let arr = barbers.map((barber: UserData) => barber.name)
+    // console.log(arr)
+    setEmployees(barbers)
   }
 
   return (
