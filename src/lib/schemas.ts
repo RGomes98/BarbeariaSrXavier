@@ -5,6 +5,9 @@ const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za
 const phoneRegex = /^\((?:[1-9]{2})\)\s*(?:9[0-9]{4}-[0-9]{4})$/;
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
+export const accountTypes = ['USER', 'BARBER', 'ADMIN'] as const;
+export const paymentMethods = ['PIX', 'CASH', 'CARD'] as const;
+
 export const LoginSchema = z.object({
   email: z.string().email({ message: 'E-mail inválido.' }),
   password: z.string().min(8, { message: 'Senha deve ter pelo menos 8 caracteres.' }),
@@ -27,14 +30,25 @@ export const RegisterSchema = z
     path: ['confirmPassword'],
   });
 
+export const AccountTypeSchema = z.enum(accountTypes);
+
 export const UserSchema = z.object({
   cpf: z.string(),
   cellphone: z.string(),
   createdAt: z.instanceof(Timestamp),
   name: z.string(),
-  accountType: z.enum(['USER', 'ADMIN', 'BARBER'] as const),
+  accountType: z.literal('USER'),
   email: z.string().email(),
   id: z.string(),
+});
+
+export const BarberSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  createdAt: z.instanceof(Timestamp),
+  accountType: z.literal('BARBER'),
+  email: z.string().email(),
+  cpf: z.string(),
 });
 
 export const HaircutSchema = z.object({
@@ -46,8 +60,11 @@ export const HaircutSchema = z.object({
 });
 
 export const HaircutsSchema = z.array(HaircutSchema);
+export const BarbersSchema = z.array(BarberSchema);
 
+export type AccountType = z.infer<typeof AccountTypeSchema>;
 export type Register = z.infer<typeof RegisterSchema>;
 export type Haircut = z.infer<typeof HaircutSchema>;
+export type Barber = z.infer<typeof BarberSchema>;
 export type Login = z.infer<typeof LoginSchema>;
 export type User = z.infer<typeof UserSchema>;
