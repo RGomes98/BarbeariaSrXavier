@@ -1,33 +1,14 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../firebaseConfig/firebase';
 import { AccountType } from '@/models/UserData';
-import { UserData } from '@/models/UserData';
-import { Employee } from '@/mock/users';
+import { BarbersSchema } from '@/lib/schemas';
 
-const convertDocsToModel = (docs: any[]) => {
-  return docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-    } as Employee;
-  });
-};
-
- 
 export const getBarbers = async () => {
-  const q = query(collection(firestore, 'users'), where('accountType', '==', AccountType.BARBER ));
-  console.log(AccountType.BARBER);
-  const querySnapshot = await getDocs(q);
-  console.log(querySnapshot);
+  const q = query(collection(firestore, 'users'), where('accountType', '==', AccountType.BARBER));
+  const barbers = BarbersSchema.safeParse((await getDocs(q)).docs.map((doc) => doc.data()));
+  if (!barbers.success || !barbers.data.length) return [];
 
-  if (querySnapshot.size > 0) {
-    console.log('Document data:', querySnapshot.docs.map((doc) => doc.data()));
-    return convertDocsToModel(querySnapshot.docs);
-  } else {
-    console.log('No such document!');
-    return [];
-  }
+  return barbers.data;
 };
 
 export const getBarber = async (id: Number) => {

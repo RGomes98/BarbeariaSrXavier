@@ -1,7 +1,7 @@
 import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validateEmployee } from '@/helpers/validateSearchParams';
 import { useSearchParams } from 'next/navigation';
-import { Employee } from '@/mock/users';
+import { Barber } from '@/lib/schemas';
 
 import {
   Select,
@@ -12,11 +12,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const EmployeePicker = ({ employees }: { employees: Employee[] }) => {
+export const EmployeePicker = ({ barbers }: { barbers: Barber[] }) => {
   const searchParams = useSearchParams();
-  const paymentMethod = validateEmployee(searchParams.get('employee'), 'Barber1');
-
-  console.log(employees);
+  const validEmployees = barbers.map(({ name }) => name);
+  const paymentMethod = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
   return (
     <div className='flex w-[190px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
@@ -31,7 +30,7 @@ export const EmployeePicker = ({ employees }: { employees: Employee[] }) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {employees.map((employeeOption) => {
+            {barbers.map((employeeOption) => {
               return (
                 <SelectItem key={employeeOption.name} value={employeeOption.name}>
                   {employeeOption.name}

@@ -2,12 +2,12 @@
 
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
+import { getScheduleStatusColor } from '@/utils/caption';
 import { Haircut, workingHours } from '@/mock/users';
-import { getSession, getSessionUser, type Session } from '@/helpers/getSession';
+import { type Session } from '@/helpers/getSession';
 import { HaircutOptions } from './HaircutOptions';
-import { useMounted } from '@/hooks/useMounted';
+import { Barber } from '@/lib/schemas';
 
 import {
   AlertDialog,
@@ -20,26 +20,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { AccountType } from '@/models/UserData';
 
-export const HaircutSchedules = ({ haircut, session }: { haircut: Haircut; session: Session }) => {
-  const {
-    employee,
-    scheduleDate,
-    paymentMethod,
-    scheduleHaircut,
-    getCurrentSchedule,
-    getEmployeeCurrentHourSchedule,
-  } = useBarberShopActions();
-
-  const { isMounted } = useMounted();
+export const HaircutSchedules = ({
+  haircut,
+  barbers,
+  session,
+}: {
+  haircut: Haircut;
+  barbers: Barber[];
+  session: Session;
+}) => {
+  const { scheduleDate, paymentMethod, scheduleHaircut, getCurrentSchedule, getEmployeeCurrentHourSchedule } =
+    useBarberShopActions(barbers);
 
   return (
     <div className='mt-auto flex h-full w-full max-w-[700px] flex-col justify-center gap-14 max-[1350px]:max-w-none max-md:gap-8'>
       <span className='font-raleway text-3xl font-medium max-md:text-2xl'>
         Horários de {formatDateShort(scheduleDate)}
       </span>
-      <HaircutOptions />
+      <HaircutOptions barbers={barbers} />
       <Table>
         <TableHeader className='pointer-events-none'>
           <TableRow className='max-md:text-xs'>
@@ -55,85 +54,96 @@ export const HaircutSchedules = ({ haircut, session }: { haircut: Haircut; sessi
             const isEmployeeBusy = currentHourSchedule;
 
             const handleScheduleHaircut = () => {
-            //  if (!session) return;
-
-              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'PENDING', {accountType: AccountType.USER, name: "Teste", id: "123", cpf: "123", email: "teste@teste", cellphone: "123", createdAt: new Date()});
+              // scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'PENDING', {
+              //   accountType: AccountType.USER,
+              //   name: 'Teste',
+              //   id: '123',
+              //   cpf: '123',
+              //   email: 'teste@teste',
+              //   cellphone: '123',
+              //   createdAt: new Date(),
+              // });
             };
 
             const handleScheduleBreak = () => {
-             // if (!session) return;
-              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'BREAK',  {accountType: AccountType.USER, name: "Teste", id: "123", cpf: "123", email: "teste@teste", cellphone: "123", createdAt: new Date()});
+              // scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'BREAK', {
+              //   accountType: AccountType.USER,
+              //   name: 'Teste',
+              //   id: '123',
+              //   cpf: '123',
+              //   email: 'teste@teste',
+              //   cellphone: '123',
+              //   createdAt: new Date(),
+              // });
             };
 
             return (
-              isMounted && (
-                <AlertDialog>
-                  <TableRow
-                    key={index}
-                    className={`relative cursor-pointer hover:border-t hover:brightness-110 max-md:text-xs hover:${getScheduleStatusColor(currentHourSchedule?.status)} ${getScheduleStatusColor(currentHourSchedule?.status)}`}
-                  >
-                    <TableCell className='max-md:py-3'>
-                      {formatDateGetHour(getCurrentSchedule(hour))}h
-                    </TableCell>
-                    <TableCell className='max-md:hidden'>
-                      {formatDateGetWeekAndDay(getCurrentSchedule(hour))}
-                    </TableCell>
-                    <TableCell className='md:hidden'>{formatDateGetDay(getCurrentSchedule(hour))}</TableCell>
-                    <TableCell className='font-medium max-md:hidden'>
-                      {formatScheduleStatus('long', currentHourSchedule?.status)}
-                    </TableCell>
-                    <TableCell className='font-medium md:hidden'>
-                      {formatScheduleStatus('short', currentHourSchedule?.status)}
-                    </TableCell>
-                    <TableCell className='text-right'>
-                      {employee?.name}
-                      {!isEmployeeBusy && <AlertDialogTrigger className='absolute inset-0' />}
-                    </TableCell>
-                  </TableRow>
-                  <AlertDialogContent className='max-[550px]:max-w-[90%]'>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>
-                        {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') &&
-                          'Horário de Almoço'}
-                        {paymentMethod === 'CASH' &&
-                          (session?.accountType === 'USER' || !session) &&
-                          'Pagamento em Dinheiro'}
-                        {paymentMethod !== 'CASH' &&
-                          (session?.accountType === 'USER' || !session) &&
-                          'Confirmar Agendamento'}
-                      </AlertDialogTitle>
-                      <AlertDialogDescription>
-                        {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') &&
-                          `Tem certeza de que deseja definir o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))} como o seu horário de almoço?`}
-                        {paymentMethod === 'CASH' &&
-                          (session?.accountType === 'USER' || !session) &&
-                          'Tem certeza de que deseja pagar pelo agendamento com dinheiro no momento da visita?'}
-                        {paymentMethod !== 'CASH' &&
-                          (session?.accountType === 'USER' || !session) &&
-                          `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))}?`}
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                      {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') && (
-                        <AlertDialogAction onClick={handleScheduleBreak}>
-                          Definir como Horário de Almoço
-                        </AlertDialogAction>
-                      )}
-                      {paymentMethod === 'CASH' && (session?.accountType === 'USER' || !session) && (
-                        <AlertDialogAction onClick={handleScheduleHaircut}>
-                          Pagar com Dinheiro
-                        </AlertDialogAction>
-                      )}
-                      {paymentMethod !== 'CASH' && (session?.accountType === 'USER' || !session) && (
-                        <AlertDialogAction onClick={handleScheduleHaircut}>
-                          Confirmar Agendamento
-                        </AlertDialogAction>
-                      )}
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
-              )
+              // isMounted && (
+              <AlertDialog key={index}>
+                <TableRow
+                // className={`relative cursor-pointer hover:border-t hover:brightness-110 max-md:text-xs hover:${getScheduleStatusColor(currentHourSchedule?.status)} ${getScheduleStatusColor(currentHourSchedule?.status)}`}
+                >
+                  <TableCell className='max-md:py-3'>
+                    {formatDateGetHour(getCurrentSchedule(hour))}h
+                  </TableCell>
+                  <TableCell className='max-md:hidden'>
+                    {formatDateGetWeekAndDay(getCurrentSchedule(hour))}
+                  </TableCell>
+                  <TableCell className='md:hidden'>{formatDateGetDay(getCurrentSchedule(hour))}</TableCell>
+                  <TableCell className='font-medium max-md:hidden'>
+                    {/* {formatScheduleStatus('long', currentHourSchedule?.status)} */}
+                  </TableCell>
+                  <TableCell className='font-medium md:hidden'>
+                    {/* {formatScheduleStatus('short', currentHourSchedule?.status)} */}
+                  </TableCell>
+                  <TableCell className='text-right'>
+                    {/* {!isEmployeeBusy && <AlertDialogTrigger className='absolute inset-0' />} */}
+                  </TableCell>
+                </TableRow>
+                <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>
+                      {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') &&
+                        'Horário de Almoço'}
+                      {paymentMethod === 'CASH' &&
+                        (session?.accountType === 'USER' || !session) &&
+                        'Pagamento em Dinheiro'}
+                      {paymentMethod !== 'CASH' &&
+                        (session?.accountType === 'USER' || !session) &&
+                        'Confirmar Agendamento'}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                      {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') &&
+                        `Tem certeza de que deseja definir o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))} como o seu horário de almoço?`}
+                      {paymentMethod === 'CASH' &&
+                        (session?.accountType === 'USER' || !session) &&
+                        'Tem certeza de que deseja pagar pelo agendamento com dinheiro no momento da visita?'}
+                      {paymentMethod !== 'CASH' &&
+                        (session?.accountType === 'USER' || !session) &&
+                        `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))}?`}
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                    {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') && (
+                      <AlertDialogAction onClick={handleScheduleBreak}>
+                        Definir como Horário de Almoço
+                      </AlertDialogAction>
+                    )}
+                    {paymentMethod === 'CASH' && (session?.accountType === 'USER' || !session) && (
+                      <AlertDialogAction onClick={handleScheduleHaircut}>
+                        Pagar com Dinheiro
+                      </AlertDialogAction>
+                    )}
+                    {paymentMethod !== 'CASH' && (session?.accountType === 'USER' || !session) && (
+                      <AlertDialogAction onClick={handleScheduleHaircut}>
+                        Confirmar Agendamento
+                      </AlertDialogAction>
+                    )}
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+              // )
             );
           })}
         </TableBody>

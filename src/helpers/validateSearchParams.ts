@@ -8,9 +8,9 @@ export const validateDate = (param: string | null, defaultDate: Date) => {
   return date.data;
 };
 
-export const validateEmployee = (param: string | null, defaultEmployee: string) => {
+export const validateEmployee = (param: string | null, validEmployees: string[], defaultEmployee: string) => {
   const employee = z.coerce.string().trim().min(1).safeParse(param);
-  if (!param || !employee.success || !['Barber1', 'Barber2'].includes(employee.data)) return defaultEmployee;
+  if (!param || !employee.success || !validEmployees.includes(employee.data)) return defaultEmployee;
   return employee.data;
 };
 
