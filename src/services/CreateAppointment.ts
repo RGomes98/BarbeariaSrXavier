@@ -6,7 +6,7 @@ import { HairCut } from '../models/HairCut';
 import { Employee } from '@/mock/users';
 
 export const createAppointment = async (
-  barber: Employee,
+  barber: Employee | undefined,
   hairCut: HairCut,
   currentUser: UserData,
   payType: PayType,
