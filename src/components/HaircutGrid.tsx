@@ -22,12 +22,15 @@ export const HaircutGrid = ({ haircuts }: { haircuts: Haircut[] }) => {
   return (
     <Fragment>
       {PaginationSection}
-      <div className='grid w-full grid-flow-row grid-cols-4 gap-10 py-6 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1'>
-        {CURRENT_PAGE_ITEMS.length > 0 ? (
-          CURRENT_PAGE_ITEMS.map(({ id, name, photoUri, price }, index) => {
+      {CURRENT_PAGE_ITEMS.length === 0 && (
+        <span className='m-auto mt-60 font-raleway text-3xl'>Nenhum corte encontrado.</span>
+      )}
+      {CURRENT_PAGE_ITEMS.length > 0 && (
+        <div className='grid w-full grid-flow-row grid-cols-4 gap-10 py-6 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1'>
+          {CURRENT_PAGE_ITEMS.map(({ id, name, photoUri, price }, index) => {
             return (
               <Card key={index} className='flex w-full select-none items-start overflow-hidden'>
-                <Link href={`corte/${id}`} className='flex w-full transform flex-col gap-4 pb-4'>
+                <Link href={`corte/${id}`} className='flex h-full w-full transform flex-col gap-4 pb-4'>
                   <div className='relative h-80 w-full rounded-sm'>
                     <Image
                       fill
@@ -37,18 +40,16 @@ export const HaircutGrid = ({ haircuts }: { haircuts: Haircut[] }) => {
                       className='object-cover'
                     />
                   </div>
-                  <div className='flex items-center justify-between px-4'>
-                    <span className='text-xl font-normal'>{name}</span>
-                    <span className='font-bold'>{formatToCurrency(price)}</span>
+                  <div className='flex flex-col justify-between gap-1 px-4'>
+                    <span className='text-xl font-light'>{name}</span>
+                    <span className='font-semibold'>{formatToCurrency(price)}</span>
                   </div>
                 </Link>
               </Card>
             );
-          })
-        ) : (
-          <span>Nenhum corte encontrado.</span>
-        )}
-      </div>
+          })}
+        </div>
+      )}
       {PaginationSection}
     </Fragment>
   );

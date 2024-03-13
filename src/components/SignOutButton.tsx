@@ -8,7 +8,7 @@ export const SignOutButton = () => {
   const { refresh } = useRouter();
 
   return (
-    <Button onClick={() => SignOut(() => refresh())} variant='ghost'>
+    <Button onClick={() => SignOut(() => refresh())} className='w-full'>
       Sair
     </Button>
   );

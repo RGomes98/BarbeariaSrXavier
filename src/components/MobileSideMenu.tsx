@@ -1,17 +1,9 @@
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SignOutButton } from './SignOutButton';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/helpers/getSession';
 import { Menu } from 'lucide-react';
-import { Fragment } from 'react';
 import { Logo } from './Logo';
-import {
-  Sheet,
-  SheetContent,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 
 import Link from 'next/link';
 
@@ -23,37 +15,37 @@ export const MobileSideMenu = ({ session }: { session: Session }) => {
           <Menu size={28} />
         </Button>
       </SheetTrigger>
-      <SheetContent>
+      <SheetContent className='mt-auto flex flex-col'>
         <SheetHeader>
           <SheetTitle>
-            <Logo className='text-base' />
+            <Logo className='text-xl max-[425px]:text-lg' />
           </SheetTitle>
         </SheetHeader>
-        <div className='grid gap-4 py-6'>
+        <div className='mt-auto grid py-6'>
           {session && (
-            <Fragment>
-              <Button variant='ghost' className='font-bold'>
+            <div className='flex flex-col justify-center gap-4'>
+              <Button variant='ghost' className='py-6 font-bold'>
                 <Link href='/agendamentos'>Agendamentos</Link>
               </Button>
               {session.accountType !== 'USER' && (
-                <Button variant='ghost' className='font-bold'>
+                <Button variant='ghost' className='py-6 font-bold'>
                   <Link href='/recebidos'>Recebidos</Link>
                 </Button>
               )}
-            </Fragment>
+              <SignOutButton />
+            </div>
           )}
           {!session && (
-            <Fragment>
-              <Button variant='ghost' className='font-bold'>
+            <div className='flex flex-col justify-center gap-4'>
+              <Button variant='ghost' className='py-6 font-bold'>
                 <Link href='/entrar'>Entrar</Link>
               </Button>
-              <Button className='font-bold'>
+              <Button className='py-6 font-bold'>
                 <Link href='/registrar'>Criar conta</Link>
               </Button>
-            </Fragment>
+            </div>
           )}
         </div>
-        <SheetFooter>{session && <SignOutButton />}</SheetFooter>
       </SheetContent>
     </Sheet>
   );
