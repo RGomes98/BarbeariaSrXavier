@@ -1,4 +1,5 @@
 import { Poppins, Raleway } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from '@/ThemeProvider';
 import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body className={`${GeistSans.className} ${poppins.variable} ${raleway.variable}`}>
         <ThemeProvider attribute='class' defaultTheme='dark' enableSystem disableTransitionOnChange>
           {children}
+          <Toaster richColors position='bottom-right' />
         </ThemeProvider>
       </body>
     </html>

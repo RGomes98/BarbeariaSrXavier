@@ -1,6 +1,7 @@
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../firebaseConfig/firebase';
 import { Login } from '@/lib/schemas';
+import { toast } from 'sonner';
 
 export const SignIn = async ({ formData, onSuccess }: { formData: Login; onSuccess: () => void }) => {
   try {
@@ -10,10 +11,11 @@ export const SignIn = async ({ formData, onSuccess }: { formData: Login; onSucce
       headers: { Authorization: `Bearer ${await session.user.getIdToken()}` },
     });
 
-    if (response.status != 200) return; //Server Error
-    onSuccess(); //Login Redirect
+    if (response.status != 200) return toast.error('Ocorreu um erro durante o login.');
+    toast.success(`Logado como ${session.user.providerData[0].email}`);
+    onSuccess();
   } catch (error) {
-    if (error instanceof Error) return; //Toast wrong credentials
+    if (error instanceof Error) return toast.error('Credenciais incorretas.');
     throw error;
   }
 };

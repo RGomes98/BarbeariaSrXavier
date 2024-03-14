@@ -1,17 +1,15 @@
 'use client';
 
-import { useAuthState, useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { createUserAccount } from '@/services/CreateUserAccount';
+import { createFirebaseUserAccount, createUserAccount } from '@/services/CreateUserAccount';
 import { type Register, RegisterSchema } from '@/lib/schemas';
 import { formatCPF, formatPhoneNumber } from '@/utils/input';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { auth } from '@/firebaseConfig/firebase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 export const RegisterForm = () => {
   const form = useForm<Register>({
@@ -19,22 +17,17 @@ export const RegisterForm = () => {
     defaultValues: { cpf: '', name: '', phone: '', email: '', password: '', confirmPassword: '' },
   });
 
-  const [createUserWithEmailAndPassword] = useCreateUserWithEmailAndPassword(auth);
-  const [user] = useAuthState(auth);
   const { push } = useRouter();
 
-  useEffect(() => {
-    if (user) push('/');
-  }, [user, push]);
-
   async function onSubmit(formData: Register) {
-    const user = await createUserWithEmailAndPassword(formData.email, formData.password);
+    const user = await createFirebaseUserAccount(formData.email, formData.password);
+    if (user.status === 'error') return toast.error(user.message);
 
-    if (!user) return console.error('Ocorreu um erro ao criar sua conta.'); // Mostrar um toast
-    const { status, message } = createUserAccount(formData, user);
+    const { status, message } = await createUserAccount(formData, user.data);
+    if (status === 'error') return toast.error(message);
 
-    console.log(message); //Mostrar um toast
-    if (status === 'success') push('/'); //Redireciona pra home se conta for criada
+    toast.success(message);
+    push('/entrar');
   }
 
   return (
