@@ -30,6 +30,7 @@ export const getScheduleStatusColor = (status?: Status | 'DISABLED') => {
     case 'PAID':
     case 'BREAK':
     case 'PENDING':
+      return 'bg-orange-500/70 cursor-default pointer-events-none';
     case 'DISABLED':
       return 'bg-red-500/70 cursor-default pointer-events-none';
     default:
