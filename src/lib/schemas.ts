@@ -1,11 +1,12 @@
-import { Timestamp } from 'firebase/firestore';
 import { z } from 'zod';
 
 const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()-+=])[A-Za-z\d!@#$%^&*()-+=]{8,}$/;
 const phoneRegex = /^\((?:[1-9]{2})\)\s*(?:9[0-9]{4}-[0-9]{4})$/;
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
-export const accountTypes = ['USER', 'BARBER', 'ADMIN'] as const;
+export const workingHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
+export const statuses = ['PAID', 'PENDING', 'CANCELED', 'BREAK'] as const;
+export const accountTypes = ['USER', 'EMPLOYEE', 'ADMIN'] as const;
 export const paymentMethods = ['PIX', 'CASH', 'CARD'] as const;
 
 export const LoginSchema = z.object({
@@ -30,28 +31,6 @@ export const RegisterSchema = z
     path: ['confirmPassword'],
   });
 
-export const AccountTypeSchema = z.enum(accountTypes);
-
-export const UserSchema = z.object({
-  cpf: z.string(),
-  cellphone: z.string(),
-  createdAt: z.instanceof(Timestamp),
-  name: z.string(),
-  accountType: z.literal('USER'),
-  email: z.string().email(),
-  id: z.string(),
-});
-
-export const BarberSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  createdAt: z.instanceof(Timestamp),
-  accountType: z.literal('BARBER'),
-  email: z.string().email(),
-  phone: z.string(),
-  cpf: z.string(),
-});
-
 export const HaircutSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -61,49 +40,46 @@ export const HaircutSchema = z.object({
 });
 
 export const ScheduleSchema = z.object({
-  haircut: HaircutSchema,
-  date: z.instanceof(Timestamp),
-  ispaid: z.boolean(),
-  payType: z.string(),
-  id: z.string(),
-  price: z.number(),
-  user: UserSchema.omit({ id: true }),
-  barber: BarberSchema.omit({ id: true, accountType: true, createdAt: true }),
+  userId: z.string(),
+  id: z.string().uuid(),
+  haircutId: z.number(),
+  employeeId: z.string(),
+  status: z.enum(statuses),
+  scheduleDate: z.coerce.date(),
+  paymentMethod: z.enum(paymentMethods),
 });
 
-export const TestSchema = z.array(
-  z.object({
+export const userDiscriminatedUnionSchema = z.discriminatedUnion('accountType', [
+  z.object({ accountType: z.literal('USER') }),
+  z.object({ accountType: z.literal('EMPLOYEE'), schedules: z.array(ScheduleSchema).optional() }),
+]);
+
+export const UserSchema = z
+  .object({
     id: z.string(),
-    name: z.string(),
-    createdAt: z.instanceof(Timestamp),
-    accountType: z.literal('BARBER'),
-    email: z.string().email(),
     cpf: z.string(),
-    appointments: z.array(ScheduleSchema),
-  }),
-);
+    name: z.string(),
+    cellphone: z.string(),
+    email: z.string().email(),
+    createdAt: z.coerce.date(),
+    accountType: z.enum(accountTypes),
+  })
+  .and(userDiscriminatedUnionSchema);
 
-const Test2Schema = z.object({
-  id: z.string(),
-  name: z.string(),
-  createdAt: z.instanceof(Timestamp),
-  accountType: z.literal('BARBER'),
-  email: z.string().email(),
-  cpf: z.string(),
-  appointments: z.array(ScheduleSchema),
-});
-
-export type Test = z.infer<typeof TestSchema>;
-export type Test2 = z.infer<typeof Test2Schema>;
-
+export const paymentMethodSchema = z.enum(paymentMethods);
 export const SchedulesSchema = z.array(ScheduleSchema);
+export const AccountTypeSchema = z.enum(accountTypes);
 export const HaircutsSchema = z.array(HaircutSchema);
-export const BarbersSchema = z.array(BarberSchema);
+export const UsersSchema = z.array(UserSchema);
+
+export type PaymentMethod = (typeof paymentMethods)[number];
+export type Roles = (typeof accountTypes)[number];
+export type Status = (typeof statuses)[number];
 
 export type AccountType = z.infer<typeof AccountTypeSchema>;
+export type Employee = User & { schedules: Schedule[] };
 export type Schedule = z.infer<typeof ScheduleSchema>;
 export type Register = z.infer<typeof RegisterSchema>;
 export type Haircut = z.infer<typeof HaircutSchema>;
-export type Barber = z.infer<typeof BarberSchema>;
 export type Login = z.infer<typeof LoginSchema>;
 export type User = z.infer<typeof UserSchema>;

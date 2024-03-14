@@ -1,19 +1,18 @@
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { firestore } from '../firebaseConfig/firebase';
-import { AccountType } from '@/models/UserData';
-import { TestSchema } from '@/lib/schemas';
+import { UsersSchema } from '@/lib/schemas';
 
-export const getBarbers = async () => {
-  const q = query(collection(firestore, 'users'), where('accountType', '==', AccountType.BARBER));
-  const barbers = TestSchema.safeParse((await getDocs(q)).docs.map((doc) => doc.data()));
-  if (!barbers.success || !barbers.data.length) return [];
-  return barbers.data;
+export const getEmployees = async () => {
+  const q = query(collection(firestore, 'users'), where('accountType', '==', 'EMPLOYEE'));
+  const employees = UsersSchema.safeParse((await getDocs(q)).docs.map((doc) => doc.data()));
+  if (!employees.success || !employees.data.length) return [];
+  return employees.data;
 };
 
 export const getBarber = async (id: Number) => {
   const q = query(
     collection(firestore, 'users'),
-    where('accountType', '==', AccountType.BARBER),
+    where('accountType', '==', 'EMPLOYEE'),
     where('id', '==', id),
   );
 

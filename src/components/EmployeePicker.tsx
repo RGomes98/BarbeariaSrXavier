@@ -1,7 +1,7 @@
 import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validateEmployee } from '@/helpers/validateSearchParams';
 import { useSearchParams } from 'next/navigation';
-import { Barber, Test } from '@/lib/schemas';
+import { User } from '@/lib/schemas';
 
 import {
   Select,
@@ -12,17 +12,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-export const EmployeePicker = ({ barbers }: { barbers: Test }) => {
+export const EmployeePicker = ({ employees }: { employees: User[] }) => {
   const searchParams = useSearchParams();
-  const validEmployees = barbers.map(({ name }) => name);
+  const validEmployees = employees.map(({ name }) => name);
   const paymentMethod = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
   return (
     <div className='flex w-[190px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
       <span>Escolha do Profissional</span>
       <Select
-        onValueChange={(employeeOption) =>
-          createSelectInputQueryString({ inputKey: 'employee', selectInput: employeeOption, searchParams })
+        onValueChange={(employee) =>
+          createSelectInputQueryString({ inputKey: 'employee', selectInput: employee, searchParams })
         }
       >
         <SelectTrigger>
@@ -30,10 +30,10 @@ export const EmployeePicker = ({ barbers }: { barbers: Test }) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {barbers.map((employeeOption) => {
+            {employees.map((employee) => {
               return (
-                <SelectItem key={employeeOption.name} value={employeeOption.name}>
-                  {employeeOption.name}
+                <SelectItem key={employee.name} value={employee.name}>
+                  {employee.name}
                 </SelectItem>
               );
             })}
