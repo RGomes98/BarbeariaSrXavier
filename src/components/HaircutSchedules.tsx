@@ -2,12 +2,12 @@
 
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
-import { getScheduleStatusColor } from '@/utils/caption';
-import { Haircut, workingHours } from '@/mock/users';
+import { Haircut, User, workingHours } from '@/lib/schemas';
 import { type Session } from '@/helpers/getSession';
 import { HaircutOptions } from './HaircutOptions';
-import { Test } from '@/lib/schemas';
+import { useMounted } from '@/hooks/useMounted';
 
 import {
   AlertDialog,
@@ -20,26 +20,25 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { useMounted } from '@/hooks/useMounted';
-import { AccountType } from '@/models/UserData';
 
 export const HaircutSchedules = ({
   haircut,
-  barbers,
   session,
+  employees,
 }: {
   haircut: Haircut;
-  barbers: Test;
   session: Session;
+  employees: User[];
 }) => {
   const {
+    employee,
     scheduleDate,
     paymentMethod,
-    scheduleHaircut,
     scheduleEmployee,
     getCurrentSchedule,
+    handleCreateAppointment,
     getEmployeeCurrentHourSchedule,
-  } = useBarberShopActions(barbers);
+  } = useBarberShopActions(employees);
   const { isMounted } = useMounted();
 
   return (
@@ -47,7 +46,7 @@ export const HaircutSchedules = ({
       <span className='font-raleway text-3xl font-medium max-md:text-2xl'>
         Horários de {formatDateShort(scheduleDate)}
       </span>
-      <HaircutOptions barbers={barbers} />
+      <HaircutOptions employees={employees} />
       <Table>
         <TableHeader className='pointer-events-none'>
           <TableRow className='max-md:text-xs'>
@@ -59,37 +58,40 @@ export const HaircutSchedules = ({
         </TableHeader>
         <TableBody>
           {workingHours.map((hour, index) => {
+            const isScheduleNotActive = hour < new Date().getHours() && new Date() >= scheduleDate;
             const currentHourSchedule = getEmployeeCurrentHourSchedule(hour);
             const isEmployeeBusy = currentHourSchedule;
 
-            const handleScheduleHaircut = () => {
-              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'PENDING', {
-                accountType: AccountType.USER,
-                name: 'Teste',
-                id: '123',
-                cpf: '123',
-                email: 'teste@teste',
-                cellphone: '123',
-                createdAt: new Date(),
-              });
+            const handleScheduleHaircut = async () => {
+              if (!session || !employee) return;
+
+              handleCreateAppointment(
+                haircut.id,
+                session.id,
+                employee.id,
+                'PENDING',
+                paymentMethod,
+                getCurrentSchedule(hour),
+              );
             };
 
-            const handleScheduleBreak = () => {
-              scheduleHaircut(session, haircut, getCurrentSchedule(hour), 'BREAK', {
-                accountType: AccountType.USER,
-                name: 'Teste',
-                id: '123',
-                cpf: '123',
-                email: 'teste@teste',
-                cellphone: '123',
-                createdAt: new Date(),
-              });
+            const handleScheduleBreak = async () => {
+              if (!session || !employee) return;
+
+              handleCreateAppointment(
+                haircut.id,
+                session.id,
+                employee.id,
+                'BREAK',
+                paymentMethod,
+                getCurrentSchedule(hour),
+              );
             };
 
             return (
               <AlertDialog key={index}>
                 <TableRow
-                  className={`relative cursor-pointer hover:border-t hover:brightness-110 max-md:text-xs ${isEmployeeBusy ? 'bg-red-500/70' : 'bg-green-500/70'}`}
+                  className={`relative cursor-pointer hover:border-t hover:brightness-110 max-md:text-xs hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
                 >
                   <TableCell className='max-md:py-3'>
                     {formatDateGetHour(getCurrentSchedule(hour))}h
@@ -99,18 +101,26 @@ export const HaircutSchedules = ({
                   </TableCell>
                   <TableCell className='md:hidden'>{formatDateGetDay(getCurrentSchedule(hour))}</TableCell>
                   <TableCell className='font-medium max-md:hidden'>
-                    {/* {formatScheduleStatus('long', currentHourSchedule?.status)} */}
+                    {formatScheduleStatus(
+                      'long',
+                      !isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED',
+                    )}
                   </TableCell>
                   <TableCell className='font-medium md:hidden'>
-                    {/* {formatScheduleStatus('short', currentHourSchedule?.status)} */}
+                    {formatScheduleStatus(
+                      'short',
+                      !isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED',
+                    )}
                   </TableCell>
                   <TableCell className='text-right'>{scheduleEmployee}</TableCell>
-                  {!isEmployeeBusy && isMounted && <AlertDialogTrigger className='absolute inset-0' />}
+                  {(!isEmployeeBusy || !isScheduleNotActive) && isMounted && (
+                    <AlertDialogTrigger className='absolute inset-0' />
+                  )}
                 </TableRow>
                 <AlertDialogContent className='max-[550px]:max-w-[90%]'>
                   <AlertDialogHeader>
                     <AlertDialogTitle>
-                      {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') &&
+                      {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') &&
                         'Horário de Almoço'}
                       {paymentMethod === 'CASH' &&
                         (session?.accountType === 'USER' || !session) &&
@@ -120,7 +130,7 @@ export const HaircutSchedules = ({
                         'Confirmar Agendamento'}
                     </AlertDialogTitle>
                     <AlertDialogDescription>
-                      {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') &&
+                      {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') &&
                         `Tem certeza de que deseja definir o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))} como o seu horário de almoço?`}
                       {paymentMethod === 'CASH' &&
                         (session?.accountType === 'USER' || !session) &&
@@ -132,7 +142,7 @@ export const HaircutSchedules = ({
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    {(session?.accountType === 'ADMIN' || session?.accountType === 'BARBER') && (
+                    {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') && (
                       <AlertDialogAction onClick={handleScheduleBreak}>
                         Definir como Horário de Almoço
                       </AlertDialogAction>
