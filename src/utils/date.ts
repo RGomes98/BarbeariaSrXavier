@@ -60,7 +60,7 @@ export const formatDateGetHour = (date?: Date) => {
 
 export const isNotWithinThirtyDaysRange = (date: Date) => {
   return !(
-    new Date(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)) > new Date() &&
-    date < new Date(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 30))
+    new Date(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)) >= new Date() &&
+    date <= new Date(new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 30))
   );
 };
