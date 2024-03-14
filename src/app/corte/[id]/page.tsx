@@ -17,7 +17,7 @@ export default async function Page({ params: { id } }: { params: { id: string } 
   return (
     <Fragment>
       <Navbar />
-      <div className='pb-18 grid grid-cols-2 justify-items-center gap-20 px-20 pt-14 max-2xl:px-8 max-[1350px]:grid-cols-1 max-[1350px]:justify-items-start max-md:gap-6 max-md:px-6 max-md:pt-10'>
+      <div className='grid grid-cols-2 justify-items-center gap-20 px-20 pb-16 pt-14 max-2xl:px-8 max-[1350px]:grid-cols-1 max-[1350px]:justify-items-start max-md:gap-6 max-md:px-6 max-md:pt-10'>
         <HaircutCarousel haircut={haircut} />
         <HaircutSchedules haircut={haircut} session={session} employees={employees} />
       </div>
