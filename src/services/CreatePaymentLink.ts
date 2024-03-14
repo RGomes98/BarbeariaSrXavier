@@ -1,9 +1,8 @@
-import { Haircut } from '@/lib/schemas';
-import { PayType } from '@/models/Appointment';
+import { Haircut, PaymentMethod } from '@/lib/schemas';
 
 import axios from 'axios';
 
-export const createPaymentLink = async (paymentType: PayType, hairCut : Haircut) => {
+export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
   const api = axios.create({
     baseURL: 'https://sandbox.asaas.com/api/v3/',
     headers: {
@@ -18,7 +17,7 @@ export const createPaymentLink = async (paymentType: PayType, hairCut : Haircut)
   });
 
   const paymentData = {
-    billingType: paymentType === PayType.PIX ? 'PIX' : 'CREDIT_CARD',
+    billingType: paymentType === 'PIX' ? 'PIX' : 'CREDIT_CARD',
     chargeType: 'DETACHED',
     name: hairCut.name,
     description: hairCut.description,
@@ -36,9 +35,9 @@ export const createPaymentLink = async (paymentType: PayType, hairCut : Haircut)
   }
 };
 
-export const requestPaymentLink = async (paymentType: PayType, hairCut : Haircut) => {
+export const requestPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
   const paymentData = {
-    billingType: paymentType === PayType.PIX ? 'PIX' : 'CREDIT_CARD',
+    billingType: paymentType === 'PIX' ? 'PIX' : 'CREDIT_CARD',
     chargeType: 'DETACHED',
     name: hairCut.name,
     description: hairCut.description,

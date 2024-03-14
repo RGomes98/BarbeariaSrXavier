@@ -1,5 +1,4 @@
 import { collection, query, where, getDocs } from 'firebase/firestore';
-import type { Appointment } from '@/models/Appointment';
 import { firestore } from '@/firebaseConfig/firebase';
 
 const convertDocsToModel = (docs: any[]) => {
@@ -8,7 +7,7 @@ const convertDocsToModel = (docs: any[]) => {
     return {
       id: doc.id,
       ...data,
-    } as Appointment;
+    };
   });
 };
 
@@ -33,7 +32,7 @@ export const getAppoiment = async (id: string) => {
     return {
       id: doc.id,
       ...data,
-    } as Appointment;
+    };
   } else {
     console.log('No such document!');
   }
