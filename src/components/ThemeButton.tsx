@@ -12,15 +12,13 @@ export const ThemeButton = () => {
   const isDarkModeActive = theme === 'dark';
 
   return (
-    isMounted && (
-      <Button
-        size='icon'
-        variant='ghost'
-        className='text-white'
-        onClick={() => setTheme(isDarkModeActive ? 'light' : 'dark')}
-      >
-        {isDarkModeActive ? <SunIcon /> : <MoonIcon className='text-slate-800' />}
-      </Button>
-    )
+    <Button
+      size='icon'
+      variant='ghost'
+      className='text-white'
+      onClick={() => setTheme(isDarkModeActive ? 'light' : 'dark')}
+    >
+      {isDarkModeActive && isMounted ? <SunIcon /> : <MoonIcon className='text-slate-800' />}
+    </Button>
   );
 };

@@ -21,7 +21,7 @@ export const Logo = ({ className }: JSX.IntrinsicElements['div']) => {
       className={cn(
         'flex items-center gap-4 whitespace-nowrap font-poppins text-2xl text-gray-200',
         className,
-        { 'text-slate-800': isNotAtLoginPage && isMounted },
+        { 'text-black': isNotAtLoginPage && isMounted },
       )}
     >
       <Scissors className='size-6 min-w-6 max-md:size-6' />

@@ -11,7 +11,7 @@ export const NavigationMenu = async () => {
 
   return (
     <Fragment>
-      <div className='ml-auto flex items-center max-md:hidden'>
+      <div className='ml-auto flex items-center gap-2 max-md:hidden'>
         {session && (
           <Fragment>
             <SignOutButton />
