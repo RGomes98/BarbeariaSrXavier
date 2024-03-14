@@ -1,4 +1,4 @@
-import { type PaymentMethod, paymentMethodSchema, paymentOptions } from '@/mock/users';
+import { PaymentMethod, paymentMethodSchema, paymentMethods } from '@/lib/schemas';
 import { isNotWithinThirtyDaysRange } from '@/utils/date';
 import { z } from 'zod';
 
@@ -16,7 +16,7 @@ export const validateEmployee = (param: string | null, validEmployees: string[],
 
 export const validatePaymentMethod = (param: string | null, defaultPaymentMethod: PaymentMethod) => {
   const paymentMethod = paymentMethodSchema.safeParse(param);
-  if (!param || !paymentMethod.success || !paymentOptions.includes(paymentMethod.data)) {
+  if (!param || !paymentMethod.success || !paymentMethods.includes(paymentMethod.data)) {
     return defaultPaymentMethod;
   }
   return paymentMethod.data;

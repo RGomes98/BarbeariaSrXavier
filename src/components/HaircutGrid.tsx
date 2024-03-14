@@ -3,7 +3,7 @@
 import { usePagination } from '@/hooks/usePagination';
 import { formatToCurrency } from '@/utils/number';
 import { Card } from '@/components/ui/card';
-import { Haircut } from '@/mock/users';
+import { Haircut } from '@/lib/schemas';
 import { useStore } from '@/store';
 import { Fragment } from 'react';
 
