@@ -1,7 +1,15 @@
 'use client';
 
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import {
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { Haircut, User, workingHours } from '@/lib/schemas';
@@ -48,6 +56,7 @@ export const HaircutSchedules = ({
       </span>
       <HaircutOptions employees={employees} />
       <Table>
+        <TableCaption>Veja os horários disponíveis para agendar seu corte.</TableCaption>
         <TableHeader className='pointer-events-none'>
           <TableRow className='max-md:text-xs'>
             <TableHead>Hora</TableHead>
@@ -114,7 +123,7 @@ export const HaircutSchedules = ({
                   </TableCell>
                   <TableCell className='text-right'>{scheduleEmployee}</TableCell>
                   {(!isEmployeeBusy || !isScheduleNotActive) && isMounted && (
-                    <AlertDialogTrigger className='absolute inset-0' />
+                    <AlertDialogTrigger className='absolute inset-0 h-full w-full' />
                   )}
                 </TableRow>
                 <AlertDialogContent className='max-[550px]:max-w-[90%]'>
