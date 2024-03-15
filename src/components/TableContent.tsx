@@ -47,7 +47,8 @@ export const TableContent = ({
 
   const isScheduleNotActive = hour < new Date().getHours() && new Date() >= scheduleDate;
   const currentHourSchedule = getEmployeeCurrentHourSchedule(hour);
-  const isEmployeeBusy = currentHourSchedule;
+  const isEmployeeBusy =
+    currentHourSchedule?.status !== 'CANCELED' && currentHourSchedule?.status !== undefined;
 
   const handleScheduleHaircut = () => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
