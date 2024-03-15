@@ -6,6 +6,7 @@ const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
 export const workingHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
 export const statuses = ['PAID', 'PENDING', 'CANCELED', 'BREAK'] as const;
+export const appointmentTypes = ['REGULAR', 'SESSIONLESS'] as const;
 export const accountTypes = ['USER', 'EMPLOYEE', 'ADMIN'] as const;
 export const paymentMethods = ['PIX', 'CASH', 'CARD'] as const;
 
@@ -31,6 +32,12 @@ export const RegisterSchema = z
     path: ['confirmPassword'],
   });
 
+export const ScheduleFormSchema = z.object({
+  cpf: z.string().regex(cpfRegex, { message: 'CPF inválido.' }),
+  name: z.string().trim().min(1, { message: 'Nome inválido.' }),
+  phone: z.string().regex(phoneRegex, { message: 'Telefone inválido.' }),
+});
+
 export const HaircutSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -40,14 +47,19 @@ export const HaircutSchema = z.object({
 });
 
 export const ScheduleSchema = z.object({
-  userId: z.string(),
   id: z.string().uuid(),
   haircutId: z.number(),
   employeeId: z.string(),
   status: z.enum(statuses),
   scheduleDate: z.coerce.date(),
+  type: z.enum(appointmentTypes),
   paymentMethod: z.enum(paymentMethods),
 });
+
+export const scheduleDiscriminatedUnionSchema = z.discriminatedUnion('type', [
+  z.object({ type: z.literal('REGULAR'), userId: z.string() }),
+  z.object({ type: z.literal('SESSIONLESS') }).merge(ScheduleFormSchema),
+]);
 
 export const userDiscriminatedUnionSchema = z.discriminatedUnion('accountType', [
   z.object({ accountType: z.literal('USER') }),
@@ -76,6 +88,7 @@ export type PaymentMethod = (typeof paymentMethods)[number];
 export type Roles = (typeof accountTypes)[number];
 export type Status = (typeof statuses)[number];
 
+export type ScheduleForm = z.infer<typeof ScheduleFormSchema>;
 export type AccountType = z.infer<typeof AccountTypeSchema>;
 export type Employee = User & { schedules: Schedule[] };
 export type Schedule = z.infer<typeof ScheduleSchema>;

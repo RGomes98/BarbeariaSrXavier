@@ -2,26 +2,53 @@ import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/firebaseConfig/firebase';
 import { PaymentMethod, Status } from '@/lib/schemas';
 
-export const createAppointment = async (
-  haircutId: number,
-  userId: string,
-  employeeId: string,
-  status: Status,
-  paymentMethod: PaymentMethod,
-  appointmentDate: Date,
-) => {
-  const appointment = {
-    userId,
-    status,
-    haircutId,
-    employeeId,
-    paymentMethod,
-    id: crypto.randomUUID(),
-    scheduleDate: String(appointmentDate),
-  };
+export type CreateAppointment = {
+  status: Status;
+  haircutId: number;
+  employeeId: string;
+  appointmentDate: Date;
+  paymentMethod: PaymentMethod;
+} & (
+  | {
+      type: 'REGULAR';
+      userId: string;
+    }
+  | {
+      cpf: string;
+      name: string;
+      phone: string;
+      type: 'SESSIONLESS';
+    }
+);
+
+export const createAppointment = async (params: CreateAppointment) => {
+  const appointment =
+    params.type === 'REGULAR'
+      ? {
+          type: params.type,
+          userId: params.userId,
+          status: params.status,
+          id: crypto.randomUUID(),
+          haircutId: params.haircutId,
+          employeeId: params.employeeId,
+          paymentMethod: params.paymentMethod,
+          scheduleDate: String(params.appointmentDate),
+        }
+      : {
+          cpf: params.cpf,
+          name: params.name,
+          type: params.type,
+          phone: params.phone,
+          status: params.status,
+          id: crypto.randomUUID(),
+          haircutId: params.haircutId,
+          employeeId: params.employeeId,
+          paymentMethod: params.paymentMethod,
+          scheduleDate: String(params.appointmentDate),
+        };
 
   try {
-    await updateDoc(doc(firestore, 'users', employeeId), { schedules: arrayUnion(appointment) });
+    await updateDoc(doc(firestore, 'users', params.employeeId), { schedules: arrayUnion(appointment) });
     return { status: 'success', message: 'Horário reservado com sucesso' } as const;
   } catch (error) {
     return { status: 'error', message: 'Houve um problema ao processar a reserva do horário.' } as const;

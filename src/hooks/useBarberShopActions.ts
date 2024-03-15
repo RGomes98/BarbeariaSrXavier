@@ -1,11 +1,13 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
-import { Employee, PaymentMethod, Status, User } from '@/lib/schemas';
-import { createAppointment } from '@/services/CreateAppointment';
+import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
 import { formatDateGetHour, formatDateShort } from '@/utils/date';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Employee, User } from '@/lib/schemas';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 export const useBarberShopActions = (barbers: User[]) => {
+  const [isFormActive, setIsFormActive] = useState(false);
   const searchParams = useSearchParams();
   const { refresh } = useRouter();
 
@@ -29,35 +31,53 @@ export const useBarberShopActions = (barbers: User[]) => {
     });
   };
 
-  const handleCreateAppointment = async (
-    haircutId: number,
-    sessionId: string,
-    employeeId: string,
-    status: Status,
-    paymentMethod: PaymentMethod,
-    scheduleDate: Date,
-  ) => {
-    const schedule = await createAppointment(
-      haircutId,
-      sessionId,
-      employeeId,
-      status,
-      paymentMethod,
-      scheduleDate,
-    );
+  const handleCreateAppointment = async (params: CreateAppointment) => {
+    const appointment =
+      params.type === 'REGULAR'
+        ? {
+            type: params.type,
+            status: params.status,
+            userId: params.userId,
+            haircutId: params.haircutId,
+            employeeId: params.employeeId,
+            paymentMethod: params.paymentMethod,
+            appointmentDate: params.appointmentDate,
+          }
+        : {
+            cpf: params.cpf,
+            name: params.name,
+            type: params.type,
+            phone: params.phone,
+            status: params.status,
+            haircutId: params.haircutId,
+            employeeId: params.employeeId,
+            paymentMethod: params.paymentMethod,
+            appointmentDate: params.appointmentDate,
+          };
 
-    if (schedule.status === 'error') toast.error(schedule.message);
-    toast.success(
-      `${schedule.message} para ${formatDateShort(scheduleDate)} às ${formatDateGetHour(scheduleDate)}h.`,
-      { duration: 10000 },
-    );
-    refresh();
+    const response = await createAppointment(appointment);
+
+    if (response.status === 'error') {
+      setIsFormActive(false);
+      toast.error(response.message);
+    }
+
+    if (response.status === 'success') {
+      refresh();
+      setIsFormActive(false);
+      toast.success(
+        `${response.message} para ${formatDateShort(scheduleDate)} às ${formatDateGetHour(scheduleDate)}h.`,
+        { duration: 10000 },
+      );
+    }
   };
 
   return {
     employee,
+    isFormActive,
     scheduleDate,
     paymentMethod,
+    setIsFormActive,
     scheduleEmployee,
     getCurrentSchedule,
     handleCreateAppointment,
