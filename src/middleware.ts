@@ -20,7 +20,10 @@ export async function middleware(request: NextRequest) {
   if (['/agendamento/', '/recebidos'].some((path) => request.nextUrl.pathname.startsWith(path))) {
     const user: User = await userAuthentication.json();
 
-    const isNotAuthorizedUser = !['ADMIN', 'BARBER'].some((accountType) => accountType === user.accountType);
+    const isNotAuthorizedUser = !['ADMIN', 'EMPLOYEE'].some((accountType) => {
+      return accountType === user.accountType;
+    });
+
     if (isNotAuthorizedUser) return NextResponse.redirect(new URL('/', request.url));
   }
 
