@@ -2,12 +2,14 @@ import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers
 import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
 import { formatDateGetHour, formatDateShort } from '@/utils/date';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Employee, User } from '@/lib/schemas';
+import { Employee, Haircut, PaymentMethod, User } from '@/lib/schemas';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { createPaymentLink } from '@/services/CreatePaymentLink';
 
 export const useBarberShopActions = (barbers: User[]) => {
   const [isFormActive, setIsFormActive] = useState(false);
+  const [isPaymentActive, setIsPaymentActive] = useState(false);
   const searchParams = useSearchParams();
   const { refresh } = useRouter();
 
@@ -30,6 +32,13 @@ export const useBarberShopActions = (barbers: User[]) => {
       return scheduleDate.getTime() === getCurrentSchedule(hour).getTime();
     });
   };
+
+  const makePayment = async (paymentType: PaymentMethod, hairCut: Haircut) => {
+
+    const response = await createPaymentLink(paymentType, hairCut);
+
+
+  }
 
   const handleCreateAppointment = async (params: CreateAppointment) => {
     const appointment =
@@ -75,9 +84,12 @@ export const useBarberShopActions = (barbers: User[]) => {
   return {
     employee,
     isFormActive,
+    isPaymentActive,
     scheduleDate,
     paymentMethod,
+    makePayment,
     setIsFormActive,
+    setIsPaymentActive,
     scheduleEmployee,
     getCurrentSchedule,
     handleCreateAppointment,

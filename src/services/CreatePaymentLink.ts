@@ -4,11 +4,11 @@ import axios from 'axios';
 
 export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
   const api = axios.create({
-    baseURL: 'https://sandbox.asaas.com/api/v3/',
+    baseURL: 'https://api.asaas.com/api/v3',
     headers: {
       'Content-Type': 'application/json',
       access_token:
-        '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDAwNzE1MDk6OiRhYWNoX2MzMGM1YWRmLWYzZjMtNDc4Yy04MmU0LTgwY2Y3YzYwNmJhOA==',
+        '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDA0MDE4MDQ6OiRhYWNoX2JhNzMyYjlhLWQxMGUtNDY4OS05MjMxLTA1NDY3YzBlZmQ1YQ==',
       'Access-Control-Allow-Origin': 'http://localhost:3000', // Allow CORS for localhost
       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',

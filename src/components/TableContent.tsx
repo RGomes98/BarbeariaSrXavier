@@ -6,8 +6,15 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { useMounted } from '@/hooks/useMounted';
 import { ScheduleForm } from './ScheduleForm';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Fragment } from 'react';
-
+import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+const form = useForm<Login>({
+  resolver: zodResolver(LoginSchema),
+  defaultValues: { email: '', password: '' },
+});
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,8 +42,11 @@ export const TableContent = ({
     employee,
     scheduleDate,
     isFormActive,
+    isPaymentActive,
     paymentMethod,
+    makePayment,
     setIsFormActive,
+    setIsPaymentActive,
     scheduleEmployee,
     getCurrentSchedule,
     handleCreateAppointment,
@@ -53,49 +63,61 @@ export const TableContent = ({
   const handleScheduleHaircut = () => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
 
-    handleCreateAppointment({
-      paymentMethod,
-      type: 'REGULAR',
-      status: 'PENDING',
-      userId: session.id,
-      haircutId: haircut.id,
-      employeeId: employee.id,
-      appointmentDate: getCurrentSchedule(hour),
-    });
+    setIsPaymentActive(true);
+    setIsFormActive(false)
+    makePayment(paymentMethod, haircut)
+
+    // handleCreateAppointment({
+    //   paymentMethod,
+    //   type: 'REGULAR',
+    //   status: 'PENDING',
+    //   userId: session.id,
+    //   haircutId: haircut.id,
+    //   employeeId: employee.id,
+    //   appointmentDate: getCurrentSchedule(hour),
+    // });
   };
 
   const handleScheduleBreak = () => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
+    setIsPaymentActive(true);
+    setIsFormActive(false)
 
-    handleCreateAppointment({
-      paymentMethod,
-      type: 'REGULAR',
-      status: 'BREAK',
-      userId: session.id,
-      haircutId: haircut.id,
-      employeeId: employee.id,
-      appointmentDate: getCurrentSchedule(hour),
-    });
+    // handleCreateAppointment({
+    //   paymentMethod,
+    //   type: 'REGULAR',
+    //   status: 'BREAK',
+    //   userId: session.id,
+    //   haircutId: haircut.id,
+    //   employeeId: employee.id,
+    //   appointmentDate: getCurrentSchedule(hour),
+    // });
   };
 
   const handleScheduleHaircutSessionless = (formData: ScheduleFormType) => {
     if (!employee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
+    setIsPaymentActive(true);
+    setIsFormActive(false)
 
-    handleCreateAppointment({
-      cpf,
-      name,
-      phone,
-      paymentMethod,
-      status: 'PENDING',
-      type: 'SESSIONLESS',
-      haircutId: haircut.id,
-      employeeId: employee.id,
-      appointmentDate: getCurrentSchedule(hour),
-    });
+    makePayment(paymentMethod, haircut)
+
+
+    // handleCreateAppointment({
+    //   cpf,
+    //   name,
+    //   phone,
+    //   paymentMethod,
+    //   status: 'PENDING',
+    //   type: 'SESSIONLESS',
+    //   haircutId: haircut.id,
+    //   employeeId: employee.id,
+    //   appointmentDate: getCurrentSchedule(hour),
+    // });
   };
 
   return (
+    <>
     <AlertDialog open={isFormActive}>
       <TableRow
         className={`relative cursor-pointer hover:border-t hover:brightness-110 max-md:text-xs hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
@@ -174,5 +196,60 @@ export const TableContent = ({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+
+    <AlertDialog  open={isPaymentActive}>
+
+      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Fazer Pagamento
+          </AlertDialogTitle>
+       </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={handleScheduleBreak}>
+             Confirmar Pagamento
+            </AlertDialogAction>
+            {paymentMethod !== 'CASH' && (
+
+            )}
+            {paymentMethod !== 'CARD' && (
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-2'>
+                  <FormField
+                    name='email'
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className='space-y-1'>
+                        <FormControl>
+                          <Input {...field} placeholder='Email' type='email' />
+                        </FormControl>
+                        <FormMessage className='px-0.5 text-start' />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name='password'
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className='space-y-1'>
+                        <FormControl>
+                          <Input {...field} placeholder='Senha' type='password' />
+                        </FormControl>
+                        <FormMessage className='px-0.5 text-start' />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type='submit' className='mt-4 w-full font-medium'>
+                    Entrar
+                  </Button>
+                </form>
+              </Form>
+            )}
+
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 };

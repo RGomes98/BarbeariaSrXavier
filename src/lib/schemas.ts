@@ -15,6 +15,12 @@ export const LoginSchema = z.object({
   password: z.string().min(8, { message: 'Senha deve ter pelo menos 8 caracteres.' }),
 });
 
+export const CardSchem = z.object({
+  email: z.string().email({ message: 'E-mail inválido.' }),
+  password: z.string().min(8, { message: 'Senha deve ter pelo menos 8 caracteres.' }),
+});
+
+
 export const RegisterSchema = z
   .object({
     name: z.string().trim().min(1, { message: 'Nome inválido.' }),
