@@ -11,10 +11,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Fragment } from 'react';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-const form = useForm<Login>({
-  resolver: zodResolver(LoginSchema),
-  defaultValues: { email: '', password: '' },
-});
+// const form = useForm<Login>({
+//   resolver: zodResolver(LoginSchema),
+//   defaultValues: { email: '', password: '' },
+// });
 import {
   AlertDialog,
   AlertDialogAction,
@@ -196,9 +196,12 @@ export const TableContent = ({
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
+  
+    {
+    //alert payment 
+    }            
 
     <AlertDialog  open={isPaymentActive}>
-
       <AlertDialogContent className='max-[550px]:max-w-[90%]'>
         <AlertDialogHeader>
           <AlertDialogTitle>
@@ -210,9 +213,6 @@ export const TableContent = ({
           <AlertDialogAction onClick={handleScheduleBreak}>
              Confirmar Pagamento
             </AlertDialogAction>
-            {paymentMethod !== 'CASH' && (
-
-            )}
             {paymentMethod !== 'CARD' && (
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-2'>
