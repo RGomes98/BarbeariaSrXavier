@@ -240,9 +240,9 @@ export const TableContent = ({
                       </FormItem>
                     )}
                   />
-                  <Button type='submit' className='mt-4 w-full font-medium'>
+                  <AlertDialogAction type='submit' className='mt-4 w-full font-medium'>
                     Entrar
-                  </Button>
+                  </AlertDialogAction>
                 </form>
               </Form>
             )}
