@@ -1,5 +1,5 @@
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
-import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
+import { Card, CardSchema, Haircut, Login, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { TableCell, TableRow } from '@/components/ui/table';
@@ -26,6 +26,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
+import { createPaymentLink } from '@/services/CreatePaymentLink';
 
 export const TableContent = ({
   hour,
@@ -45,6 +46,9 @@ export const TableContent = ({
     isPaymentActive,
     paymentMethod,
     makePayment,
+    checkIsPaid,
+    setPaymentUrl,
+    paymentUrl,
     setIsFormActive,
     setIsPaymentActive,
     scheduleEmployee,
@@ -59,14 +63,31 @@ export const TableContent = ({
   const currentHourSchedule = getEmployeeCurrentHourSchedule(hour);
   const isEmployeeBusy =
     currentHourSchedule?.status !== 'CANCELED' && currentHourSchedule?.status !== undefined;
+    
+    const form = useForm<Card>({
+      resolver: zodResolver(CardSchema),
+      defaultValues: {cvv: "000", expiryMonth: 1, expiryYear : 2024, holderName : "", number: "0123456789"},
+    });
 
-  const handleScheduleHaircut = () => {
+    
+  async function onSubmit(formData: Login) {
+   const data = await createPaymentLink(paymentMethod, haircut);
+  }
+
+  async function CreatePayment() {
+    const data = await createPaymentLink(paymentMethod, haircut);
+    console.log(data)
+   }
+
+
+  const handleScheduleHaircut = async() => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
 
     setIsPaymentActive(true);
     setIsFormActive(false)
-    makePayment(paymentMethod, haircut)
-
+    const respPayment = makePayment(paymentMethod, haircut)
+    //setPaymentUrl(respPayment.url)
+    //const isPaid = checkIsPaid()
     // handleCreateAppointment({
     //   paymentMethod,
     //   type: 'REGULAR',
@@ -78,29 +99,30 @@ export const TableContent = ({
     // });
   };
 
-  const handleScheduleBreak = () => {
+  const handleScheduleBreak = async () => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
     setIsPaymentActive(true);
     setIsFormActive(false)
 
-    // handleCreateAppointment({
-    //   paymentMethod,
-    //   type: 'REGULAR',
-    //   status: 'BREAK',
-    //   userId: session.id,
-    //   haircutId: haircut.id,
-    //   employeeId: employee.id,
-    //   appointmentDate: getCurrentSchedule(hour),
-    // });
+     handleCreateAppointment({
+       paymentMethod,
+       type: 'REGULAR',
+       status: 'BREAK',
+       userId: session.id,
+       haircutId: haircut.id,
+       employeeId: employee.id,
+       appointmentDate: getCurrentSchedule(hour),
+     });
   };
 
-  const handleScheduleHaircutSessionless = (formData: ScheduleFormType) => {
+  const handleScheduleHaircutSessionless = async (formData: ScheduleFormType) => {
     if (!employee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
     setIsPaymentActive(true);
     setIsFormActive(false)
 
-    makePayment(paymentMethod, haircut)
+    const respPayment = await makePayment(paymentMethod, haircut)
+   // setPaymentUrl(respPayment.url)
 
 
     // handleCreateAppointment({
@@ -208,33 +230,64 @@ export const TableContent = ({
             Fazer Pagamento
           </AlertDialogTitle>
        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar</AlertDialogCancel>
-          <AlertDialogAction onClick={handleScheduleBreak}>
-             Confirmar Pagamento
-            </AlertDialogAction>
-            {paymentMethod !== 'CARD' && (
+       {/* {paymentMethod !== 'CARD' && (
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-2'>
                   <FormField
-                    name='email'
+                    name='holderName'
                     control={form.control}
                     render={({ field }) => (
                       <FormItem className='space-y-1'>
                         <FormControl>
-                          <Input {...field} placeholder='Email' type='email' />
+                          <Input {...field} placeholder='Nome no Cartão' type='text' />
                         </FormControl>
                         <FormMessage className='px-0.5 text-start' />
                       </FormItem>
                     )}
                   />
                   <FormField
-                    name='password'
+                    name='number'
                     control={form.control}
                     render={({ field }) => (
                       <FormItem className='space-y-1'>
                         <FormControl>
-                          <Input {...field} placeholder='Senha' type='password' />
+                          <Input {...field} placeholder='Número do Cartão' type='text' />
+                        </FormControl>
+                        <FormMessage className='px-0.5 text-start' />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name='expiryMonth'
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className='space-y-1'>
+                        <FormControl>
+                          <Input {...field} placeholder='Mês de Vencimento' type='text' />
+                        </FormControl>
+                        <FormMessage className='px-0.5 text-start' />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    name='expiryYear'
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className='space-y-1'>
+                        <FormControl>
+                          <Input {...field} placeholder='Ano de Vencimento' type='text' />
+                        </FormControl>
+                        <FormMessage className='px-0.5 text-start' />
+                      </FormItem>
+                    )}
+                  />
+                   <FormField
+                    name='cvv'
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className='space-y-1'>
+                        <FormControl>
+                          <Input {...field} placeholder='CVV' type='text' />
                         </FormControl>
                         <FormMessage className='px-0.5 text-start' />
                       </FormItem>
@@ -245,8 +298,18 @@ export const TableContent = ({
                   </AlertDialogAction>
                 </form>
               </Form>
-            )}
+            )} */}
+          <AlertDialogDescription>
+          Acesse esse link para efetuar o pagamento <br></br>
+          {paymentUrl}
 
+          </AlertDialogDescription>
+
+        <AlertDialogFooter>
+          <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar</AlertDialogCancel>
+          <AlertDialogAction onClick={handleScheduleBreak}>
+             Confirmar Pagamento
+            </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

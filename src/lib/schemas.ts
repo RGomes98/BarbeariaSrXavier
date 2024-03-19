@@ -15,11 +15,13 @@ export const LoginSchema = z.object({
   password: z.string().min(8, { message: 'Senha deve ter pelo menos 8 caracteres.' }),
 });
 
-export const CardSchem = z.object({
-  email: z.string().email({ message: 'E-mail inválido.' }),
-  password: z.string().min(8, { message: 'Senha deve ter pelo menos 8 caracteres.' }),
+export const CardSchema = z.object({
+  holderName: z.string().trim().min(1, { message: 'Nome inválido.' }),
+  expiryMonth: z.number().int().min(1).max(12),
+  expiryYear: z.number().int().min(new Date().getFullYear()),
+  cvv: z.string().min(3).max(4),
+  number: z.string().min(16).max(16),
 });
-
 
 export const RegisterSchema = z
   .object({
@@ -101,4 +103,5 @@ export type Schedule = z.infer<typeof ScheduleSchema>;
 export type Register = z.infer<typeof RegisterSchema>;
 export type Haircut = z.infer<typeof HaircutSchema>;
 export type Login = z.infer<typeof LoginSchema>;
+export type Card = z.infer<typeof CardSchema>
 export type User = z.infer<typeof UserSchema>;

@@ -10,6 +10,7 @@ import { createPaymentLink } from '@/services/CreatePaymentLink';
 export const useBarberShopActions = (barbers: User[]) => {
   const [isFormActive, setIsFormActive] = useState(false);
   const [isPaymentActive, setIsPaymentActive] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState("")
   const searchParams = useSearchParams();
   const { refresh } = useRouter();
 
@@ -36,8 +37,13 @@ export const useBarberShopActions = (barbers: User[]) => {
   const makePayment = async (paymentType: PaymentMethod, hairCut: Haircut) => {
 
     const response = await createPaymentLink(paymentType, hairCut);
+    console.log(response)
+  }
 
+  const checkIsPaid = async (paymentType: PaymentMethod, hairCut: Haircut) => {
 
+    const response = await createPaymentLink(paymentType, hairCut);
+    console.log(response)
   }
 
   const handleCreateAppointment = async (params: CreateAppointment) => {
@@ -88,8 +94,11 @@ export const useBarberShopActions = (barbers: User[]) => {
     scheduleDate,
     paymentMethod,
     makePayment,
+    paymentUrl, 
+    setPaymentUrl,
     setIsFormActive,
     setIsPaymentActive,
+    checkIsPaid,
     scheduleEmployee,
     getCurrentSchedule,
     handleCreateAppointment,
