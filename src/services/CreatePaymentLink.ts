@@ -48,28 +48,42 @@ export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Hai
 };
 
 export const checkPayment = async () => {
-  setInterval(async () => {
-    try {
-      // Make the API call to check if payment is made
-      const response = await api.get('/paymentLinks');
-      const paymentLinks = response.data;
+  // setInterval(async () => {
+  //   try {
+  //        const api = axios.create({
+  // //   baseURL: 'https://api.asaas.com/api/v3',
+  //    baseURL: 'https://sandbox.asaas.com/api/v3',
+  //    headers: {
+  //      'Content-Type': 'application/json',
+  //      access_token:
+  //        '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDA0MDE4MDQ6OiRhYWNoX2JhNzMyYjlhLWQxMGUtNDY4OS05MjMxLTA1NDY3YzBlZmQ1YQ==',
+  //      'Access-Control-Allow-Origin': 'http://localhost:3000', // Allow CORS for localhost
+  //      'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
+  //      'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
+  //      'Access-Control-Allow-Credentials': 'true',
+  //    },
+  //  });
 
-      // Check if payment is made for the specific hairCut
-      const paymentMade = paymentLinks.some((link: any) => link.name === hairCut.name && link.status === 'RECEIVED');
+  //     // Make the API call to check if payment is made
+  //     const response = await api.get('/paymentLinks');
+  //     const paymentLinks = response.data;
 
-      if (paymentMade) {
-        console.log('Payment made!');
-        return true;
-        // Do something when payment is made
-      } else {
-        console.log('Payment not made yet');
-      }
-    } catch (error) {
-      console.error('Error checking payment:', error);
-      return false;
+  //     // Check if payment is made for the specific hairCut
+  //     const paymentMade = paymentLinks.some((link: any) => link.name === hairCut.name && link.status === 'RECEIVED');
 
-    }
-  }, 10000); // Check every 10 seconds
+  //     if (paymentMade) {
+  //       console.log('Payment made!');
+  //       return true;
+  //       // Do something when payment is made
+  //     } else {
+  //       console.log('Payment not made yet');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error checking payment:', error);
+  //     return false;
+
+  //   }
+  // }, 10000); // Check every 10 seconds
 };
 
 export const requestPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
