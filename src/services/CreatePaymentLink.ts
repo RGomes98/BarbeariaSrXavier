@@ -1,4 +1,5 @@
 import { Haircut, PaymentMethod } from '@/lib/schemas';
+import { clientEnv } from '@/lib/env/client';
 
 export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
   const paymentData = {
@@ -14,17 +15,18 @@ export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Hai
   const options = {
     method: 'POST',
     mode: 'no-cors' as const,
-    headers: {
-      'Content-Type': 'application/json',
-      accept: 'application/json',
-      access_token:
-        '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDA0MDE4MDQ6OiRhYWNoX2JhNzMyYjlhLWQxMGUtNDY4OS05MjMxLTA1NDY3YzBlZmQ1YQ==',
-    },
     body: JSON.stringify(paymentData),
+    headers: {
+      accept: 'application/json',
+      'Content-Type': 'application/json',
+      access_token: clientEnv.NEXT_PUBLIC_ASSAS_DEV_ACCESS_TOKEN,
+    },
   };
 
   const response = await fetch('https://sandbox.asaas.com/api/v3/paymentLinks', options);
   console.log(response);
+
+  return response;
 };
 
 export const checkPayment = async () => {

@@ -59,7 +59,7 @@ export const TableContent = ({
 
   const { isMounted } = useMounted();
 
-  const isScheduleNotActive = false;
+  const isScheduleNotActive = hour < new Date().getHours() && new Date() >= scheduleDate;
   const currentHourSchedule = getEmployeeCurrentHourSchedule(hour);
   const isEmployeeBusy =
     currentHourSchedule?.status !== 'CANCELED' && currentHourSchedule?.status !== undefined;
@@ -120,7 +120,7 @@ export const TableContent = ({
     setIsFormActive(false);
 
     const respPayment = await makePayment(paymentMethod, haircut);
-    // setPaymentUrl(respPayment.url);
+    // setPaymentUrl(respPayment);
 
     handleCreateAppointment({
       cpf,
