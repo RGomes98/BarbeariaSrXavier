@@ -1,4 +1,4 @@
-import { arrayUnion, doc, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/firebaseConfig/firebase';
 import { PaymentMethod, Status } from '@/lib/schemas';
 
@@ -48,6 +48,7 @@ export const createAppointment = async (params: CreateAppointment) => {
         };
 
   try {
+    await addDoc(collection(firestore, 'appointments'), appointment);
     await updateDoc(doc(firestore, 'users', params.employeeId), { schedules: arrayUnion(appointment) });
     return { status: 'success', message: 'Horário reservado com sucesso' } as const;
   } catch (error) {
