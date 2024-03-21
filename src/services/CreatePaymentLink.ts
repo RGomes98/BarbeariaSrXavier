@@ -1,22 +1,6 @@
 import { Haircut, PaymentMethod } from '@/lib/schemas';
 
-import axios from 'axios';
-
 export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-  //   const api = axios.create({
-  //  //   baseURL: 'https://api.asaas.com/api/v3',
-  //     baseURL: 'https://sandbox.asaas.com/api/v3',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //       access_token:
-  //         '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDA0MDE4MDQ6OiRhYWNoX2JhNzMyYjlhLWQxMGUtNDY4OS05MjMxLTA1NDY3YzBlZmQ1YQ==',
-  //       'Access-Control-Allow-Origin': 'http://localhost:3000', // Allow CORS for localhost
-  //       'Access-Control-Allow-Methods': 'GET, POST, PATCH, PUT, DELETE, OPTIONS',
-  //       'Access-Control-Allow-Headers': 'Origin, Content-Type, X-Auth-Token',
-  //       'Access-Control-Allow-Credentials': 'true',
-  //     },
-  //   });
-
   const paymentData = {
     billingType: paymentType === 'PIX' ? 'PIX' : 'CREDIT_CARD',
     chargeType: 'DETACHED',
@@ -29,9 +13,10 @@ export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Hai
 
   const options = {
     method: 'POST',
+    mode: 'no-cors' as const,
     headers: {
+      'Content-Type': 'application/json',
       accept: 'application/json',
-      'content-type': 'application/json',
       access_token:
         '$aact_YTU5YTE0M2M2N2I4MTliNzk0YTI5N2U5MzdjNWZmNDQ6OjAwMDAwMDAwMDAwMDA0MDE4MDQ6OiRhYWNoX2JhNzMyYjlhLWQxMGUtNDY4OS05MjMxLTA1NDY3YzBlZmQ1YQ==',
     },
@@ -39,16 +24,7 @@ export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Hai
   };
 
   const response = await fetch('https://sandbox.asaas.com/api/v3/paymentLinks', options);
-  const data = await response.json();
-  console.log(data, response, 'hi');
-
-  //   try {
-  //     const response = await api.post('/paymentLinks', paymentData);
-  //     return response.data;
-  //   } catch (error) {
-  //     console.error('Error creating payment link:', error);
-  //     throw error;
-  //   }
+  console.log(response);
 };
 
 export const checkPayment = async () => {
