@@ -1,16 +1,16 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
 import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
-import { formatDateGetHour, formatDateShort } from '@/utils/date';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Employee, Haircut, PaymentMethod, User } from '@/lib/schemas';
+import { formatDateGetHour, formatDateShort } from '@/utils/date';
+import { createPaymentLink } from '@/services/CreatePaymentLink';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { createPaymentLink } from '@/services/CreatePaymentLink';
 
 export const useBarberShopActions = (barbers: User[]) => {
-  const [isFormActive, setIsFormActive] = useState(false);
   const [isPaymentActive, setIsPaymentActive] = useState(false);
-  const [paymentUrl, setPaymentUrl] = useState("")
+  const [isFormActive, setIsFormActive] = useState(false);
+  const [paymentUrl, setPaymentUrl] = useState('');
   const searchParams = useSearchParams();
   const { refresh } = useRouter();
 
@@ -35,16 +35,17 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const makePayment = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-
     const response = await createPaymentLink(paymentType, hairCut);
-    console.log(response)
-  }
+    if (response.status === 'error') return toast.error(response.message);
+    setPaymentUrl(response.paymentLink);
+    setIsPaymentActive(true);
+    setIsFormActive(false);
+  };
 
   const checkIsPaid = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-
     const response = await createPaymentLink(paymentType, hairCut);
-    console.log(response)
-  }
+    console.log(response);
+  };
 
   const handleCreateAppointment = async (params: CreateAppointment) => {
     const appointment =
@@ -81,7 +82,7 @@ export const useBarberShopActions = (barbers: User[]) => {
       refresh();
       setIsFormActive(false);
       toast.success(
-        `${response.message} para ${formatDateShort(scheduleDate)} às ${formatDateGetHour(scheduleDate)}h.`,
+        `${response.message} para ${formatDateShort(appointment.appointmentDate)} às ${formatDateGetHour(appointment.appointmentDate)}h.`,
         { duration: 10000 },
       );
     }
@@ -94,8 +95,7 @@ export const useBarberShopActions = (barbers: User[]) => {
     scheduleDate,
     paymentMethod,
     makePayment,
-    paymentUrl, 
-    setPaymentUrl,
+    paymentUrl,
     setIsFormActive,
     setIsPaymentActive,
     checkIsPaid,

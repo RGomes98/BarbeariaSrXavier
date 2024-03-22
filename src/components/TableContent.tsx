@@ -1,20 +1,13 @@
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
-import { Card, CardSchema, Haircut, Login, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
+import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { useMounted } from '@/hooks/useMounted';
 import { ScheduleForm } from './ScheduleForm';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { Fragment } from 'react';
-import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-// const form = useForm<Login>({
-//   resolver: zodResolver(LoginSchema),
-//   defaultValues: { email: '', password: '' },
-// });
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,7 +19,8 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { createPaymentLink } from '@/services/CreatePaymentLink';
+
+import Link from 'next/link';
 
 export const TableContent = ({
   hour,
@@ -47,7 +41,6 @@ export const TableContent = ({
     paymentMethod,
     makePayment,
     checkIsPaid,
-    setPaymentUrl,
     paymentUrl,
     setIsFormActive,
     setIsPaymentActive,
@@ -64,43 +57,28 @@ export const TableContent = ({
   const isEmployeeBusy =
     currentHourSchedule?.status !== 'CANCELED' && currentHourSchedule?.status !== undefined;
 
-  const form = useForm<Card>({
-    resolver: zodResolver(CardSchema),
-    defaultValues: { cvv: '000', expiryMonth: 1, expiryYear: 2024, holderName: '', number: '0123456789' },
-  });
-
-  async function onSubmit(formData: Login) {
-    const data = await createPaymentLink(paymentMethod, haircut);
-  }
-
-  async function CreatePayment() {
-    const data = await createPaymentLink(paymentMethod, haircut);
-    console.log(data);
-  }
-
   const handleScheduleHaircut = async () => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
 
-    setIsPaymentActive(true);
-    setIsFormActive(false);
     const respPayment = makePayment(paymentMethod, haircut);
-    //setPaymentUrl(respPayment.url)
-    //const isPaid = checkIsPaid()
-    // handleCreateAppointment({
-    //   paymentMethod,
-    //   type: 'REGULAR',
-    //   status: 'PENDING',
-    //   userId: session.id,
-    //   haircutId: haircut.id,
-    //   employeeId: employee.id,
-    //   appointmentDate: getCurrentSchedule(hour),
-    // });
+    // Se quiser pode retornar o id nessa respPayment pra checar se o pagamento foi feito ou fazer direto do hook
+    // Se o pagamento for feito tem q redirecionar pra agendamentos e chamar a 'handleCreateAppointment' pra criar a reserva no firebase
+    // Se der erro é so mostrar um toast
+    // const isPaid = checkIsPaid();
+
+    handleCreateAppointment({
+      paymentMethod,
+      type: 'REGULAR',
+      status: 'PENDING',
+      userId: session.id,
+      haircutId: haircut.id,
+      employeeId: employee.id,
+      appointmentDate: getCurrentSchedule(hour),
+    });
   };
 
   const handleScheduleBreak = async () => {
     if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
-    setIsPaymentActive(true);
-    setIsFormActive(false);
 
     handleCreateAppointment({
       paymentMethod,
@@ -116,12 +94,8 @@ export const TableContent = ({
   const handleScheduleHaircutSessionless = async (formData: ScheduleFormType) => {
     if (!employee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
-    setIsPaymentActive(true);
-    setIsFormActive(false);
 
     const respPayment = await makePayment(paymentMethod, haircut);
-    // setPaymentUrl(respPayment);
-
     handleCreateAppointment({
       cpf,
       name,
@@ -226,85 +200,18 @@ export const TableContent = ({
       <AlertDialog open={isPaymentActive}>
         <AlertDialogContent className='max-[550px]:max-w-[90%]'>
           <AlertDialogHeader>
-            <AlertDialogTitle>Fazer Pagamento</AlertDialogTitle>
+            <AlertDialogTitle>Finalizar Reserva</AlertDialogTitle>
           </AlertDialogHeader>
-          {/* {paymentMethod !== 'CARD' && (
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap-2'>
-                  <FormField
-                    name='holderName'
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem className='space-y-1'>
-                        <FormControl>
-                          <Input {...field} placeholder='Nome no Cartão' type='text' />
-                        </FormControl>
-                        <FormMessage className='px-0.5 text-start' />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name='number'
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem className='space-y-1'>
-                        <FormControl>
-                          <Input {...field} placeholder='Número do Cartão' type='text' />
-                        </FormControl>
-                        <FormMessage className='px-0.5 text-start' />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name='expiryMonth'
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem className='space-y-1'>
-                        <FormControl>
-                          <Input {...field} placeholder='Mês de Vencimento' type='text' />
-                        </FormControl>
-                        <FormMessage className='px-0.5 text-start' />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    name='expiryYear'
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem className='space-y-1'>
-                        <FormControl>
-                          <Input {...field} placeholder='Ano de Vencimento' type='text' />
-                        </FormControl>
-                        <FormMessage className='px-0.5 text-start' />
-                      </FormItem>
-                    )}
-                  />
-                   <FormField
-                    name='cvv'
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem className='space-y-1'>
-                        <FormControl>
-                          <Input {...field} placeholder='CVV' type='text' />
-                        </FormControl>
-                        <FormMessage className='px-0.5 text-start' />
-                      </FormItem>
-                    )}
-                  />
-                  <AlertDialogAction type='submit' className='mt-4 w-full font-medium'>
-                    Entrar
-                  </AlertDialogAction>
-                </form>
-              </Form>
-            )} */}
           <AlertDialogDescription>
-            Acesse esse link para efetuar o pagamento <br></br>
-            {paymentUrl}
+            Estamos quase prontos! Agora, basta prosseguir com o pagamento para finalizar sua reserva.
           </AlertDialogDescription>
-
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar</AlertDialogCancel>
-            <AlertDialogAction onClick={handleScheduleBreak}>Confirmar Pagamento</AlertDialogAction>
+            <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar Reserva</AlertDialogCancel>
+            <AlertDialogAction>
+              <Link href={paymentUrl} target='_blank' rel='noopener noreferrer'>
+                Efetuar Pagamento
+              </Link>
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

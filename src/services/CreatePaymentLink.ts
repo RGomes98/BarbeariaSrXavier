@@ -1,8 +1,7 @@
 import { Haircut, PaymentMethod } from '@/lib/schemas';
-import { clientEnv } from '@/lib/env/client';
 
 export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-  const paymentData = {
+  const paymentOptions = {
     billingType: paymentType === 'PIX' ? 'PIX' : 'CREDIT_CARD',
     chargeType: 'DETACHED',
     name: hairCut.name,
@@ -12,21 +11,24 @@ export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Hai
     notificationEnabled: false,
   };
 
-  const options = {
-    method: 'POST',
-    mode: 'no-cors' as const,
-    body: JSON.stringify(paymentData),
-    headers: {
-      accept: 'application/json',
-      'Content-Type': 'application/json',
-      access_token: clientEnv.NEXT_PUBLIC_ASSAS_DEV_ACCESS_TOKEN,
-    },
-  };
+  const response = await fetch('/api/paymentLink', { method: 'POST', body: JSON.stringify(paymentOptions) });
+  const paymentData = await response.json(); //Link de pagamendo com as informações (id,tipo...);
+  console.log(paymentData);
 
-  const response = await fetch('https://sandbox.asaas.com/api/v3/paymentLinks', options);
-  console.log(response);
+  if (!response.ok) {
+    return {
+      status: 'error',
+      paymentLink: undefined,
+      message:
+        'Ops! Parece que algo deu errado ao criar o link de pagamento. Por favor, tente novamente mais tarde.',
+    } as const;
+  }
 
-  return response;
+  return {
+    status: 'success',
+    paymentLink: paymentData.url,
+    message: 'Link de pagamento criado com sucesso!',
+  } as const;
 };
 
 export const checkPayment = async () => {
