@@ -1,25 +1,12 @@
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { firestore } from '@/firebaseConfig/firebase';
-
-const convertDocsToModel = (docs: any[]) => {
-  return docs.map((doc) => {
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-    };
-  });
-};
+import { AppointmentsSchema } from '@/lib/schemas';
 
 export const getAppoiments = async () => {
   const docSnap = await getDocs(collection(firestore, 'appointments'));
-
-  if (docSnap.size > 0) {
-    console.log(docSnap.docs[0].data());
-    return convertDocsToModel(docSnap.docs);
-  } else {
-    console.log('No such document!');
-  }
+  const appointments = AppointmentsSchema.safeParse(docSnap.docs.map((data) => data.data()));
+  if (!appointments.success) throw new Error('invalid appointments data structure');
+  return appointments.data;
 };
 
 export const getAppoiment = async (id: string) => {
