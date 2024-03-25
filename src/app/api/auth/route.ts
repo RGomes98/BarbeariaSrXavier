@@ -12,5 +12,5 @@ export async function GET(request: NextRequest) {
   const response = await GetUserById(decodedToken.uid);
   if (response.status != 200) return NextResponse.json(response.data, { status: response.status });
 
-  return NextResponse.json({ data: response.data }, { status: 200 });
+  return NextResponse.json(response.data, { status: 200 });
 }
