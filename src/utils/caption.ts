@@ -37,3 +37,27 @@ export const getScheduleStatusColor = (status?: Status | 'DISABLED') => {
       return 'bg-green-500/70';
   }
 };
+
+export const formatScheduleCaption = (status: Status) => {
+  switch (status) {
+    case 'PAID':
+      return 'Pago';
+    case 'PENDING':
+      return 'Pendente';
+    case 'BREAK':
+      return 'Almoço';
+    case 'CANCELED':
+      return 'Cancelado';
+  }
+};
+
+export const formatPaymentMethodCaption = (status: PaymentMethod) => {
+  switch (status) {
+    case 'CARD':
+      return 'Cartão de crédito';
+    case 'CASH':
+      return 'Dinheiro';
+    case 'PIX':
+      return 'Pix';
+  }
+};

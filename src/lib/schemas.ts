@@ -69,6 +69,18 @@ export const scheduleDiscriminatedUnionSchema = z.discriminatedUnion('type', [
   z.object({ type: z.literal('SESSIONLESS') }).merge(ScheduleFormSchema),
 ]);
 
+export const AppointmentSchema = z
+  .object({
+    id: z.string().uuid(),
+    haircutId: z.number(),
+    employeeId: z.string(),
+    status: z.enum(statuses),
+    scheduleDate: z.coerce.date(),
+    type: z.enum(appointmentTypes),
+    paymentMethod: z.enum(paymentMethods),
+  })
+  .and(scheduleDiscriminatedUnionSchema);
+
 export const userDiscriminatedUnionSchema = z.discriminatedUnion('accountType', [
   z.object({ accountType: z.literal('USER') }),
   z.object({ accountType: z.literal('EMPLOYEE'), schedules: z.array(ScheduleSchema).optional() }),
@@ -86,6 +98,19 @@ export const UserSchema = z
   })
   .and(userDiscriminatedUnionSchema);
 
+export const FormattedAppointmentDataSchema = z.object({
+  clientName: z.string(),
+  haircutName: z.string(),
+  haircutPrice: z.number(),
+  employeeName: z.string(),
+  appointmentId: z.string(),
+  appointmentStatus: z.string(),
+  appointmentDate: z.coerce.date(),
+  paymentMethod: z.enum(paymentMethods),
+});
+
+export const FormattedAppointmentsDataSchema = z.array(FormattedAppointmentDataSchema);
+export const AppointmentsSchema = z.array(AppointmentSchema);
 export const paymentMethodSchema = z.enum(paymentMethods);
 export const SchedulesSchema = z.array(ScheduleSchema);
 export const AccountTypeSchema = z.enum(accountTypes);
@@ -96,12 +121,14 @@ export type PaymentMethod = (typeof paymentMethods)[number];
 export type Roles = (typeof accountTypes)[number];
 export type Status = (typeof statuses)[number];
 
+export type FormattedAppointmentData = z.infer<typeof FormattedAppointmentDataSchema>;
 export type ScheduleForm = z.infer<typeof ScheduleFormSchema>;
 export type AccountType = z.infer<typeof AccountTypeSchema>;
+export type Appointment = z.infer<typeof AppointmentSchema>;
 export type Employee = User & { schedules: Schedule[] };
 export type Schedule = z.infer<typeof ScheduleSchema>;
 export type Register = z.infer<typeof RegisterSchema>;
 export type Haircut = z.infer<typeof HaircutSchema>;
 export type Login = z.infer<typeof LoginSchema>;
-export type Card = z.infer<typeof CardSchema>
+export type Card = z.infer<typeof CardSchema>;
 export type User = z.infer<typeof UserSchema>;
