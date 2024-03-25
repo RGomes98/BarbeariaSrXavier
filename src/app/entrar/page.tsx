@@ -13,10 +13,10 @@ export default function Page() {
       </div>
       <div className='flex flex-col items-center justify-center px-[10%] py-10 max-lg:px-10'>
         <div className='mb-auto flex w-full justify-between font-medium'>
-          <Button variant='ghost'>
+          <Button variant='secondary'>
             <Link href='/'>Voltar</Link>
           </Button>
-          <Button variant='ghost'>
+          <Button variant='secondary'>
             <Link href='/registrar'>Criar conta</Link>
           </Button>
         </div>
