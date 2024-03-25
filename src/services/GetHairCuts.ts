@@ -12,6 +12,13 @@ export const getHaircuts = async () => {
 };
 
 export const getHaircut = async (id: number) => {
+  const haircutQuery = query(collection(firestore, 'haircuts'), where('id', '==', id));
+  const haircut = HaircutSchema.safeParse((await getDocs(haircutQuery)).docs[0]?.data());
+  if (!haircut.success) throw new Error('invalid haircut data structure');
+  return haircut.data;
+};
+
+export const getHaircutWithRedirect = async (id: number) => {
   try {
     const q = query(collection(firestore, 'haircuts'), where('id', '==', id));
     const haircut = HaircutSchema.parse((await getDocs(q)).docs[0]?.data());

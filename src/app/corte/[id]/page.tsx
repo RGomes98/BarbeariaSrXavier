@@ -1,15 +1,17 @@
-import { HaircutCarousel } from '@/components/HaircutCarousel';
 import { HaircutSchedules } from '@/components/HaircutSchedules';
+import { getHaircutWithRedirect } from '@/services/GetHairCuts';
+import { HaircutCarousel } from '@/components/HaircutCarousel';
 import { getEmployees } from '@/services/getEmployees';
-import { getHaircut } from '@/services/GetHairCuts';
 import { getSession } from '@/helpers/getSession';
 import { Navbar } from '@/components/Navbar';
 import { Fragment } from 'react';
 
 export default async function Page({ params: { id } }: { params: { id: string } }) {
-  const haircut = await getHaircut(Number(id));
-  const employees = await getEmployees();
-  const session = await getSession();
+  const [haircut, employees, session] = await Promise.all([
+    getHaircutWithRedirect(Number(id)),
+    getEmployees(),
+    getSession(),
+  ]);
 
   haircut.photoUri.push(haircut.photoUri[0]);
   haircut.photoUri.push(haircut.photoUri[0]);
