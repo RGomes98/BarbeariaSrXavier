@@ -1,10 +1,10 @@
 // import { validateDate, validateEmployee } from '@/helpers/validateSearchParams';
 // import { useSearchParams } from 'next/navigation';
-import { Session } from '@/helpers/getSession';
+// import { Session } from '@/helpers/getSession';
 // import { Employee, Status } from '@/mock/users';
 // import { useStore } from '@/store';
 
-export const useScheduleActions = (session: Session) => {
+export const useScheduleActions = () => {
   return {};
   //   const updateDatabase = useStore().updateDatabase;
   //   const searchParams = useSearchParams();
