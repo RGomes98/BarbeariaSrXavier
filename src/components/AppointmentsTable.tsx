@@ -219,7 +219,7 @@ export const AppointmentsTable = <TData, TValue>({
                 <TableRow key={headerGroup.id}>
                   {headerGroup.headers.map((header) => {
                     return (
-                      <TableHead key={header.id} className='whitespace-nowrap max-[865px]:text-xs'>
+                      <TableHead key={header.id} className='whitespace-nowrap'>
                         {header.isPlaceholder
                           ? null
                           : flexRender(header.column.columnDef.header, header.getContext())}
@@ -236,7 +236,7 @@ export const AppointmentsTable = <TData, TValue>({
                     {row.getVisibleCells().map((cell) => (
                       <TableCell
                         key={cell.id}
-                        className={`whitespace-nowrap max-[865px]:text-xs ${!isUserAuthorized && 'py-3.5'}`}
+                        className={`whitespace-nowrap ${!isUserAuthorized && 'py-3.5'}`}
                       >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
                       </TableCell>

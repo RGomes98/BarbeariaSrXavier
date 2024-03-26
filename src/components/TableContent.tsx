@@ -113,9 +113,9 @@ export const TableContent = ({
     <>
       <AlertDialog open={isFormActive}>
         <TableRow
-          className={`relative cursor-pointer hover:border-t hover:brightness-110 max-md:text-xs hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
+          className={`relative cursor-pointer hover:border-t hover:brightness-110 hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
         >
-          <TableCell className='max-md:py-3'>{formatDateGetHour(getCurrentSchedule(hour))}h</TableCell>
+          <TableCell>{formatDateGetHour(getCurrentSchedule(hour))}h</TableCell>
           <TableCell className='max-md:hidden'>{formatDateGetWeekAndDay(getCurrentSchedule(hour))}</TableCell>
           <TableCell className='md:hidden'>{formatDateGetDay(getCurrentSchedule(hour))}</TableCell>
           <TableCell className='font-medium max-md:hidden'>
