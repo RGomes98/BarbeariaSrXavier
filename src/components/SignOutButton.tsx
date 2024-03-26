@@ -1,11 +1,10 @@
-'use client';
-
 import { SignOut } from '@/services/SignOut';
 import { useRouter } from 'next/navigation';
 import { Button } from './ui/button';
+import { cn } from '@/lib/utils';
 import { toast } from 'sonner';
 
-export const SignOutButton = () => {
+export const SignOutButton = ({ className }: JSX.IntrinsicElements['div']) => {
   const { refresh } = useRouter();
 
   return (
@@ -16,7 +15,7 @@ export const SignOutButton = () => {
           toast.error('Sessão encerrada.');
         })
       }
-      className='w-full'
+      className={cn('w-full', className)}
     >
       Sair
     </Button>

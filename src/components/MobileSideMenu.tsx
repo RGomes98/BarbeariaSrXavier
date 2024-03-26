@@ -1,13 +1,22 @@
+'use client';
+
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { SignOutButton } from './SignOutButton';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/helpers/getSession';
+import { usePathname } from 'next/navigation';
 import { Menu } from 'lucide-react';
 import { Logo } from './Logo';
 
 import Link from 'next/link';
 
 export const MobileSideMenu = ({ session }: { session: Session }) => {
+  const path = usePathname();
+
+  const isAtSchedules = path === '/agendamentos';
+  const isAtReceived = path === '/recebidos';
+  const isAtHome = path === '/';
+
   return (
     <Sheet>
       <SheetTrigger className='ml-auto md:hidden' asChild>
@@ -24,23 +33,30 @@ export const MobileSideMenu = ({ session }: { session: Session }) => {
         <div className='mt-auto grid py-6'>
           {session && (
             <div className='flex flex-col justify-center gap-4'>
-              <Button variant='ghost' className='py-6 font-bold'>
-                <Link href='/agendamentos'>Agendamentos</Link>
-              </Button>
-              {session.accountType !== 'USER' && (
-                <Button variant='ghost' className='py-6 font-bold'>
+              {!isAtHome && (
+                <Button variant='outline' className='py-6'>
+                  <Link href='/'>Voltar</Link>
+                </Button>
+              )}
+              {!isAtReceived && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
+                <Button variant='outline' className='py-6'>
                   <Link href='/recebidos'>Recebidos</Link>
                 </Button>
               )}
-              <SignOutButton />
+              {!isAtSchedules && (
+                <Button variant='outline' className='py-6'>
+                  <Link href='/agendamentos'>Agendamentos</Link>
+                </Button>
+              )}
+              <SignOutButton className='py-6' />
             </div>
           )}
           {!session && (
             <div className='flex flex-col justify-center gap-4'>
-              <Button variant='ghost' className='py-6 font-bold'>
+              <Button variant='outline' className='py-6'>
                 <Link href='/entrar'>Entrar</Link>
               </Button>
-              <Button className='py-6 font-bold'>
+              <Button className='py-6'>
                 <Link href='/registrar'>Criar conta</Link>
               </Button>
             </div>
