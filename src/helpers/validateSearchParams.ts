@@ -2,8 +2,8 @@ import { PaymentMethod, paymentMethodSchema, paymentMethods } from '@/lib/schema
 import { isNotWithinThirtyDaysRange } from '@/utils/date';
 import { z } from 'zod';
 
-export const validateDate = (param: string | null, defaultDate: Date) => {
-  const date = z.coerce.date().safeParse(param);
+export const validateDate = (param: string | null, defaultDate: string) => {
+  const date = z.string().safeParse(param);
   if (!param || !date.success || isNotWithinThirtyDaysRange(new Date(param))) return defaultDate;
   return date.data;
 };

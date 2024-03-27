@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 
 export const DatePicker = () => {
   const searchParams = useSearchParams();
-  const date = validateDate(searchParams.get('date'), new Date());
+  const date = validateDate(searchParams.get('date'), String(new Date()));
 
   return (
     <div className='flex w-[200px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
@@ -21,7 +21,7 @@ export const DatePicker = () => {
         <PopoverTrigger asChild>
           <Button variant='outline' className={cn('justify-start text-left font-normal')}>
             <CalendarIcon className='mr-2 h-4 w-4' />
-            {format(date, 'PPP', { locale: ptBR })}
+            {format(new Date(date), 'PPP', { locale: ptBR })}
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>
@@ -29,7 +29,7 @@ export const DatePicker = () => {
             mode='single'
             initialFocus
             locale={ptBR}
-            selected={date}
+            selected={new Date(date)}
             disabled={(date) => isNotWithinThirtyDaysRange(date)}
             onSelect={(date) =>
               createDateInputQueryString({ dateInput: formatToDateTime(date), searchParams })

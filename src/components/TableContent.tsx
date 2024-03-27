@@ -52,7 +52,7 @@ export const TableContent = ({
 
   const { isMounted } = useMounted();
 
-  const isScheduleNotActive = hour < new Date().getHours() && new Date() >= scheduleDate;
+  const isScheduleNotActive = hour < new Date().getHours() && new Date() >= new Date(scheduleDate);
   const currentHourSchedule = getEmployeeCurrentHourSchedule(hour);
   const isEmployeeBusy =
     currentHourSchedule?.status !== 'CANCELED' && currentHourSchedule?.status !== undefined;
@@ -115,9 +115,11 @@ export const TableContent = ({
         <TableRow
           className={`relative cursor-pointer hover:border-t hover:brightness-110 hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
         >
-          <TableCell>{formatDateGetHour(getCurrentSchedule(hour))}h</TableCell>
-          <TableCell className='max-md:hidden'>{formatDateGetWeekAndDay(getCurrentSchedule(hour))}</TableCell>
-          <TableCell className='md:hidden'>{formatDateGetDay(getCurrentSchedule(hour))}</TableCell>
+          <TableCell>{formatDateGetHour(String(getCurrentSchedule(hour)))}h</TableCell>
+          <TableCell className='max-md:hidden'>
+            {formatDateGetWeekAndDay(String(getCurrentSchedule(hour)))}
+          </TableCell>
+          <TableCell className='md:hidden'>{formatDateGetDay(String(getCurrentSchedule(hour)))}</TableCell>
           <TableCell className='font-medium max-md:hidden'>
             {formatScheduleStatus('long', !isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}
           </TableCell>
@@ -146,13 +148,13 @@ export const TableContent = ({
             </AlertDialogTitle>
             <AlertDialogDescription>
               {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') &&
-                `Tem certeza de que deseja definir o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))} como o seu horário de almoço?`}
+                `Tem certeza de que deseja definir o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))} como o seu horário de almoço?`}
               {paymentMethod === 'CASH' &&
                 (session?.accountType === 'USER' || !session) &&
                 'Tem certeza de que deseja pagar pelo agendamento com dinheiro no momento da visita?'}
               {paymentMethod !== 'CASH' &&
                 (session?.accountType === 'USER' || !session) &&
-                `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(getCurrentSchedule(hour))} às ${formatDateGetHour(getCurrentSchedule(hour))}?`}
+                `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}?`}
               {!session && (
                 <ScheduleForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
               )}

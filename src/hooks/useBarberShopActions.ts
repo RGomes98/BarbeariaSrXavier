@@ -15,7 +15,7 @@ export const useBarberShopActions = (barbers: User[]) => {
   const { refresh } = useRouter();
 
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
-  const scheduleDate = validateDate(searchParams.get('date'), new Date());
+  const scheduleDate = validateDate(searchParams.get('date'), String(new Date()));
   const validEmployees = barbers.map(({ name }) => name);
 
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
@@ -25,7 +25,12 @@ export const useBarberShopActions = (barbers: User[]) => {
   );
 
   const getCurrentSchedule = (hour: number) => {
-    return new Date(scheduleDate.getFullYear(), scheduleDate.getMonth(), scheduleDate.getDate(), hour);
+    return new Date(
+      new Date(scheduleDate).getFullYear(),
+      new Date(scheduleDate).getMonth(),
+      new Date(scheduleDate).getDate(),
+      hour,
+    );
   };
 
   const getEmployeeCurrentHourSchedule = (hour: number) => {
@@ -82,7 +87,7 @@ export const useBarberShopActions = (barbers: User[]) => {
       refresh();
       setIsFormActive(false);
       toast.success(
-        `${response.message} para ${formatDateShort(appointment.appointmentDate)} às ${formatDateGetHour(appointment.appointmentDate)}h.`,
+        `${response.message} para ${formatDateShort(String(appointment.appointmentDate))} às ${formatDateGetHour(String(appointment.appointmentDate))}h.`,
         { duration: 10000 },
       );
     }
