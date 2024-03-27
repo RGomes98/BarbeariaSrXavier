@@ -1,24 +1,10 @@
 'use client';
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { formatDate, formatDateGetDay, formatDateGetHour } from '@/utils/date';
-import { formatPaymentMethodCaption } from '@/utils/caption';
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
-import { FormattedAppointmentData } from '@/lib/schemas';
-import { formatToCurrency } from '@/utils/number';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/helpers/getSession';
 import { Input } from '@/components/ui/input';
-import { Fragment, useState } from 'react';
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+import { useState } from 'react';
 
 import {
   ColumnDef,
@@ -33,112 +19,17 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 
-type DataTableProps<TData, TValue> = {
+type AppointmentsTableProps<TData, TValue> = {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 };
-
-export const columns: ColumnDef<FormattedAppointmentData>[] = [
-  { accessorKey: 'appointmentId' },
-
-  {
-    accessorKey: 'haircutName',
-    header: 'Corte',
-    cell: ({ row }) => <div>{row.getValue('haircutName')}</div>,
-  },
-
-  {
-    accessorKey: 'haircutPrice',
-    header: () => <div>Preço</div>,
-    cell: ({ row }) => <div className='font-medium'>{formatToCurrency(row.getValue('haircutPrice'))}</div>,
-  },
-
-  {
-    accessorKey: 'appointmentDate',
-    header: ({ column }) => {
-      return (
-        <Button variant='ghost' onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}>
-          Data
-          <ArrowUpDown className='ml-2 h-4 w-4 min-w-4' />
-        </Button>
-      );
-    },
-    cell: ({ row }) => (
-      <Fragment>
-        <div className='max-lg:hidden'>{formatDate(row.getValue('appointmentDate'))}h</div>
-        <div className='lg:hidden'>
-          {formatDateGetDay(row.getValue('appointmentDate'))} às{' '}
-          {formatDateGetHour(row.getValue('appointmentDate'))}h
-        </div>
-      </Fragment>
-    ),
-  },
-
-  {
-    accessorKey: 'paymentMethod',
-    header: () => <div>Método de Pagamento</div>,
-    cell: ({ row }) => {
-      return <div className='font-medium'>{formatPaymentMethodCaption(row.getValue('paymentMethod'))}</div>;
-    },
-  },
-
-  {
-    accessorKey: 'appointmentStatus',
-    header: () => <div>Status</div>,
-    cell: ({ row }) => <div className='font-medium'>{row.getValue('appointmentStatus')}</div>,
-  },
-
-  {
-    accessorKey: 'clientName',
-    header: () => <div className='text-right'>Cliente</div>,
-    cell: ({ row }) => <div className='text-right font-medium'>{row.getValue('clientName')}</div>,
-  },
-
-  {
-    accessorKey: 'employeeName',
-    header: () => <div className='text-right'>Profissional</div>,
-    cell: ({ row }) => <div className='text-right font-medium'>{row.getValue('employeeName')}</div>,
-  },
-
-  {
-    id: 'actions',
-    enableHiding: false,
-    cell: ({ row }) => {
-      const { appointmentId } = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant='ghost' className='h-8 w-8 p-0'>
-              <span className='sr-only'>Abrir Menu</span>
-              <MoreHorizontal className='h-4 w-4' />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align='end'>
-            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(appointmentId)}
-              className='cursor-pointer'
-            >
-              Copiar ID
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className='cursor-pointer'>Cancelar</DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer'>Confirmar</DropdownMenuItem>
-            <DropdownMenuItem className='cursor-pointer'>Reagendar</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
-    },
-  },
-];
 
 export const AppointmentsTable = <TData, TValue>({
   session,
   tableData: { data, columns },
 }: {
   session: Session;
-  tableData: DataTableProps<TData, TValue>;
+  tableData: AppointmentsTableProps<TData, TValue>;
 }) => {
   const isUserAuthorized = session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE';
   const columnsVisibility = {
