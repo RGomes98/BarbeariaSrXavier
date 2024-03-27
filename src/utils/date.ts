@@ -1,4 +1,4 @@
-export const formatToDateTime = (date?: string) => {
+export const formatToDateTime = (date?: Date) => {
   const [day, month, year] = Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Sao_Paulo',
     month: '2-digit',
