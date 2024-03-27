@@ -110,7 +110,7 @@ export const TableContent = ({
   };
 
   return (
-    <>
+    <Fragment>
       <AlertDialog open={isFormActive}>
         <TableRow
           className={`relative cursor-pointer hover:border-t hover:brightness-110 hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
@@ -215,6 +215,6 @@ export const TableContent = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </>
+    </Fragment>
   );
 };

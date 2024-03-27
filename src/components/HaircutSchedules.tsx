@@ -28,7 +28,7 @@ export const HaircutSchedules = ({
       <Table>
         <TableCaption>Veja os horários disponíveis para agendar seu corte.</TableCaption>
         <TableHeader className='pointer-events-none'>
-          <TableRow className='max-md:text-xs'>
+          <TableRow>
             <TableHead>Hora</TableHead>
             <TableHead>Dia</TableHead>
             <TableHead>Status</TableHead>
