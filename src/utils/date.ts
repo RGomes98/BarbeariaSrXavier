@@ -1,11 +1,11 @@
-export const formatToDateTime = (date?: Date) => {
+export const formatToDateTime = (date?: string) => {
   const [day, month, year] = Intl.DateTimeFormat('en-US', {
     timeZone: 'America/Sao_Paulo',
     month: '2-digit',
     year: 'numeric',
     day: '2-digit',
   })
-    .format(date)
+    .format(new Date(date || new Date()))
     .split('/');
 
   return [year, day, month].join('-');
