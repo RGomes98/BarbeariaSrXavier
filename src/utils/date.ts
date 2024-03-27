@@ -23,23 +23,23 @@ export const formatDate = (date: string) => {
   }).format(new Date(date));
 };
 
-export const formatDateShort = (date: Date) => {
+export const formatDateShort = (date: string) => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     weekday: 'long',
     year: 'numeric',
     day: 'numeric',
     month: 'long',
-  }).format(date);
+  }).format(new Date(date));
 };
 
-export const formatDateGetWeekAndDay = (date: Date) => {
+export const formatDateGetWeekAndDay = (date: string) => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     weekday: 'long',
     day: '2-digit',
     month: 'long',
-  }).format(date);
+  }).format(new Date(date));
 };
 
 export const formatDateGetDay = (date: string) => {
