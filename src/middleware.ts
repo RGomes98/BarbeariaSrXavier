@@ -17,7 +17,7 @@ export async function middleware(request: NextRequest) {
 
   if (userAuthentication.status !== 200) return NextResponse.redirect(new URL('/entrar', request.url));
 
-  if (['/agendamento/', '/recebidos'].some((path) => request.nextUrl.pathname.startsWith(path))) {
+  if (request.nextUrl.pathname.startsWith('/recebidos')) {
     const user: User = await userAuthentication.json();
 
     const isNotAuthorizedUser = !['ADMIN', 'EMPLOYEE'].some((accountType) => {
@@ -31,5 +31,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/entrar', '/registrar', '/recebidos', '/agendamentos', '/agendamento/:path*'],
+  matcher: ['/entrar', '/registrar', '/recebidos', '/agendamentos'],
 };
