@@ -75,7 +75,7 @@ export const AppointmentSchema = z
     haircutId: z.number(),
     employeeId: z.string(),
     status: z.enum(statuses),
-    scheduleDate: z.coerce.date(),
+    scheduleDate: z.string(),
     type: z.enum(appointmentTypes),
     paymentMethod: z.enum(paymentMethods),
   })
@@ -104,8 +104,8 @@ export const FormattedAppointmentDataSchema = z.object({
   haircutPrice: z.number(),
   employeeName: z.string(),
   appointmentId: z.string(),
+  appointmentDate: z.string(),
   appointmentStatus: z.string(),
-  appointmentDate: z.coerce.date(),
   paymentMethod: z.enum(paymentMethods),
 });
 

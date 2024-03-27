@@ -11,7 +11,7 @@ export const formatToDateTime = (date?: Date) => {
   return [year, day, month].join('-');
 };
 
-export const formatDate = (date: Date) => {
+export const formatDate = (date: string) => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     minute: 'numeric',
@@ -20,7 +20,7 @@ export const formatDate = (date: Date) => {
     year: 'numeric',
     day: 'numeric',
     month: 'long',
-  }).format(date);
+  }).format(new Date(date));
 };
 
 export const formatDateShort = (date: Date) => {
@@ -42,20 +42,20 @@ export const formatDateGetWeekAndDay = (date: Date) => {
   }).format(date);
 };
 
-export const formatDateGetDay = (date: Date) => {
+export const formatDateGetDay = (date: string) => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     day: '2-digit',
     month: 'long',
-  }).format(date);
+  }).format(new Date(date));
 };
 
-export const formatDateGetHour = (date?: Date) => {
+export const formatDateGetHour = (date?: string) => {
   return new Intl.DateTimeFormat('pt-BR', {
     timeZone: 'America/Sao_Paulo',
     minute: 'numeric',
     hour: 'numeric',
-  }).format(date);
+  }).format(new Date(date || new Date()));
 };
 
 export const isNotWithinThirtyDaysRange = (date: Date) => {
