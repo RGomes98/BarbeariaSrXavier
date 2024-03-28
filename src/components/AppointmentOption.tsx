@@ -4,8 +4,8 @@ import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
+import { AppointmentForm } from './AppointmentForm';
 import { useMounted } from '@/hooks/useMounted';
-import { ScheduleForm } from './ScheduleForm';
 import { Fragment } from 'react';
 
 import {
@@ -113,9 +113,11 @@ export const AppointmentOption = ({
     <Fragment>
       <AlertDialog open={isFormActive}>
         <TableRow
-          className={`relative cursor-pointer hover:border-t hover:brightness-110 hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
+          className={`relative cursor-pointer hover:border-t hover:brightness-110 max-sm:text-xs hover:${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')} ${getScheduleStatusColor(!isScheduleNotActive ? currentHourSchedule?.status : 'DISABLED')}`}
         >
-          <TableCell>{formatDateGetHour(String(getCurrentSchedule(hour)))}h</TableCell>
+          <TableCell className='max-sm:py-2.5'>
+            {formatDateGetHour(String(getCurrentSchedule(hour)))}h
+          </TableCell>
           <TableCell className='max-md:hidden'>
             {formatDateGetWeekAndDay(String(getCurrentSchedule(hour)))}
           </TableCell>
@@ -156,7 +158,7 @@ export const AppointmentOption = ({
                 (session?.accountType === 'USER' || !session) &&
                 `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h?`}
               {!session && (
-                <ScheduleForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
