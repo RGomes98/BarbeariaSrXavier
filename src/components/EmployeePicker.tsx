@@ -15,7 +15,7 @@ import {
 export const EmployeePicker = ({ employees }: { employees: User[] }) => {
   const searchParams = useSearchParams();
   const validEmployees = employees.map(({ name }) => name);
-  const paymentMethod = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
+  const employee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
   return (
     <div className='flex w-full flex-col gap-2 max-md:w-full'>
@@ -29,10 +29,12 @@ export const EmployeePicker = ({ employees }: { employees: User[] }) => {
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {employees.map((employee) => {
+            {employees.map((employeeOption) => {
               return (
-                <SelectItem key={employee.name} value={employee.name}>
-                  {employee.name}
+                <SelectItem key={employeeOption.name} value={employeeOption.name}>
+                  {employeeOption.name === employee
+                    ? `Barbeiro Selecionado: ${employeeOption.name}`
+                    : employeeOption.name}
                 </SelectItem>
               );
             })}

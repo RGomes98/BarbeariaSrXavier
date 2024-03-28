@@ -32,7 +32,9 @@ export const PaymentMethodPicker = () => {
             {paymentMethods.map((paymentOption) => {
               return (
                 <SelectItem key={paymentOption} value={paymentOption}>
-                  {formatPaymentMethod(paymentOption)}
+                  {paymentOption === paymentMethod
+                    ? `Método de Pagamento Selecionado: ${formatPaymentMethod(paymentOption)}`
+                    : formatPaymentMethod(paymentOption)}
                 </SelectItem>
               );
             })}
