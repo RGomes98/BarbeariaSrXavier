@@ -18,15 +18,14 @@ export const PaymentMethodPicker = () => {
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
 
   return (
-    <div className='flex w-[180px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
-      <span>Método de Pagamento</span>
+    <div className='flex w-full flex-col gap-2'>
       <Select
         onValueChange={(paymentOption) =>
           createSelectInputQueryString({ inputKey: 'payment', selectInput: paymentOption, searchParams })
         }
       >
         <SelectTrigger>
-          <SelectValue placeholder={formatPaymentMethod(paymentMethod)} />
+          <SelectValue placeholder='Método de Pagamento' />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

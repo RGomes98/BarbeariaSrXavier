@@ -7,7 +7,6 @@ import { Calendar } from '@/components/ui/calendar';
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ptBR } from 'date-fns/locale';
-import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
 
 export const DatePicker = () => {
@@ -15,13 +14,12 @@ export const DatePicker = () => {
   const date = validateDate(searchParams.get('date'), String(new Date()));
 
   return (
-    <div className='flex w-[200px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
-      <span>Data do Agendamento</span>
+    <div className='flex w-full flex-col gap-2 max-md:w-full'>
       <Popover>
         <PopoverTrigger asChild>
           <Button variant='outline' className={cn('justify-start text-left font-normal')}>
             <CalendarIcon className='mr-2 h-4 w-4' />
-            {format(new Date(date), 'PPP', { locale: ptBR })}
+            Data do Agendamento
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>

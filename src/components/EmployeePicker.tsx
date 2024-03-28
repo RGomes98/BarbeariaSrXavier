@@ -18,15 +18,14 @@ export const EmployeePicker = ({ employees }: { employees: User[] }) => {
   const paymentMethod = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
   return (
-    <div className='flex w-[190px] flex-col gap-2 max-[1350px]:w-[33%] max-md:w-full'>
-      <span>Escolha do Profissional</span>
+    <div className='flex w-full flex-col gap-2 max-md:w-full'>
       <Select
         onValueChange={(employee) =>
           createSelectInputQueryString({ inputKey: 'employee', selectInput: employee, searchParams })
         }
       >
         <SelectTrigger>
-          <SelectValue placeholder={paymentMethod} />
+          <SelectValue placeholder='Escolha do Profissional' />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

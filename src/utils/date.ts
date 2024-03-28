@@ -58,6 +58,22 @@ export const formatDateGetHour = (date?: string) => {
   }).format(new Date(date || new Date()));
 };
 
+export const formatDateGetWeekday = (date: string) => {
+  return new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    weekday: 'long',
+  }).format(new Date(date));
+};
+
+export const formatDateGetDayAndYear = (date: string) => {
+  return new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    year: 'numeric',
+    day: 'numeric',
+    month: 'long',
+  }).format(new Date(date));
+};
+
 export const isNotWithinThirtyDaysRange = (date: Date) => {
   return !(
     new Date(new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1)) >= new Date() &&
