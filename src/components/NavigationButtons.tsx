@@ -12,21 +12,21 @@ export const NavigationButtons = ({ session }: { session: Session }) => {
   const path = usePathname();
 
   const isAtSchedules = path === '/agendamentos';
-  const isAtReceived = path === '/recebidos';
+  const isAtDashboard = path === '/dashboard';
   const isAtHome = path === '/';
 
   return (
     <div className='ml-auto flex items-center gap-2 max-md:hidden'>
+      {!isAtHome && (
+        <Button variant='outline'>
+          <Link href='/'>Voltar</Link>
+        </Button>
+      )}
       {session && (
         <Fragment>
-          {!isAtHome && (
+          {!isAtDashboard && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
             <Button variant='outline'>
-              <Link href='/'>Voltar</Link>
-            </Button>
-          )}
-          {!isAtReceived && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
-            <Button variant='outline'>
-              <Link href='/recebidos'>Recebidos</Link>
+              <Link href='/dashboard'>Dashboard</Link>
             </Button>
           )}
           {!isAtSchedules && (

@@ -14,7 +14,7 @@ export const MobileSideMenu = ({ session }: { session: Session }) => {
   const path = usePathname();
 
   const isAtSchedules = path === '/agendamentos';
-  const isAtReceived = path === '/recebidos';
+  const isAtDashboard = path === '/dashboard';
   const isAtHome = path === '/';
 
   return (
@@ -31,16 +31,16 @@ export const MobileSideMenu = ({ session }: { session: Session }) => {
           </SheetTitle>
         </SheetHeader>
         <div className='mt-auto grid py-6'>
+          {!isAtHome && (
+            <Button variant='outline' className='mb-4 py-6'>
+              <Link href='/'>Voltar</Link>
+            </Button>
+          )}
           {session && (
             <div className='flex flex-col justify-center gap-4'>
-              {!isAtHome && (
+              {!isAtDashboard && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
                 <Button variant='outline' className='py-6'>
-                  <Link href='/'>Voltar</Link>
-                </Button>
-              )}
-              {!isAtReceived && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
-                <Button variant='outline' className='py-6'>
-                  <Link href='/recebidos'>Recebidos</Link>
+                  <Link href='/dashboard'>Dashboard</Link>
                 </Button>
               )}
               {!isAtSchedules && (

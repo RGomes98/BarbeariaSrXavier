@@ -1,7 +1,7 @@
-import { ReceivedSchedules } from '@/components/ReceivedSchedules';
+import { Dashboard } from '@/components/Dashboard';
 import { getSession } from '@/helpers/getSession';
 
 export default async function Page() {
   const session = await getSession();
-  return <ReceivedSchedules session={session} />;
+  return <Dashboard session={session} />;
 }

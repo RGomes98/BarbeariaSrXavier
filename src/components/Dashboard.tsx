@@ -8,7 +8,7 @@ import { Fragment } from 'react';
 
 // import Link from 'next/link';
 
-export const ReceivedSchedules = ({ session }: { session: Session }) => {
+export const Dashboard = ({ session }: { session: Session }) => {
   // const { searchParams, scheduleEmployee, scheduleDate, filterAllSchedules } = useScheduleActions(session);
 
   return (
