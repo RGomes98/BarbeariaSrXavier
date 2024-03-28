@@ -22,7 +22,7 @@ import {
 
 import Link from 'next/link';
 
-export const TableContent = ({
+export const AppointmentOption = ({
   hour,
   haircut,
   session,
@@ -148,13 +148,13 @@ export const TableContent = ({
             </AlertDialogTitle>
             <AlertDialogDescription>
               {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') &&
-                `Tem certeza de que deseja definir o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))} como o seu horário de almoço?`}
+                `Tem certeza de que deseja definir o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h como o seu horário de almoço?`}
               {paymentMethod === 'CASH' &&
                 (session?.accountType === 'USER' || !session) &&
-                'Tem certeza de que deseja pagar pelo agendamento com dinheiro no momento da visita?'}
+                `Tem certeza de que deseja pagar pelo agendamento com dinheiro no momento da visita para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h?`}
               {paymentMethod !== 'CASH' &&
                 (session?.accountType === 'USER' || !session) &&
-                `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}?`}
+                `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h?`}
               {!session && (
                 <ScheduleForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
               )}

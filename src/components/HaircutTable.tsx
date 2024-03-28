@@ -3,12 +3,12 @@
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { Haircut, User, workingHours } from '@/lib/schemas';
+import { AppointmentOption } from './AppointmentOption';
 import { type Session } from '@/helpers/getSession';
 import { HaircutOptions } from './HaircutOptions';
 import { formatDateShort } from '@/utils/date';
-import { TableContent } from './TableContent';
 
-export const HaircutSchedules = ({
+export const HaircutTable = ({
   haircut,
   session,
   employees,
@@ -38,7 +38,7 @@ export const HaircutSchedules = ({
         <TableBody>
           {workingHours.map((hour) => {
             return (
-              <TableContent
+              <AppointmentOption
                 key={hour}
                 hour={hour}
                 haircut={haircut}
