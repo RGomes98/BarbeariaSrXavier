@@ -26,9 +26,11 @@ type AppointmentsTableProps<TData, TValue> = {
 
 export const AppointmentsTable = <TData, TValue>({
   session,
+  children,
   tableData: { data, columns },
 }: {
   session: Session;
+  children: React.ReactNode;
   tableData: AppointmentsTableProps<TData, TValue>;
 }) => {
   const isUserAuthorized = session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE';
@@ -60,7 +62,7 @@ export const AppointmentsTable = <TData, TValue>({
 
   return (
     <div className='flex w-full flex-col items-center gap-8'>
-      <div className='flex w-full justify-between max-[865px]:flex-col max-[865px]:gap-3'>
+      <div className='flex w-full items-end justify-between max-[865px]:flex-col max-[865px]:gap-3'>
         {isUserAuthorized && (
           <Input
             placeholder='Busque pelo nome do cliente...'
@@ -77,12 +79,7 @@ export const AppointmentsTable = <TData, TValue>({
             className='max-w-sm max-[865px]:max-w-full'
           />
         )}
-        <Input
-          placeholder='Busque pelo status do agendamento...'
-          value={(table.getColumn('appointmentStatus')?.getFilterValue() as string) ?? ''}
-          onChange={(event) => table.getColumn('appointmentStatus')?.setFilterValue(event.target.value)}
-          className='max-w-sm max-[865px]:max-w-full'
-        />
+        {children}
       </div>
       <div className='flex w-full flex-col gap-4'>
         <div className='flex items-center justify-end gap-2'>

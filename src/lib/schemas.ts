@@ -5,7 +5,7 @@ const phoneRegex = /^\((?:[1-9]{2})\)\s*(?:9[0-9]{4}-[0-9]{4})$/;
 const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
 
 export const workingHours = [9, 10, 11, 12, 13, 14, 15, 16, 17, 18] as const;
-export const statuses = ['PAID', 'PENDING', 'CANCELED', 'BREAK'] as const;
+export const statuses = ['PAID', 'BREAK', 'PENDING', 'CANCELED'] as const;
 export const appointmentTypes = ['REGULAR', 'SESSIONLESS'] as const;
 export const accountTypes = ['USER', 'EMPLOYEE', 'ADMIN'] as const;
 export const paymentMethods = ['PIX', 'CASH', 'CARD'] as const;

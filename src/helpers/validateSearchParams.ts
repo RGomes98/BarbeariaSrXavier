@@ -1,4 +1,4 @@
-import { PaymentMethod, paymentMethodSchema, paymentMethods } from '@/lib/schemas';
+import { PaymentMethod, Status, paymentMethodSchema, paymentMethods, statuses } from '@/lib/schemas';
 import { isNotWithinThirtyDaysRange } from '@/utils/date';
 import { z } from 'zod';
 
@@ -20,4 +20,10 @@ export const validatePaymentMethod = (param: string | null, defaultPaymentMethod
     return defaultPaymentMethod;
   }
   return paymentMethod.data;
+};
+
+export const validateStatus = (param: string | null, defaultStatus: Status) => {
+  const status = z.enum(statuses).safeParse(param);
+  if (!param || !status.success) return defaultStatus;
+  return status.data;
 };
