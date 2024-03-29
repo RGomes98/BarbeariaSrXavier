@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Session } from '@/helpers/getSession';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
+import { toast } from 'sonner';
 
 import {
   DropdownMenu,
@@ -106,7 +107,10 @@ export const useAppointmentsTable = (session: Session) => {
 
         const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
           const response = await UpdateAppointmentStatus(id, status, userId);
-          if (response.status === 'sucess') refresh();
+
+          if (response.status === 'error') return toast.error(response.message);
+          refresh();
+          toast.success(response.message);
         };
 
         return (

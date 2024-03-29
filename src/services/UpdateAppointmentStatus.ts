@@ -24,9 +24,13 @@ export const UpdateAppointmentStatus = async (id: string, status: Status, userId
     await updateDoc(appointmentRef, { status: status });
     await updateDoc(userRef, { schedules: [...filteredAppointments, appointmentToUpdate] });
 
-    return { status: 'sucess', message: 'appointment successfully updated' } as const;
+    return { status: 'sucess', message: 'Status do agendamento atualizado com sucesso!' } as const;
   } catch (error) {
-    if (error instanceof Error) return { status: 'error', message: error.message } as const;
+    if (error instanceof Error)
+      return {
+        status: 'error',
+        message: 'Ops! Algo deu errado ao tentar alterar o status do agendamento.',
+      } as const;
     throw error;
   }
 };
