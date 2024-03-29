@@ -33,7 +33,7 @@ export const EmployeePicker = ({ employees }: { employees: User[] }) => {
               return (
                 <SelectItem key={employeeOption.name} value={employeeOption.name}>
                   {employeeOption.name === employee
-                    ? `Barbeiro Selecionado: ${employeeOption.name}`
+                    ? `Profissional Selecionado: ${employeeOption.name}`
                     : employeeOption.name}
                 </SelectItem>
               );

@@ -6,7 +6,7 @@ import { useSearchParams } from 'next/navigation';
 export const useAppointmentTableFilter = (data: FormattedAppointmentData[]) => {
   const searchParams = useSearchParams();
   const date = validateDate(searchParams.get('date'), String(new Date()));
-  const status = validateStatus(searchParams.get('status'), 'PAID');
+  const status = validateStatus(searchParams.get('status'), 'PENDING');
 
   const filteredData = data.filter(
     ({ appointmentDate, appointmentStatus }) =>

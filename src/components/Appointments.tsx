@@ -23,8 +23,13 @@ export const Appointments = ({
   return (
     <Fragment>
       {children}
-      <div className='flex w-full flex-col gap-8 px-28 pb-16 pt-10 max-xl:px-14 max-lg:px-8'>
-        <h1 className='font-raleway text-4xl font-semibold uppercase max-md:text-3xl'>Agendamentos</h1>
+      <div className='flex w-full flex-col gap-8 px-28 pb-14 pt-10 max-xl:px-14 max-lg:px-8'>
+        <div className='flex flex-col gap-1'>
+          <h1 className='w-full font-raleway text-4xl font-medium max-md:text-3xl'>Agendamentos</h1>
+          <p className='text-base  font-light max-md:text-sm'>
+            Veja e Gerencie seus Próximos Cortes Agendados
+          </p>
+        </div>
         <AppointmentsTable session={session} tableData={{ data: filteredData, columns: columns }}>
           <AppointmentsTableFilters />
         </AppointmentsTable>

@@ -62,7 +62,7 @@ export const AppointmentsTable = <TData, TValue>({
 
   return (
     <div className='flex w-full flex-col items-center gap-8'>
-      <div className='flex w-full items-end justify-between max-[865px]:flex-col max-[865px]:gap-3'>
+      <div className='flex w-full items-end justify-between gap-3 max-[865px]:flex-col'>
         {isUserAuthorized && (
           <Input
             placeholder='Busque pelo nome do cliente...'
