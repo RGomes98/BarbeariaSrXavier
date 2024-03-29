@@ -107,8 +107,8 @@ export const useAppointmentsTable = (session: Session) => {
 
         const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
           const response = await UpdateAppointmentStatus(id, status, userId);
-
           if (response.status === 'error') return toast.error(response.message);
+
           refresh();
           toast.success(response.message);
         };

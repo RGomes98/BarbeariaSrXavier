@@ -8,11 +8,12 @@ export const useAppointmentTableFilter = (data: FormattedAppointmentData[]) => {
   const date = validateDate(searchParams.get('date'), String(new Date()));
   const status = validateStatus(searchParams.get('status'), 'PENDING');
 
-  const filteredData = data.filter(
-    ({ appointmentDate, appointmentStatus }) =>
+  const filteredData = data.filter(({ appointmentDate, appointmentStatus }) => {
+    return (
       new Date(appointmentDate).getDate() === new Date(date).getDate() &&
-      appointmentStatus === formatScheduleCaption(status),
-  );
+      appointmentStatus === formatScheduleCaption(status)
+    );
+  });
 
   return { filteredData, date, status, searchParams };
 };
