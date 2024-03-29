@@ -24,6 +24,11 @@ export const NavigationButtons = ({ session }: { session: Session }) => {
       )}
       {session && (
         <Fragment>
+          {isAtDashboard && (
+            <Button variant='outline'>
+              <Link href='#'>Editar Cortes</Link>
+            </Button>
+          )}
           {!isAtDashboard && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
             <Button variant='outline'>
               <Link href='/dashboard'>Dashboard</Link>

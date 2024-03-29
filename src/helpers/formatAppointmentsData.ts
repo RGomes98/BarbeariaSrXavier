@@ -16,6 +16,7 @@ export const formatAppointmentsData = async (data: Appointment[]) => {
 
       return {
         clientName: client.name,
+        employeeId: employee.id,
         haircutName: haircut.name,
         employeeName: employee.name,
         haircutPrice: haircut.price,

@@ -38,6 +38,11 @@ export const MobileSideMenu = ({ session }: { session: Session }) => {
           )}
           {session && (
             <div className='flex flex-col justify-center gap-4'>
+              {isAtDashboard && (
+                <Button variant='outline' className='py-6'>
+                  <Link href='#'>Editar Cortes</Link>
+                </Button>
+              )}
               {!isAtDashboard && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
                 <Button variant='outline' className='py-6'>
                   <Link href='/dashboard'>Dashboard</Link>

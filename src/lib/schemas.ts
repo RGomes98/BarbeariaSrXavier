@@ -100,6 +100,7 @@ export const UserSchema = z
 
 export const FormattedAppointmentDataSchema = z.object({
   clientName: z.string(),
+  employeeId: z.string(),
   haircutName: z.string(),
   haircutPrice: z.number(),
   employeeName: z.string(),
