@@ -1,16 +1,16 @@
 'use client';
 
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/sheet';
 import { SignOutButton } from './SignOutButton';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/helpers/getSession';
 import { usePathname } from 'next/navigation';
+import { LogoSVG } from './LogoSVG';
 import { Menu } from 'lucide-react';
-import { Logo } from './Logo';
 
 import Link from 'next/link';
 
-export const MobileSideMenu = ({ session }: { session: Session }) => {
+export const SideMenu = ({ session }: { session: Session }) => {
   const path = usePathname();
 
   const isAtSchedules = path === '/agendamentos';
@@ -19,16 +19,14 @@ export const MobileSideMenu = ({ session }: { session: Session }) => {
 
   return (
     <Sheet>
-      <SheetTrigger className='ml-auto md:hidden' asChild>
-        <Button variant='ghost' className='px-2'>
-          <Menu size={28} />
+      <SheetTrigger asChild>
+        <Button variant='ghost' className='flex size-10 items-center justify-center p-0'>
+          <Menu className='h-full w-full' />
         </Button>
       </SheetTrigger>
       <SheetContent className='mt-auto flex flex-col'>
         <SheetHeader>
-          <SheetTitle>
-            <Logo className='text-xl max-[425px]:text-lg' />
-          </SheetTitle>
+          <LogoSVG className='mx-auto size-48' />
         </SheetHeader>
         <div className='mt-auto grid py-6'>
           {!isAtHome && (
