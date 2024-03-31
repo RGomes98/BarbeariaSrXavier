@@ -2,13 +2,13 @@ import type { Appointment } from '@/lib/schemas';
 import { Session } from '@/helpers/getSession';
 
 export const getAccountTypeAppointments = (session: Session, appointments: Appointment[]) => {
-  if (session?.accountType === 'USER') {
+  if (session?.accountType === 'EMPLOYEE') {
     return appointments.filter((appointment) => {
-      return appointment.type === 'REGULAR' && appointment.userId === session.id;
+      return appointment.employeeId === session.id;
     });
   }
 
-  return appointments.filter(({ employeeId }) => {
-    return employeeId === session?.id;
+  return appointments.filter((appointment) => {
+    return appointment.type === 'REGULAR' && appointment.userId === session?.id;
   });
 };

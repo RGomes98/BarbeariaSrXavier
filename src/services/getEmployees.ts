@@ -15,7 +15,10 @@ export const getEmployee = async (id: string) => {
     where('accountType', '==', 'EMPLOYEE'),
     where('id', '==', id),
   );
-  const employee = UserSchema.safeParse((await getDocs(employeeQuery)).docs[0]?.data());
-  if (!employee.success) return [];
+
+  const employeeData = (await getDocs(employeeQuery)).docs[0]?.data();
+  const employee = UserSchema.safeParse(employeeData);
+
+  if (!employee.success) throw new Error('invalid employee structure');
   return employee.data;
 };

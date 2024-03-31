@@ -8,9 +8,9 @@ export const formatAppointmentsData = async (data: Appointment[]) => {
   return await Promise.all(
     data?.map(async (appointment) => {
       const isAppointmentRegular = appointment.type === 'REGULAR';
-      const [employee, haircut, client] = await Promise.all([
-        getEmployee(appointment.employeeId),
+      const [haircut, employee, client] = await Promise.all([
         getHaircut(appointment.haircutId),
+        getEmployee(appointment.employeeId),
         isAppointmentRegular ? GetUserByIdClient(appointment.userId) : { name: appointment.name },
       ]);
 
