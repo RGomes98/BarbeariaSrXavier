@@ -1,31 +1,27 @@
 'use client';
 
-import { useMounted } from '@/hooks/useMounted';
 import { usePathname } from 'next/navigation';
-import { Scissors } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { LogoSVG } from './LogoSVG';
 import { cn } from '@/lib/utils';
 
 import Link from 'next/link';
 
 export const Logo = ({ className }: JSX.IntrinsicElements['div']) => {
-  const { isMounted } = useMounted();
-  const { theme } = useTheme();
   const path = usePathname();
-
-  const isNotAtLoginPage = theme === 'light' && path !== '/entrar' && path !== '/registrar';
+  const isNotAtLoginOrRegisterPage = path !== '/entrar' && path !== '/registrar';
 
   return (
     <Link
       href='/'
       className={cn(
-        'flex items-center gap-4 whitespace-nowrap font-poppins text-2xl text-gray-200',
+        'flex items-center gap-4 whitespace-nowrap font-poppins text-2xl text-black ',
         className,
-        { 'text-black': isNotAtLoginPage && isMounted },
+        { 'w-2/3': !isNotAtLoginOrRegisterPage },
+        { 'pointer-events-none': !isNotAtLoginOrRegisterPage },
+        { 'dark:text-gray-200': isNotAtLoginOrRegisterPage || !isNotAtLoginOrRegisterPage },
       )}
     >
-      <Scissors className='size-6 min-w-6 max-md:size-6' />
-      <h1 className='whitespace-nowrap'>Barbearia Sr. Xavier</h1>
+      <LogoSVG className={cn('size-32', { 'size-full': !isNotAtLoginOrRegisterPage })} />
     </Link>
   );
 };
