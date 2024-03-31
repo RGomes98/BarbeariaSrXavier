@@ -1,6 +1,7 @@
 import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validateEmployee } from '@/helpers/validateSearchParams';
 import { useSearchParams } from 'next/navigation';
+import { Contact } from 'lucide-react';
 import { User } from '@/lib/schemas';
 
 import {
@@ -32,9 +33,14 @@ export const EmployeePicker = ({ employees }: { employees: User[] }) => {
             {employees.map((employeeOption) => {
               return (
                 <SelectItem key={employeeOption.name} value={employeeOption.name}>
-                  {employeeOption.name === employee
-                    ? `Profissional Selecionado: ${employeeOption.name}`
-                    : employeeOption.name}
+                  {employeeOption.name === employee ? (
+                    <div className='flex gap-2'>
+                      <Contact className='size-5' />
+                      {employeeOption.name}
+                    </div>
+                  ) : (
+                    employeeOption.name
+                  )}
                 </SelectItem>
               );
             })}

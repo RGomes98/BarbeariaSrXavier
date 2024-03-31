@@ -1,5 +1,5 @@
+import { formatDateShort, formatToDateTime, isNotWithinThirtyDaysRange } from '@/utils/date';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { formatToDateTime, isNotWithinThirtyDaysRange } from '@/utils/date';
 import { createDateInputQueryString } from '@/helpers/createQueryString';
 import { validateDate } from '@/helpers/validateSearchParams';
 import { CalendarIcon } from '@radix-ui/react-icons';
@@ -17,9 +17,9 @@ export const DatePicker = () => {
     <div className='flex w-full flex-col gap-2 max-md:w-full'>
       <Popover>
         <PopoverTrigger asChild>
-          <Button variant='outline' className={cn('justify-start text-left font-normal')}>
-            <CalendarIcon className='mr-2 h-4 w-4' />
-            Data do Agendamento
+          <Button variant='outline' className={cn('justify-start gap-2 text-left font-normal')}>
+            <CalendarIcon className='size-5' />
+            {searchParams.get('date') ? formatDateShort(date) : 'Data do Agendamento'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>

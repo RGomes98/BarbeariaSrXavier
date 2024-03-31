@@ -2,6 +2,7 @@ import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validatePaymentMethod } from '@/helpers/validateSearchParams';
 import { formatPaymentMethod } from '@/utils/caption';
 import { useSearchParams } from 'next/navigation';
+import { BadgeDollarSign } from 'lucide-react';
 import { paymentMethods } from '@/lib/schemas';
 
 import {
@@ -32,9 +33,14 @@ export const PaymentMethodPicker = () => {
             {paymentMethods.map((paymentOption) => {
               return (
                 <SelectItem key={paymentOption} value={paymentOption}>
-                  {paymentOption === paymentMethod
-                    ? `Método de Pagamento Selecionado: ${formatPaymentMethod(paymentOption)}`
-                    : formatPaymentMethod(paymentOption)}
+                  {paymentOption === paymentMethod ? (
+                    <div className='flex gap-2'>
+                      <BadgeDollarSign className='size-5' />
+                      {formatPaymentMethod(paymentOption)}
+                    </div>
+                  ) : (
+                    formatPaymentMethod(paymentOption)
+                  )}
                 </SelectItem>
               );
             })}

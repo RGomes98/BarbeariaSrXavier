@@ -32,7 +32,7 @@ export const Dashboard = ({
   return (
     <Fragment>
       {children}
-      <div className='flex w-full flex-col gap-8 px-28 pb-14 pt-10 max-xl:px-14 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
+      <div className='flex w-full flex-col gap-8 px-28 pb-20 pt-14 max-xl:px-14 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
         <div className='grid grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:gap-10'>
           <div className='flex flex-col gap-2 max-lg:flex-row max-lg:justify-between max-sm:flex-col'>
             <div className='flex flex-col gap-1 max-sm:gap-2'>

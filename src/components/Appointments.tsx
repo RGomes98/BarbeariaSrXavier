@@ -23,7 +23,7 @@ export const Appointments = ({
   return (
     <Fragment>
       {children}
-      <div className='flex w-full flex-col gap-8 px-28 pb-14 pt-10 max-xl:px-14 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
+      <div className='flex w-full flex-col gap-8 px-28 pb-20 pt-14 max-xl:px-14 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
         <div className='flex flex-col gap-1 max-[565px]:gap-2'>
           <h1 className='w-full font-raleway text-4xl font-medium max-md:text-3xl'>Agendamentos</h1>
           <p className='text-base  font-light max-md:text-sm'>
