@@ -19,6 +19,7 @@ const config = {
     },
     extend: {
       fontFamily: {
+        galada: ['var(--font-galada)'],
         raleway: ['var(--font-raleway)'],
         poppins: ['var(--font-poppins)'],
       },
