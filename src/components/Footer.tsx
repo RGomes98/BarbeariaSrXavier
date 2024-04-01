@@ -4,7 +4,7 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className='flex justify-center border-t border-border/80 px-8 pb-8 max-md:text-sm'>
+    <footer className='flex justify-center border-t border-border/80 px-8 pb-8 max-md:pb-12 max-md:text-sm'>
       <div className='flex flex-col items-center text-center'>
         <LogoSVG className='size-28' />
         <span className='mb-2'>© Todos os direitos reservados - {currentYear}</span>
