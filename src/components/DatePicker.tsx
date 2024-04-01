@@ -8,18 +8,21 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 export const DatePicker = () => {
+  const [isDateSelected, setIsDateSelected] = useState(false);
+
   const searchParams = useSearchParams();
   const date = validateDate(searchParams.get('date'), String(new Date()));
 
   return (
     <div className='flex w-full flex-col gap-2 max-md:w-full'>
       <Popover>
-        <PopoverTrigger asChild>
+        <PopoverTrigger asChild className='px-3'>
           <Button variant='outline' className={cn('justify-start gap-2 text-left font-normal')}>
             <CalendarIcon className='size-5' />
-            {searchParams.get('date') ? formatDateShort(date) : 'Data do Agendamento'}
+            {isDateSelected ? formatDateShort(date) : 'Data do Agendamento'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>
@@ -29,9 +32,10 @@ export const DatePicker = () => {
             locale={ptBR}
             selected={new Date(date)}
             disabled={(date) => isNotWithinThirtyDaysRange(date)}
-            onSelect={(date) =>
-              createDateInputQueryString({ dateInput: formatToDateTime(date), searchParams })
-            }
+            onSelect={(date) => {
+              setIsDateSelected(true);
+              createDateInputQueryString({ dateInput: formatToDateTime(date), searchParams });
+            }}
           />
         </PopoverContent>
       </Popover>
