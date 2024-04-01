@@ -4,6 +4,7 @@ import { HaircutTable } from '@/components/HaircutTable';
 import { getEmployees } from '@/services/getEmployees';
 import { getSession } from '@/helpers/getSession';
 import { Navbar } from '@/components/Navbar';
+import { Footer } from '@/components/Footer';
 import { Fragment } from 'react';
 
 export default async function Page({ params: { id } }: { params: { id: string } }) {
@@ -23,6 +24,7 @@ export default async function Page({ params: { id } }: { params: { id: string } 
         <HaircutCarousel haircut={haircut} />
         <HaircutTable haircut={haircut} session={session} employees={employees} />
       </div>
+      <Footer />
     </Fragment>
   );
 }

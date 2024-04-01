@@ -20,7 +20,7 @@ export const SideMenu = ({ session }: { session: Session }) => {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant='ghost' className='flex size-10 items-center justify-center p-0'>
+        <Button variant='ghost' className='flex size-9 items-center justify-center p-0'>
           <Menu className='h-full w-full' />
         </Button>
       </SheetTrigger>
