@@ -19,10 +19,13 @@ export const useBarberShopActions = (barbers: User[]) => {
   const validEmployees = barbers.map(({ name }) => name);
 
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
-  const employee = barbers.find(
-    (employee): employee is Employee =>
-      employee.accountType === 'EMPLOYEE' && employee.name === scheduleEmployee,
-  );
+
+  const employee = barbers.find((employee): employee is Employee => {
+    return (
+      (employee.accountType === 'EMPLOYEE' || employee.accountType === 'ADMIN') &&
+      employee.name === scheduleEmployee
+    );
+  });
 
   const getCurrentSchedule = (hour: number) => {
     return new Date(

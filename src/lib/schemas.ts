@@ -83,7 +83,7 @@ export const AppointmentSchema = z
 
 export const userDiscriminatedUnionSchema = z.discriminatedUnion('accountType', [
   z.object({ accountType: z.literal('USER') }),
-  z.object({ accountType: z.literal('ADMIN') }),
+  z.object({ accountType: z.literal('ADMIN'), schedules: z.array(ScheduleSchema).optional() }),
   z.object({ accountType: z.literal('EMPLOYEE'), schedules: z.array(ScheduleSchema).optional() }),
 ]);
 
