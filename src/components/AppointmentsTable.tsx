@@ -62,7 +62,7 @@ export const AppointmentsTable = <TData, TValue>({
 
   return (
     <div className='flex w-full flex-col items-center gap-8'>
-      <div className='flex w-full items-end justify-between gap-3 max-[865px]:flex-col'>
+      <div className='flex w-full items-end justify-between gap-2 max-[865px]:flex-col'>
         {isUserAuthorized && (
           <Input
             placeholder='Busque pelo nome do cliente...'
@@ -81,7 +81,7 @@ export const AppointmentsTable = <TData, TValue>({
         )}
         {children}
       </div>
-      <div className='flex w-full flex-col gap-4'>
+      <div className='flex w-full flex-col gap-8'>
         <div className='flex items-center justify-end gap-2'>
           <Button
             variant='outline'

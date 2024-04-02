@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 export const DatePicker = () => {
   const searchParams = useSearchParams();
   const selectedDate = validateDate(searchParams.get('date'), String(new Date()));
+  const datePlaceholder = searchParams.get('date') ? formatDateShort(selectedDate) : 'Data do Agendamento';
 
   return (
     <div className='flex w-full flex-col gap-2 max-md:w-full'>
@@ -19,7 +20,7 @@ export const DatePicker = () => {
         <PopoverTrigger asChild className='px-3'>
           <Button variant='outline' className={cn('justify-start gap-2 text-left font-normal')}>
             <CalendarIcon className='size-5' />
-            {searchParams.get('date') ? formatDateShort(selectedDate) : 'Data do Agendamento'}
+            {datePlaceholder}
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>

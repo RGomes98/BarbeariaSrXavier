@@ -1,12 +1,13 @@
 'use client';
 
+import { CheckCircle2, CircleDot, CircleSlash, Contact, XCircle } from 'lucide-react';
 import { useDashboardTableFilter } from '@/hooks/useDashboardTableFilter';
-import { CalendarClock, Contact, ReceiptText } from 'lucide-react';
 import { DashboardTableFilters } from './DashboardTableFilters';
 import { FormattedAppointmentData, User } from '@/lib/schemas';
 import { useDashboardTable } from '@/hooks/useDashboardTable';
 import { formatScheduleCaption } from '@/utils/caption';
 import { EmployeeEarnings } from './EmployeeEarnings';
+import { CalendarIcon } from '@radix-ui/react-icons';
 import { DashboardTable } from './DashboardTable';
 import { formatDateShort } from '@/utils/date';
 import { Session } from '@/helpers/getSession';
@@ -29,11 +30,18 @@ export const Dashboard = ({
   );
   const { columns } = useDashboardTable(filteredData[0]?.employeeId);
 
+  const StatusIcons = {
+    PAID: <CheckCircle2 className='size-5' />,
+    BREAK: <CircleSlash className='size-5' />,
+    PENDING: <CircleDot className='size-5' />,
+    CANCELED: <XCircle className='size-5' />,
+  };
+
   return (
     <Fragment>
       {children}
-      <div className='flex w-full flex-col gap-8 px-28 pb-20 pt-14 max-xl:px-14 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
-        <div className='grid grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:gap-10'>
+      <div className='flex w-full flex-col gap-12 px-28 pb-20 pt-14 max-xl:px-14 max-lg:gap-8 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
+        <div className='grid grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:gap-8'>
           <div className='flex flex-col gap-2 max-lg:flex-row max-lg:justify-between max-sm:flex-col'>
             <div className='flex flex-col gap-1 max-sm:gap-2'>
               <h1 className='w-full font-raleway text-4xl font-medium max-md:text-3xl'>Dashboard</h1>
@@ -41,14 +49,14 @@ export const Dashboard = ({
             </div>
             <div className='flex flex-col gap-2'>
               <p className='flex items-center gap-1 text-sm font-light max-lg:justify-end max-sm:justify-start'>
-                <CalendarClock className='size-5' /> {formatDateShort(date)}
+                <CalendarIcon className='size-5' /> {formatDateShort(date)}
               </p>
               <p className='flex items-center gap-1 text-sm font-light max-lg:justify-end max-sm:justify-start'>
                 <Contact className='size-5' />
                 {employee}
               </p>
               <p className='flex items-center gap-1 text-sm font-light max-lg:justify-end max-sm:justify-start'>
-                <ReceiptText className='size-5' />
+                {StatusIcons[status]}
                 {formatScheduleCaption(status)}
               </p>
             </div>

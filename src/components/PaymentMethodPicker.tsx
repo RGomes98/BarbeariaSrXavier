@@ -24,6 +24,15 @@ export const PaymentMethodPicker = () => {
   const searchParams = useSearchParams();
   const selectedPaymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
 
+  const paymentMethodPlaceholder = searchParams.get('payment') ? (
+    <div className='flex gap-2'>
+      {paymentMethodIcons[selectedPaymentMethod]}
+      {formatPaymentMethod(selectedPaymentMethod)}
+    </div>
+  ) : (
+    'Método de Pagamento'
+  );
+
   return (
     <div className='flex w-full flex-col gap-2'>
       <Select
@@ -32,18 +41,7 @@ export const PaymentMethodPicker = () => {
         }
       >
         <SelectTrigger>
-          <SelectValue
-            placeholder={
-              searchParams.get('payment') ? (
-                <div className='flex gap-2'>
-                  {paymentMethodIcons[selectedPaymentMethod]}
-                  {formatPaymentMethod(selectedPaymentMethod)}
-                </div>
-              ) : (
-                'Método de Pagamento'
-              )
-            }
-          />
+          <SelectValue placeholder={paymentMethodPlaceholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

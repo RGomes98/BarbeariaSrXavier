@@ -57,16 +57,16 @@ export const DashboardTable = <TData, TValue>({
 
   return (
     <div className='flex w-full flex-col items-center gap-8'>
-      <div className='flex w-full items-end justify-between gap-3 max-lg:flex-col'>
+      <div className='flex w-full items-end justify-between gap-2 max-[1100px]:flex-col'>
         <Input
           placeholder='Busque pelo nome do cliente...'
           value={(table.getColumn('clientName')?.getFilterValue() as string) ?? ''}
           onChange={(event) => table.getColumn('clientName')?.setFilterValue(event.target.value)}
-          className='max-w-sm max-lg:max-w-full'
+          className='max-w-sm max-[1100px]:max-w-full'
         />
         {children}
       </div>
-      <div className='flex w-full flex-col gap-4'>
+      <div className='flex w-full flex-col gap-8'>
         <div className='flex items-center justify-end gap-2'>
           <Button
             variant='outline'
