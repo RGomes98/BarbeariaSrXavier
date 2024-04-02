@@ -23,7 +23,7 @@ export const HaircutGrid = ({ haircuts }: { haircuts: Haircut[] }) => {
     <Fragment>
       {PaginationSection}
       {CURRENT_PAGE_ITEMS.length === 0 && (
-        <span className='m-auto mt-60 font-raleway text-3xl'>Nenhum corte encontrado.</span>
+        <span className='m-auto py-60 font-raleway text-3xl'>Nenhum corte encontrado.</span>
       )}
       {CURRENT_PAGE_ITEMS.length > 0 && (
         <div className='grid w-full grid-flow-row grid-cols-4 gap-10 py-6 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1'>
