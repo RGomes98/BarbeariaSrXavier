@@ -16,7 +16,7 @@ import {
 export const EmployeePicker = ({ employees }: { employees: User[] }) => {
   const searchParams = useSearchParams();
   const validEmployees = employees.map(({ name }) => name);
-  const employee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
+  const selectedEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
   return (
     <div className='flex w-full flex-col gap-2 max-md:w-full'>
@@ -26,21 +26,28 @@ export const EmployeePicker = ({ employees }: { employees: User[] }) => {
         }
       >
         <SelectTrigger>
-          <SelectValue placeholder='Escolha do Profissional' />
+          <SelectValue
+            placeholder={
+              searchParams.get('employee') ? (
+                <div className='flex gap-2'>
+                  <Contact className='size-5' />
+                  {selectedEmployee}
+                </div>
+              ) : (
+                'Escolha do Profissional'
+              )
+            }
+          />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
             {employees.map((employeeOption) => {
               return (
                 <SelectItem key={employeeOption.name} value={employeeOption.name}>
-                  {employeeOption.name === employee ? (
-                    <div className='flex gap-2'>
-                      <Contact className='size-5' />
-                      {employeeOption.name}
-                    </div>
-                  ) : (
-                    employeeOption.name
-                  )}
+                  <div className='flex gap-2'>
+                    <Contact className='size-5' />
+                    {employeeOption.name}
+                  </div>
                 </SelectItem>
               );
             })}

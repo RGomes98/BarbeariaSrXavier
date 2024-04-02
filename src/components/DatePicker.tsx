@@ -8,13 +8,10 @@ import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { ptBR } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
 
 export const DatePicker = () => {
-  const [isDateSelected, setIsDateSelected] = useState(false);
-
   const searchParams = useSearchParams();
-  const date = validateDate(searchParams.get('date'), String(new Date()));
+  const selectedDate = validateDate(searchParams.get('date'), String(new Date()));
 
   return (
     <div className='flex w-full flex-col gap-2 max-md:w-full'>
@@ -22,7 +19,7 @@ export const DatePicker = () => {
         <PopoverTrigger asChild className='px-3'>
           <Button variant='outline' className={cn('justify-start gap-2 text-left font-normal')}>
             <CalendarIcon className='size-5' />
-            {isDateSelected ? formatDateShort(date) : 'Data do Agendamento'}
+            {searchParams.get('date') ? formatDateShort(selectedDate) : 'Data do Agendamento'}
           </Button>
         </PopoverTrigger>
         <PopoverContent className='w-auto p-0' align='start'>
@@ -30,12 +27,11 @@ export const DatePicker = () => {
             mode='single'
             initialFocus
             locale={ptBR}
-            selected={new Date(date)}
+            selected={new Date(selectedDate)}
             disabled={(date) => isNotWithinThirtyDaysRange(date)}
-            onSelect={(date) => {
-              setIsDateSelected(true);
-              createDateInputQueryString({ dateInput: formatToDateTime(date), searchParams });
-            }}
+            onSelect={(date) =>
+              createDateInputQueryString({ dateInput: formatToDateTime(date), searchParams })
+            }
           />
         </PopoverContent>
       </Popover>
