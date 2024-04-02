@@ -10,11 +10,11 @@ export async function POST(request: NextRequest) {
     headers: {
       accept: 'application/json',
       'Content-Type': 'application/json',
-      access_token: serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN,
+      access_token: serverEnv.ASSAS_PROD_ACCESS_TOKEN,
     },
   };
 
-  const response = await fetch('https://sandbox.asaas.com/api/v3/paymentLinks', options);
+  const response = await fetch('https://api.asaas.com/v3/paymentLinks', options);
   if (!response.ok) return NextResponse.json({}, { status: 500 });
 
   return NextResponse.json(await response.json(), { status: 200 });
