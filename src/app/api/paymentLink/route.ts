@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
     },
   };
 
-  const response = await fetch('https://api.asaas.com/v3/paymentLinks', options);
+  const response = await fetch(serverEnv.ASSAS_SANDBOX_URL + '/paymentLinks', options);
   if (!response.ok) return NextResponse.json({}, { status: 500 });
 
   return NextResponse.json(await response.json(), { status: 200 });

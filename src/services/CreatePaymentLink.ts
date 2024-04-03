@@ -1,6 +1,6 @@
 import { Haircut, PaymentMethod } from '@/lib/schemas';
 
-export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut) => {
+export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut, pageUrl : String ) => {
   const paymentOptions = {
     billingType: paymentType === 'PIX' ? 'PIX' : 'CREDIT_CARD',
     chargeType: 'DETACHED',
@@ -9,6 +9,10 @@ export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Hai
     dueDateLimitDays: 10,
     value: hairCut.price,
     notificationEnabled: false,
+    callback: {
+      "autoRedirect": true,
+      "successUrl" : pageUrl
+    }
   };
 
   const response = await fetch('/api/paymentLink', { method: 'POST', body: JSON.stringify(paymentOptions) });

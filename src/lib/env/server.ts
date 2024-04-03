@@ -6,6 +6,8 @@ const ServerEnvSchema = z.object({
   FIREBASE_CLIENT_EMAIL: z.string(),
   ASSAS_SANDBOX_ACCESS_TOKEN: z.string(),
   ASSAS_PROD_ACCESS_TOKEN: z.string(),
+  ASSAS_SANDBOX_URL: z.string(),
+  ASSAS_PROD_URL: z.string(),
 });
 
 export const serverEnv = ServerEnvSchema.parse(process.env);

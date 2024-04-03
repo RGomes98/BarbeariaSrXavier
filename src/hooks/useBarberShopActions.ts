@@ -43,7 +43,8 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const makePayment = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-    const response = await createPaymentLink(paymentType, hairCut);
+    //trocar "" pela url que precisamos ser redirecionados depois que for pago
+    const response = await createPaymentLink(paymentType, hairCut, "");
     if (response.status === 'error') return toast.error(response.message);
     setPaymentUrl(response.paymentLink);
     setIsPaymentActive(true);
@@ -51,7 +52,8 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const checkIsPaid = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-    const response = await createPaymentLink(paymentType, hairCut);
+    //trocar "" pela url que precisamos ser redirecionados depois que for pago
+    const response = await createPaymentLink(paymentType, hairCut, "");
     console.log(response);
   };
 
