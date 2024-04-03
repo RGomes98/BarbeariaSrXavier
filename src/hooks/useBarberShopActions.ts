@@ -1,9 +1,9 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
 import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
-import { Employee, Haircut, PaymentMethod, User } from '@/lib/schemas';
 import { formatDateGetHour, formatDateShort } from '@/utils/date';
 import { createPaymentLink } from '@/services/CreatePaymentLink';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Employee, User } from '@/lib/schemas';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -17,10 +17,9 @@ export const useBarberShopActions = (barbers: User[]) => {
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
   const scheduleDate = validateDate(searchParams.get('date'), String(new Date()));
   const validEmployees = barbers.map(({ name }) => name);
-
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
-  const employee = barbers.find((employee): employee is Employee => {
+  const selectedEmployee = barbers.find((employee): employee is Employee => {
     return (
       (employee.accountType === 'EMPLOYEE' || employee.accountType === 'ADMIN') &&
       employee.name === scheduleEmployee
@@ -37,24 +36,9 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const getEmployeeCurrentHourSchedule = (hour: number) => {
-    return employee?.schedules?.find(({ scheduleDate }) => {
+    return selectedEmployee?.schedules?.find(({ scheduleDate }) => {
       return scheduleDate.getTime() === getCurrentSchedule(hour).getTime();
     });
-  };
-
-  const makePayment = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-    //trocar "" pela url que precisamos ser redirecionados depois que for pago
-    const response = await createPaymentLink(paymentType, hairCut, "");
-    if (response.status === 'error') return toast.error(response.message);
-    setPaymentUrl(response.paymentLink);
-    setIsPaymentActive(true);
-    setIsFormActive(false);
-  };
-
-  const checkIsPaid = async (paymentType: PaymentMethod, hairCut: Haircut) => {
-    //trocar "" pela url que precisamos ser redirecionados depois que for pago
-    const response = await createPaymentLink(paymentType, hairCut, "");
-    console.log(response);
   };
 
   const handleCreateAppointment = async (params: CreateAppointment) => {
@@ -81,35 +65,33 @@ export const useBarberShopActions = (barbers: User[]) => {
             appointmentDate: params.appointmentDate,
           };
 
-    const response = await createAppointment(appointment);
+    const appointmentData = await createAppointment(appointment);
+    if (appointmentData.status === 'error') return toast.error(appointmentData.message);
 
-    if (response.status === 'error') {
-      setIsFormActive(false);
-      toast.error(response.message);
-    }
+    const paymentLinkResponse = await createPaymentLink(appointmentData.data);
+    if (paymentLinkResponse.status === 'error') return toast.error(paymentLinkResponse.message);
 
-    if (response.status === 'success') {
-      refresh();
-      setIsFormActive(false);
-      toast.success(
-        `${response.message} para ${formatDateShort(String(appointment.appointmentDate))} às ${formatDateGetHour(String(appointment.appointmentDate))}h.`,
-        { duration: 10000 },
-      );
-    }
+    toast.success(
+      `${appointmentData.message} para ${formatDateShort(String(appointment.appointmentDate))} às ${formatDateGetHour(String(appointment.appointmentDate))}h.`,
+      { duration: 10000 },
+    );
+
+    setPaymentUrl('response.paymentLink'); //Mudar para o link
+    setIsPaymentActive(true);
+    setIsFormActive(false);
+    refresh();
   };
 
   return {
-    employee,
-    isFormActive,
-    isPaymentActive,
-    scheduleDate,
-    paymentMethod,
-    makePayment,
     paymentUrl,
+    scheduleDate,
+    isFormActive,
+    paymentMethod,
+    isPaymentActive,
+    selectedEmployee,
+    scheduleEmployee,
     setIsFormActive,
     setIsPaymentActive,
-    checkIsPaid,
-    scheduleEmployee,
     getCurrentSchedule,
     handleCreateAppointment,
     getEmployeeCurrentHourSchedule,

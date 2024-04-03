@@ -34,18 +34,16 @@ export const AppointmentOption = ({
   employees: User[];
 }) => {
   const {
-    employee,
+    paymentUrl,
     scheduleDate,
     isFormActive,
-    isPaymentActive,
     paymentMethod,
-    makePayment,
-    checkIsPaid,
-    paymentUrl,
-    setIsFormActive,
-    setIsPaymentActive,
+    isPaymentActive,
     scheduleEmployee,
+    selectedEmployee,
+    setIsFormActive,
     getCurrentSchedule,
+    setIsPaymentActive,
     handleCreateAppointment,
     getEmployeeCurrentHourSchedule,
   } = useBarberShopActions(employees);
@@ -58,13 +56,7 @@ export const AppointmentOption = ({
     currentHourSchedule?.status !== 'CANCELED' && currentHourSchedule?.status !== undefined;
 
   const handleScheduleHaircut = async () => {
-    if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
-
-    const respPayment = makePayment(paymentMethod, haircut);
-    // Se quiser pode retornar o id nessa respPayment pra checar se o pagamento foi feito ou fazer direto do hook
-    // Se o pagamento for feito tem q redirecionar pra agendamentos e chamar a 'handleCreateAppointment' pra criar a reserva no firebase
-    // Se der erro é so mostrar um toast
-    // const isPaid = checkIsPaid();
+    if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
     handleCreateAppointment({
       paymentMethod,
@@ -72,13 +64,13 @@ export const AppointmentOption = ({
       status: 'PENDING',
       userId: session.id,
       haircutId: haircut.id,
-      employeeId: employee.id,
+      employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
     });
   };
 
   const handleScheduleBreak = async () => {
-    if (!session || !employee || isEmployeeBusy || isScheduleNotActive) return;
+    if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
     handleCreateAppointment({
       paymentMethod,
@@ -86,16 +78,15 @@ export const AppointmentOption = ({
       status: 'BREAK',
       userId: session.id,
       haircutId: haircut.id,
-      employeeId: employee.id,
+      employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
     });
   };
 
   const handleScheduleHaircutSessionless = async (formData: ScheduleFormType) => {
-    if (!employee || isEmployeeBusy || isScheduleNotActive) return;
+    if (!selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
 
-    const respPayment = await makePayment(paymentMethod, haircut);
     handleCreateAppointment({
       cpf,
       name,
@@ -104,7 +95,7 @@ export const AppointmentOption = ({
       status: 'PENDING',
       type: 'SESSIONLESS',
       haircutId: haircut.id,
-      employeeId: employee.id,
+      employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
     });
   };

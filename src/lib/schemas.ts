@@ -111,6 +111,12 @@ export const FormattedAppointmentDataSchema = z.object({
   paymentMethod: z.enum(paymentMethods),
 });
 
+export const paymentLinkTokenSchema = z.object({
+  iat: z.number(),
+  exp: z.number(),
+  data: z.object({ haircutId: z.number(), appointmentId: z.string() }),
+});
+
 export const FormattedAppointmentsDataSchema = z.array(FormattedAppointmentDataSchema);
 export const AppointmentsSchema = z.array(AppointmentSchema);
 export const paymentMethodSchema = z.enum(paymentMethods);

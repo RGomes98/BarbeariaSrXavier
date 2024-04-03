@@ -1,36 +1,43 @@
-import { Haircut, PaymentMethod } from '@/lib/schemas';
+import type { PaymentMethod } from '@/lib/schemas';
 
-export const createPaymentLink = async (paymentType: PaymentMethod, hairCut: Haircut, pageUrl : String ) => {
-  const paymentOptions = {
-    billingType: paymentType === 'PIX' ? 'PIX' : 'CREDIT_CARD',
-    chargeType: 'DETACHED',
-    name: hairCut.name,
-    description: hairCut.description,
+export type PaymentLinkOptions = {
+  haircutId: number;
+  haircutName: string;
+  haircutPrice: number;
+  appointmentId: string;
+  haircutDescription: string;
+  paymentMethod: PaymentMethod;
+};
+
+export const createPaymentLink = async (paymentLinkOptions: PaymentLinkOptions) => {
+  const options = {
     dueDateLimitDays: 10,
-    value: hairCut.price,
+    chargeType: 'DETACHED',
     notificationEnabled: false,
-    callback: {
-      "autoRedirect": true,
-      "successUrl" : pageUrl
-    }
+    name: paymentLinkOptions.haircutName,
+    value: paymentLinkOptions.haircutPrice,
+    haircutId: paymentLinkOptions.haircutId,
+    appointmentId: paymentLinkOptions.appointmentId,
+    description: paymentLinkOptions.haircutDescription,
+    billingType: paymentLinkOptions.paymentMethod === 'PIX' ? 'PIX' : 'CREDIT_CARD',
   };
 
-  const response = await fetch('/api/paymentLink', { method: 'POST', body: JSON.stringify(paymentOptions) });
-  const paymentData = await response.json(); //Link de pagamendo com as informações (id,tipo...);
-  console.log(paymentData);
+  try {
+    const response = await fetch('/api/paymentLink', { method: 'POST', body: JSON.stringify(options) });
+    const paymentData = await response.json();
 
-  if (!response.ok) {
-    return {
-      status: 'error',
-      paymentLink: undefined,
-      message:
+    if (!response.ok)
+      throw new Error(
         'Ops! Parece que algo deu errado ao criar o link de pagamento. Por favor, tente novamente mais tarde.',
-    } as const;
-  }
+      );
 
-  return {
-    status: 'success',
-    paymentLink: paymentData.url,
-    message: 'Link de pagamento criado com sucesso!',
-  } as const;
+    return {
+      status: 'success',
+      paymentLink: paymentData.url,
+      message: 'Link de pagamento criado com sucesso!',
+    } as const;
+  } catch (error) {
+    if (!(error instanceof Error)) throw error;
+    return { status: 'error', paymentLink: undefined, message: error.message } as const;
+  }
 };
