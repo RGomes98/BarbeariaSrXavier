@@ -20,8 +20,6 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    await fetch(`${request.nextUrl.origin}/api/success?token=${paymentLinkToken}`, { method: 'POST' });
-
     const paymentLinkOptions = {
       method: 'POST',
       body: JSON.stringify(paymentLinkData),
@@ -32,7 +30,7 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    const response = await fetch('https://sandbox.asaas.com/api/v3/paymentLinks', paymentLinkOptions);
+    const response = await fetch(`${serverEnv.ASSAS_SANDBOX_URL}/paymentLinks`, paymentLinkOptions);
     if (!response.ok) throw new Error();
 
     return NextResponse.json({ message: 'payment link successfully created' }, { status: 200 });
