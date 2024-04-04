@@ -20,10 +20,7 @@ export async function middleware(request: NextRequest) {
   if (request.nextUrl.pathname.startsWith('/dashboard')) {
     const user: User = await userAuthentication.json();
 
-    const isNotAuthorizedUser = !['ADMIN', 'EMPLOYEE'].some((accountType) => {
-      return accountType === user.accountType;
-    });
-
+    const isNotAuthorizedUser = user.accountType !== 'ADMIN';
     if (isNotAuthorizedUser) return NextResponse.redirect(new URL('/', request.url));
   }
 
