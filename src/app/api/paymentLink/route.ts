@@ -4,48 +4,63 @@ import { sign } from 'jsonwebtoken';
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json();
+    const appointmentData = await request.json();
 
     const paymentLinkToken = sign(
-      { data: { haircutId: data.haircutId, appointmentId: data.appointmentId } },
+      { data: { h: appointmentData.haircutId, a: appointmentData.appointmentId } },
       serverEnv.JWT_SECRET,
-      { expiresIn: '1h' },
+      { noTimestamp: true },
     );
 
     const paymentLinkData = {
-      ...data,
+      name: appointmentData.name,
+      value: appointmentData.value,
+      chargeType: appointmentData.chargeType,
+      description: appointmentData.description,
+      billingType: appointmentData.billingType,
+      dueDateLimitDays: appointmentData.dueDateLimitDays,
+      notificationEnabled: appointmentData.notificationEnabled,
       callback: {
         autoRedirect: true,
         successUrl: `${request.nextUrl.origin}/api/success?token=${paymentLinkToken}`,
       },
     };
 
-    const token = request.nextUrl.origin.includes('localhost')
-      ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN
-      : serverEnv.ASSAS_PROD_ACCESS_TOKEN;
-    const url = request.nextUrl.origin.includes('localhost')
-      ? serverEnv.ASSAS_SANDBOX_URL
-      : serverEnv.ASSAS_PROD_URL;
+    const ASSAS_TOKEN =
+      serverEnv.NODE_ENV === 'development' || serverEnv.NODE_ENV === 'test'
+        ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN
+        : serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN;
+
+    const ASSAS_URL =
+      serverEnv.NODE_ENV === 'development' || serverEnv.NODE_ENV === 'test'
+        ? serverEnv.ASSAS_SANDBOX_URL
+        : serverEnv.ASSAS_SANDBOX_URL;
 
     const paymentLinkOptions = {
       method: 'POST',
       body: JSON.stringify(paymentLinkData),
       headers: {
+        access_token: ASSAS_TOKEN,
         accept: 'application/json',
         'Content-Type': 'application/json',
-        access_token: token,
       },
     };
 
-    // console.log(request.nextUrl.origin)
+    const response = await fetch(`${ASSAS_URL}/paymentLinks`, paymentLinkOptions);
 
-    const response = await fetch(`${url}/paymentLinks`, paymentLinkOptions);
-    console.log(token);
-    if (!response.ok) throw new Error();
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: 'an error occurred during the payment link creation' },
+        { status: response.status },
+      );
+    }
 
-    return NextResponse.json({ message: 'payment link successfully created' }, { status: 200 });
+    return NextResponse.json(
+      { data: await response.json(), message: 'payment link successfully created' },
+      { status: 200 },
+    );
   } catch (error) {
     if (!(error instanceof Error)) throw error;
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json({ data: undefined, message: error.message }, { status: 500 });
   }
 }

@@ -33,7 +33,7 @@ export const createPaymentLink = async (paymentLinkOptions: PaymentLinkOptions) 
 
     return {
       status: 'success',
-      paymentLink: paymentData.url,
+      paymentLink: paymentData.data.url,
       message: 'Link de pagamento criado com sucesso!',
     } as const;
   } catch (error) {
