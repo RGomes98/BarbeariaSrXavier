@@ -112,9 +112,7 @@ export const FormattedAppointmentDataSchema = z.object({
 });
 
 export const paymentLinkTokenSchema = z.object({
-  iat: z.number(),
-  exp: z.number(),
-  data: z.object({ haircutId: z.number(), appointmentId: z.string() }),
+  data: z.object({ h: z.number(), a: z.string() }),
 });
 
 export const FormattedAppointmentsDataSchema = z.array(FormattedAppointmentDataSchema);
