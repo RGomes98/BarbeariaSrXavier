@@ -16,6 +16,7 @@ export async function POST(request: NextRequest) {
       ...data,
       callback: {
         autoRedirect: true,
+//        successUrl: `${request.nextUrl.origin}/api/success?token=${paymentLinkToken}`,
         successUrl: `${request.nextUrl.origin}/api/success?token=${paymentLinkToken}`,
       },
     };
@@ -38,6 +39,7 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    
     // console.log(request.nextUrl.origin)
 
     const response = await fetch(`${url}/paymentLinks`, paymentLinkOptions);
