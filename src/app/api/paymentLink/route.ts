@@ -19,14 +19,14 @@ export async function POST(request: NextRequest) {
         successUrl: `${request.nextUrl.origin}/api/success?token=${paymentLinkToken}`,
       },
     };
-    
+
 
     const token = request.nextUrl.origin.includes('localhost')
       ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN
-      : serverEnv.ASSAS_PROD_ACCESS_TOKEN;
+      : serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN;
     const url = request.nextUrl.origin.includes('localhost')
       ? serverEnv.ASSAS_SANDBOX_URL
-      : serverEnv.ASSAS_PROD_URL;
+      : serverEnv.ASSAS_SANDBOX_URL;
 
     const paymentLinkOptions = {
       method: 'POST',
