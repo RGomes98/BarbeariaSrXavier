@@ -76,7 +76,7 @@ export const useBarberShopActions = (barbers: User[]) => {
       { duration: 10000 },
     );
 
-    setPaymentUrl(paymentLinkResponse.paymentLink);
+    setPaymentUrl(paymentLinkResponse?.paymentLink);
     setIsPaymentActive(true);
     setIsFormActive(false);
     refresh();

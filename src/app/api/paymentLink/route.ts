@@ -55,9 +55,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    return NextResponse.json({ message: 'payment link successfully created' }, { status: 200 });
+    return NextResponse.json(
+      { data: await response.json(), message: 'payment link successfully created' },
+      { status: 200 },
+    );
   } catch (error) {
     if (!(error instanceof Error)) throw error;
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.json({ data: undefined, message: error.message }, { status: 500 });
   }
 }
