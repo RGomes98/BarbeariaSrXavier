@@ -39,8 +39,8 @@ export const createAppointment = async (params: CreateAppointment) => {
 
   try {
     const haircut = await getHaircut(params.haircutId);
-    await addDoc(collection(firestore, 'appointments'), appointment);
-    await updateDoc(doc(firestore, 'users', params.employeeId), { schedules: arrayUnion(appointment) });
+    // await addDoc(collection(firestore, 'appointments'), appointment);
+    // await updateDoc(doc(firestore, 'users', params.employeeId), { schedules: arrayUnion(appointment) });
 
     return {
       status: 'success',
