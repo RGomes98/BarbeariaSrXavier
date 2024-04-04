@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     console.log(appointmentId, haircutId);
     //Mudar o status do agendamento usando o token
 
-    return NextResponse.redirect(new URL(`corte/${haircutId}`, request.nextUrl.origin));
+    return NextResponse.redirect(new URL(`corte/${haircutId}?id=${appointmentId}`, request.nextUrl.origin));
   } catch (error) {
     if (!(error instanceof Error)) throw error;
     return NextResponse.json({ message: error.message }, { status: 500 });
