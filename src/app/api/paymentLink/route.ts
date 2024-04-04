@@ -20,17 +20,23 @@ export async function POST(request: NextRequest) {
       },
     };
 
+    const token = request.nextUrl.origin.includes("localhost") ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN : serverEnv.ASSAS_PROD_ACCESS_TOKEN;
+    const url = request.nextUrl.origin.includes("localhost") ? serverEnv.ASSAS_SANDBOX_URL : serverEnv.ASSAS_PROD_URL;
+
     const paymentLinkOptions = {
       method: 'POST',
       body: JSON.stringify(paymentLinkData),
       headers: {
         accept: 'application/json',
         'Content-Type': 'application/json',
-        access_token: serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN,
+        access_token: token,
       },
     };
 
-    const response = await fetch(`${serverEnv.ASSAS_SANDBOX_URL}/paymentLinks`, paymentLinkOptions);
+    console.log(request.nextUrl.origin)
+
+    const response = await fetch(`${url}/paymentLinks`, paymentLinkOptions);
+    console.log(token)
     if (!response.ok) throw new Error();
 
     return NextResponse.json({ message: 'payment link successfully created' }, { status: 200 });
