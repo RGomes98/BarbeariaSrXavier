@@ -27,12 +27,14 @@ export async function POST(request: NextRequest) {
     };
 
     const ASSAS_TOKEN =
-      serverEnv.NODE_ENV === 'development'
+      serverEnv.NODE_ENV === 'development' || serverEnv.NODE_ENV === 'test'
         ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN
         : serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN;
 
     const ASSAS_URL =
-      serverEnv.NODE_ENV === 'development' ? serverEnv.ASSAS_SANDBOX_URL : serverEnv.ASSAS_SANDBOX_URL;
+      serverEnv.NODE_ENV === 'development' || serverEnv.NODE_ENV === 'test'
+        ? serverEnv.ASSAS_SANDBOX_URL
+        : serverEnv.ASSAS_SANDBOX_URL;
 
     const paymentLinkOptions = {
       method: 'POST',
@@ -45,7 +47,13 @@ export async function POST(request: NextRequest) {
     };
 
     const response = await fetch(`${ASSAS_URL}/paymentLinks`, paymentLinkOptions);
-    if (!response.ok) throw new Error('an error occurred during the payment link creation');
+
+    if (!response.ok) {
+      return NextResponse.json(
+        { message: 'an error occurred during the payment link creation' },
+        { status: response.status },
+      );
+    }
 
     return NextResponse.json({ message: 'payment link successfully created' }, { status: 200 });
   } catch (error) {
