@@ -19,6 +19,7 @@ export async function POST(request: NextRequest) {
         successUrl: `${request.nextUrl.origin}/api/success?token=${paymentLinkToken}`,
       },
     };
+    
 
     const token = request.nextUrl.origin.includes('localhost')
       ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN
