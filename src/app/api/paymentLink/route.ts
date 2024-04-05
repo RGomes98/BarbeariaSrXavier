@@ -26,22 +26,22 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    const ASSAS_TOKEN =
+    const ASSAS_ACCESS_TOKEN =
       serverEnv.NODE_ENV === 'development' || serverEnv.NODE_ENV === 'test'
         ? serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN
-        : serverEnv.ASSAS_SANDBOX_ACCESS_TOKEN;
+        : serverEnv.ASSAS_PROD_ACCESS_TOKEN;
 
     const ASSAS_URL =
       serverEnv.NODE_ENV === 'development' || serverEnv.NODE_ENV === 'test'
         ? serverEnv.ASSAS_SANDBOX_URL
-        : serverEnv.ASSAS_SANDBOX_URL;
+        : serverEnv.ASSAS_PROD_URL;
 
     const paymentLinkOptions = {
       method: 'POST',
       body: JSON.stringify(paymentLinkData),
       headers: {
-        access_token: ASSAS_TOKEN,
         accept: 'application/json',
+        access_token: ASSAS_ACCESS_TOKEN,
         'Content-Type': 'application/json',
       },
     };
