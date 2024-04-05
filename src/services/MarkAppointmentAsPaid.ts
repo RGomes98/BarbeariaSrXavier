@@ -14,7 +14,7 @@ export const MarkAppointmentAsPaid = async (appointmentId: string) => {
 
     const appointmentEmployee = users
       .filter((user) => user.accountType === 'ADMIN' || user.accountType === 'EMPLOYEE')
-      .find((employee) => employee.schedules?.some((schedule) => schedule.id === appointmentId));
+      .find((employee) => employee?.schedules?.some((schedule) => schedule.id === appointmentId));
 
     const appointmentToUpdate = appointmentEmployee?.schedules?.find((schedule) => {
       return schedule.id === appointmentId;
