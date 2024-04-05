@@ -1,6 +1,5 @@
 import { Employee, UsersSchema } from '@/lib/schemas';
 import { firestore } from 'firebase-admin';
-import { redirect } from 'next/navigation';
 
 export const MarkAppointmentAsPaid = async (appointmentId: string) => {
   try {
@@ -31,6 +30,7 @@ export const MarkAppointmentAsPaid = async (appointmentId: string) => {
     const employeeRef = employeeToUpdate.docs[0].ref;
     employeeRef.update({ schedules: appointmentEmployee?.schedules });
   } catch (error) {
-    redirect('/');
+    if (!(error instanceof Error)) throw error;
+    throw new Error(error.message);
   }
 };

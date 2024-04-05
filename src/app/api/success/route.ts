@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
 
     const decodedToken = paymentLinkTokenSchema.parse(verify(token, serverEnv.JWT_SECRET));
     const { a: appointmentId, h: haircutId } = decodedToken.data;
-    MarkAppointmentAsPaid(appointmentId);
+    await MarkAppointmentAsPaid(appointmentId);
 
     return NextResponse.redirect(new URL(`corte/${haircutId}?id=${appointmentId}`, request.nextUrl.origin));
   } catch (error) {
