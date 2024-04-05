@@ -6,7 +6,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
 import { useMounted } from '@/hooks/useMounted';
-import { Fragment, useEffect } from 'react';
+import { Fragment } from 'react';
 
 import {
   AlertDialog,
@@ -21,8 +21,6 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 
 export const AppointmentOption = ({
   hour,
@@ -35,13 +33,7 @@ export const AppointmentOption = ({
   session: Session;
   employees: User[];
 }) => {
-  const SearchParams = useSearchParams();
   const { isMounted } = useMounted();
-
-  useEffect(() => {
-    const appointmentId = SearchParams.get('id')?.trim(); //Teste sem fazer query do appointment no firebase pra checar se foi pago
-    if (appointmentId && isMounted) toast.success('Pagamento do agendamento realizado com sucesso');
-  }, [SearchParams, isMounted]);
 
   const {
     paymentUrl,
