@@ -1,4 +1,4 @@
-import { UsersSchema } from '@/lib/schemas';
+import { Employee, UsersSchema } from '@/lib/schemas';
 import { firestore } from 'firebase-admin';
 import { redirect } from 'next/navigation';
 
@@ -13,8 +13,8 @@ export const MarkAppointmentAsPaid = async (appointmentId: string) => {
     );
 
     const appointmentEmployee = users
-      .filter((user) => user.accountType === 'ADMIN' || user.accountType === 'EMPLOYEE')
-      .find((employee) => employee?.schedules?.some((schedule) => schedule.id === appointmentId));
+      .filter((user): user is Employee => user.accountType === 'ADMIN' || user.accountType === 'EMPLOYEE')
+      .find((employee) => employee.schedules?.some((schedule) => schedule.id === appointmentId));
 
     const appointmentToUpdate = appointmentEmployee?.schedules?.find((schedule) => {
       return schedule.id === appointmentId;
