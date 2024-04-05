@@ -1,6 +1,6 @@
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { AppointmentSchema, AppointmentsSchema } from '@/lib/schemas';
 import { firestore } from '@/firebaseConfig/firebase';
-import { AppointmentsSchema } from '@/lib/schemas';
 
 export const getAppoiments = async () => {
   const docSnap = await getDocs(collection(firestore, 'appointments'));
@@ -22,5 +22,16 @@ export const getAppoiment = async (id: string) => {
     };
   } else {
     console.log('No such document!');
+  }
+};
+
+export const getAppoimentWithCallback = async (id: string, callback: () => void) => {
+  try {
+    const q = query(collection(firestore, 'appointments'), where('id', '==', id));
+    const querySnapshot = await getDocs(q);
+
+    return AppointmentSchema.parse(querySnapshot.docs[0].data());
+  } catch (error) {
+    callback();
   }
 };

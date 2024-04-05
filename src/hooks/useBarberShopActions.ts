@@ -37,7 +37,7 @@ export const useBarberShopActions = (barbers: User[]) => {
 
   const getEmployeeCurrentHourSchedule = (hour: number) => {
     return selectedEmployee?.schedules?.find(({ scheduleDate }) => {
-      return scheduleDate.getTime() === getCurrentSchedule(hour).getTime();
+      return new Date(scheduleDate).getTime() === getCurrentSchedule(hour).getTime();
     });
   };
 

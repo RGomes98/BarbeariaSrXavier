@@ -2,11 +2,16 @@
 
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDateGetDayAndYear, formatDateGetWeekday } from '@/utils/date';
+import { getAppoimentWithCallback } from '@/services/GetAppointments';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Haircut, User, workingHours } from '@/lib/schemas';
 import { AppointmentOption } from './AppointmentOption';
 import { type Session } from '@/helpers/getSession';
 import { HaircutOptions } from './HaircutOptions';
+import { useMounted } from '@/hooks/useMounted';
+import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 export const HaircutTable = ({
   haircut,
@@ -18,6 +23,22 @@ export const HaircutTable = ({
   employees: User[];
 }) => {
   const { scheduleDate } = useBarberShopActions(employees);
+  const SearchParams = useSearchParams();
+  const appointmentId = SearchParams.get('id')?.trim();
+
+  const { isMounted } = useMounted();
+  const { push } = useRouter();
+
+  useEffect(() => {
+    if (!isMounted || !appointmentId) return;
+
+    (async () => {
+      const appointment = await getAppoimentWithCallback(appointmentId, () => push('/'));
+      if (appointment?.status !== 'PAID') return;
+
+      toast.success('Pagamento efetuado com sucesso. Seu horário para o corte está reservado e confirmado!');
+    })();
+  }, [push, isMounted, appointmentId]);
 
   return (
     <div className='mt-auto flex h-full w-full max-w-[750px] flex-col justify-center gap-10 max-[1350px]:max-w-none max-md:gap-8'>
