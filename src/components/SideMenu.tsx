@@ -41,7 +41,7 @@ export const SideMenu = ({ session }: { session: Session }) => {
                   <Link href='#'>Editar Cortes</Link>
                 </Button>
               )}
-              {!isAtDashboard && (session.accountType === 'ADMIN' || session.accountType === 'EMPLOYEE') && (
+              {!isAtDashboard && session.accountType === 'ADMIN' && (
                 <Button variant='outline' className='py-6'>
                   <Link href='/dashboard'>Dashboard</Link>
                 </Button>
