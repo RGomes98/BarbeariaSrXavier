@@ -1,5 +1,8 @@
+import { initApp } from '@/firebaseConfig/firebase-admin-config';
 import { Employee, UsersSchema } from '@/lib/schemas';
 import { firestore } from 'firebase-admin';
+
+initApp();
 
 export const MarkAppointmentAsPaid = async (appointmentId: string) => {
   try {
