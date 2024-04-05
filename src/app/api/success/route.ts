@@ -1,3 +1,4 @@
+import { MarkAppointmentAsPaid } from '@/services/MarkAppointmentAsPaid';
 import { type NextRequest, NextResponse } from 'next/server';
 import { paymentLinkTokenSchema } from '@/lib/schemas';
 import { serverEnv } from '@/lib/env/server';
@@ -10,9 +11,7 @@ export async function GET(request: NextRequest) {
 
     const decodedToken = paymentLinkTokenSchema.parse(verify(token, serverEnv.JWT_SECRET));
     const { a: appointmentId, h: haircutId } = decodedToken.data;
-
-    console.log(appointmentId, haircutId);
-    //Mudar o status do agendamento usando o token
+    MarkAppointmentAsPaid(appointmentId);
 
     return NextResponse.redirect(new URL(`corte/${haircutId}?id=${appointmentId}`, request.nextUrl.origin));
   } catch (error) {
