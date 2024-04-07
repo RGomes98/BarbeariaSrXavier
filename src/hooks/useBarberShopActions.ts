@@ -14,12 +14,11 @@ export const useBarberShopActions = (barbers: User[]) => {
   const searchParams = useSearchParams();
   const { refresh } = useRouter();
 
+  const scheduleDate = validateDate(searchParams.get('date'), String(new Date()), false);
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
-  const scheduleDate = validateDate(searchParams.get('date'), String(new Date()));
   const validEmployees = barbers.map(({ name }) => name);
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
-
-  const dateParam = searchParams.get('date') && validateDate(searchParams.get('date'), String(new Date()));
+  const dateParam = searchParams.get('date') && scheduleDate;
 
   const paymentParam =
     searchParams.get('payment') && validatePaymentMethod(searchParams.get('payment'), 'CARD');

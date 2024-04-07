@@ -15,7 +15,7 @@ import { cn } from '@/lib/utils';
 
 export const AppointmentsTableFilters = () => {
   const searchParams = useSearchParams();
-  const selectedDate = validateDate(searchParams.get('date'), String(new Date()));
+  const selectedDate = validateDate(searchParams.get('date'), String(new Date()), true);
   const selectedStatus = validateStatus(searchParams.get('status'), 'ALL');
 
   const StatusIcons = {
@@ -90,7 +90,6 @@ export const AppointmentsTableFilters = () => {
               }
               locale={ptBR}
               selected={new Date(selectedDate)}
-              disabled={(date) => isNotWithinThirtyDaysRange(date)}
               onSelect={(date) =>
                 createDateInputQueryString({ dateInput: formatToDateTime(date), searchParams })
               }
