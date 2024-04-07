@@ -7,7 +7,7 @@ import { verify } from 'jsonwebtoken';
 export async function GET(request: NextRequest) {
   try {
     const token = request.nextUrl.searchParams.get('token')?.trim();
-    if (!token) return NextResponse.json({ message: 'missing token' }, { status: 400 });
+    if (!token) throw new Error('missing token');
 
     const decodedToken = paymentLinkTokenSchema.parse(verify(token, serverEnv.JWT_SECRET));
     const { a: appointmentId, h: haircutId } = decodedToken.data;
@@ -16,6 +16,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(new URL(`corte/${haircutId}?id=${appointmentId}`, request.nextUrl.origin));
   } catch (error) {
     if (!(error instanceof Error)) throw error;
-    return NextResponse.json({ message: error.message }, { status: 500 });
+    return NextResponse.redirect(request.nextUrl.origin);
   }
 }
