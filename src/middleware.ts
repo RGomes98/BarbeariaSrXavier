@@ -9,11 +9,13 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (!session) return NextResponse.redirect(new URL('/entrar', request.url));
+  if (!session) return NextResponse.json({ session: session });
 
   const userAuthentication = await fetch(`${request.nextUrl.origin}/api/auth`, {
     headers: { Cookie: `session=${session.value}` },
   });
+
+  if (userAuthentication.status !== 200) return NextResponse.json({ session: userAuthentication });
 
   if (userAuthentication.status !== 200) return NextResponse.redirect(new URL('/entrar', request.url));
 
