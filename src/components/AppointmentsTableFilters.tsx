@@ -1,9 +1,9 @@
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { createDateInputQueryString, createSelectInputQueryString } from '@/helpers/createQueryString';
-import { formatDateGetDayAndYear, formatToDateTime, isNotWithinThirtyDaysRange } from '@/utils/date';
 import { CheckCircle2, Circle, CircleDot, CircleSlash, XCircle } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { validateDate, validateStatus } from '@/helpers/validateSearchParams';
+import { formatDateGetDayAndYear, formatToDateTime } from '@/utils/date';
 import { formatScheduleCaption } from '@/utils/caption';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { useSearchParams } from 'next/navigation';

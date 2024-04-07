@@ -41,7 +41,7 @@ export const getScheduleStatusColor = (status?: Status | 'DISABLED') => {
 export const formatScheduleCaption = (status: Status) => {
   switch (status) {
     case 'ALL':
-      return 'Todos';
+      return 'Todos os Status';
     case 'PAID':
       return 'Pago';
     case 'PENDING':
