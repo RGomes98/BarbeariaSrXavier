@@ -19,6 +19,15 @@ export const useBarberShopActions = (barbers: User[]) => {
   const validEmployees = barbers.map(({ name }) => name);
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
+  const dateParam = searchParams.get('date') && validateDate(searchParams.get('date'), String(new Date()));
+
+  const paymentParam =
+    searchParams.get('payment') && validatePaymentMethod(searchParams.get('payment'), 'CARD');
+
+  const employeeParam =
+    searchParams.get('employee') &&
+    validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
+
   const selectedEmployee = barbers.find((employee): employee is Employee => {
     return (
       (employee.accountType === 'EMPLOYEE' || employee.accountType === 'ADMIN') &&
@@ -42,6 +51,11 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const handleCreateAppointment = async (params: CreateAppointment) => {
+    if (!dateParam || !paymentParam || !employeeParam) {
+      return toast.error(
+        'Para completar o agendamento, selecione o profissional, a data e o método de pagamento.',
+      );
+    }
     const appointment =
       params.type === 'REGULAR'
         ? {
