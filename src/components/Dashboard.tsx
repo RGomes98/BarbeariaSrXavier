@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle2, CircleDot, CircleSlash, Contact, XCircle } from 'lucide-react';
+import { CheckCircle2, Circle, CircleDot, CircleSlash, Contact, UserCircle, XCircle } from 'lucide-react';
 import { useDashboardTableFilter } from '@/hooks/useDashboardTableFilter';
 import { DashboardTableFilters } from './DashboardTableFilters';
 import { FormattedAppointmentData, User } from '@/lib/schemas';
@@ -24,13 +24,12 @@ export const Dashboard = ({
   children: React.ReactNode;
   appointmentsData: FormattedAppointmentData[];
 }) => {
-  const { filteredData, filteredDataByEmployee, date, status, employee } = useDashboardTableFilter(
-    appointmentsData,
-    employees,
-  );
+  const { filteredData, filteredDataByEmployee, date, status, employee, isEmployeeSelected, isDateSelected } =
+    useDashboardTableFilter(appointmentsData, employees);
   const { columns } = useDashboardTable(filteredData[0]?.employeeId);
 
   const StatusIcons = {
+    ALL: <Circle className='size-5' />,
     PAID: <CheckCircle2 className='size-5' />,
     BREAK: <CircleSlash className='size-5' />,
     PENDING: <CircleDot className='size-5' />,
@@ -49,11 +48,12 @@ export const Dashboard = ({
             </div>
             <div className='flex flex-col gap-2'>
               <p className='flex items-center gap-1 text-sm font-light max-lg:justify-end max-sm:justify-start'>
-                <CalendarIcon className='size-5' /> {formatDateShort(date)}
+                <CalendarIcon className='size-5' />{' '}
+                {isDateSelected ? formatDateShort(date) : 'Todas as Datas'}
               </p>
               <p className='flex items-center gap-1 text-sm font-light max-lg:justify-end max-sm:justify-start'>
-                <Contact className='size-5' />
-                {employee}
+                {isEmployeeSelected ? <Contact className='size-5' /> : <UserCircle className='size-5' />}
+                {isEmployeeSelected ? employee : 'Todos os Profissionais'}
               </p>
               <p className='flex items-center gap-1 text-sm font-light max-lg:justify-end max-sm:justify-start'>
                 {StatusIcons[status]}

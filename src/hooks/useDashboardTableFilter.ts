@@ -8,23 +8,28 @@ export const useDashboardTableFilter = (data: FormattedAppointmentData[], employ
   const searchParams = useSearchParams();
 
   const employee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
-  const date = validateDate(searchParams.get('date'), String(new Date()));
-  const status = validateStatus(searchParams.get('status'), 'PENDING');
+  const date = validateDate(searchParams.get('date'), String(new Date()), true);
+  const status = validateStatus(searchParams.get('status'), 'ALL');
 
-  const filteredData = data.filter((appointment) => {
+  const isEmployeeSelected = searchParams.get('employee') && searchParams.get('employee') !== 'ALL';
+  const isDateSelected = searchParams.get('date');
+
+  const filteredData = data.filter(({ appointmentDate, employeeName, appointmentStatus }) => {
     return (
-      new Date(appointment.appointmentDate).getDate() === new Date(date).getDate() &&
-      appointment.appointmentStatus === formatScheduleCaption(status) &&
-      appointment.employeeName === employee
+      new Date(appointmentDate).getDate() ===
+        (isDateSelected ? new Date(date).getDate() : new Date(appointmentDate).getDate()) &&
+      appointmentStatus === (status === 'ALL' ? appointmentStatus : formatScheduleCaption(status)) &&
+      employeeName === (isEmployeeSelected ? employee : employeeName)
     );
   });
 
-  const filteredDataByEmployee = data.filter((appointment) => {
+  const filteredDataByEmployee = data.filter(({ appointmentDate, employeeName }) => {
     return (
-      new Date(appointment.appointmentDate).getDate() === new Date(date).getDate() &&
-      appointment.employeeName === employee
+      new Date(appointmentDate).getDate() ===
+        (isDateSelected ? new Date(date).getDate() : new Date(appointmentDate).getDate()) &&
+      employeeName === (isEmployeeSelected ? employee : employeeName)
     );
   });
 
-  return { filteredData, filteredDataByEmployee, date, status, employee };
+  return { filteredData, filteredDataByEmployee, date, status, employee, isEmployeeSelected, isDateSelected };
 };

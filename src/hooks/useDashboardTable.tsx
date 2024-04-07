@@ -70,6 +70,11 @@ export const useDashboardTable = (employeeId: string) => {
           </div>
         </Fragment>
       ),
+      sortingFn: (rowA, rowB, columnId) => {
+        const dateA = new Date(String(rowA.getValue(columnId))).getTime();
+        const dateB = new Date(String(rowB.getValue(columnId))).getTime();
+        return dateA < dateB ? 1 : dateA > dateB ? -1 : 0;
+      },
     },
 
     {

@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils';
 
 export const DatePicker = () => {
   const searchParams = useSearchParams();
-  const selectedDate = validateDate(searchParams.get('date'), String(new Date()));
+  const selectedDate = validateDate(searchParams.get('date'), String(new Date()), false);
   const datePlaceholder = searchParams.get('date') ? formatDateShort(selectedDate) : 'Data do Agendamento';
 
   return (
