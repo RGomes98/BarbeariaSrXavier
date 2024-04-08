@@ -31,24 +31,35 @@ export const SideMenu = ({ session }: { session: Session }) => {
         <div className='mt-auto grid py-6'>
           {!isAtHome && (
             <Button variant='outline' className='mb-4 py-6'>
-              <Link href='/'>Voltar</Link>
+              <Link className='absolute flex h-full w-full items-center justify-center' href='/'>
+                Voltar
+              </Link>
             </Button>
           )}
           {session && (
             <div className='flex flex-col justify-center gap-4'>
               {isAtDashboard && (
-                <Button variant='outline' className='py-6'>
-                  <Link href='#'>Editar Cortes</Link>
+                <Button variant='outline' className='relative py-6'>
+                  <Link className='absolute flex h-full w-full items-center justify-center' href='#'>
+                    Editar Cortes
+                  </Link>
                 </Button>
               )}
               {!isAtDashboard && session.accountType === 'ADMIN' && (
-                <Button variant='outline' className='py-6'>
-                  <Link href='/dashboard'>Dashboard</Link>
+                <Button variant='outline' className='relative py-6'>
+                  <Link className='absolute flex h-full w-full items-center justify-center' href='/dashboard'>
+                    Dashboard
+                  </Link>
                 </Button>
               )}
               {!isAtSchedules && (
-                <Button variant='outline' className='py-6'>
-                  <Link href='/agendamentos'>Agendamentos</Link>
+                <Button variant='outline' className='relative py-6'>
+                  <Link
+                    className='absolute flex h-full w-full items-center justify-center'
+                    href='/agendamentos'
+                  >
+                    Agendamentos
+                  </Link>
                 </Button>
               )}
               <SignOutButton className='py-6' />
@@ -56,11 +67,15 @@ export const SideMenu = ({ session }: { session: Session }) => {
           )}
           {!session && (
             <div className='flex flex-col justify-center gap-4'>
-              <Button variant='outline' className='py-6'>
-                <Link href='/entrar'>Entrar</Link>
+              <Button variant='outline' className='relative py-6'>
+                <Link className='absolute flex h-full w-full items-center justify-center' href='/entrar'>
+                  Entrar
+                </Link>
               </Button>
-              <Button className='py-6'>
-                <Link href='/registrar'>Criar conta</Link>
+              <Button className='relative py-6'>
+                <Link className='absolute flex h-full w-full items-center justify-center' href='/registrar'>
+                  Criar conta
+                </Link>
               </Button>
             </div>
           )}
