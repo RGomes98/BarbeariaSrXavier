@@ -26,7 +26,8 @@ export const Dashboard = ({
 }) => {
   const { filteredData, filteredDataByEmployee, date, status, employee, isEmployeeSelected, isDateSelected } =
     useDashboardTableFilter(appointmentsData, employees);
-  const { columns } = useDashboardTable(filteredData[0]?.employeeId);
+
+  const { columns } = useDashboardTable();
 
   const StatusIcons = {
     ALL: <Circle className='size-5' />,
