@@ -5,6 +5,7 @@ import { getHaircut } from './GetHairCuts';
 
 export type CreateAppointment = {
   status: Status;
+  isDone: boolean;
   haircutId: number;
   employeeId: string;
   appointmentDate: Date;
@@ -18,6 +19,7 @@ export const createAppointment = async (params: CreateAppointment) => {
           type: params.type,
           userId: params.userId,
           status: params.status,
+          isDone: params.isDone,
           id: crypto.randomUUID(),
           haircutId: params.haircutId,
           employeeId: params.employeeId,
@@ -30,6 +32,7 @@ export const createAppointment = async (params: CreateAppointment) => {
           type: params.type,
           phone: params.phone,
           status: params.status,
+          isDone: params.isDone,
           id: crypto.randomUUID(),
           haircutId: params.haircutId,
           employeeId: params.employeeId,

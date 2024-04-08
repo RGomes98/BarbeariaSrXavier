@@ -71,6 +71,7 @@ export const scheduleDiscriminatedUnionSchema = z.discriminatedUnion('type', [
 
 export const AppointmentSchema = z
   .object({
+    isDone: z.boolean(),
     id: z.string().uuid(),
     haircutId: z.number(),
     employeeId: z.string(),
@@ -100,6 +101,7 @@ export const UserSchema = z
   .and(userDiscriminatedUnionSchema);
 
 export const FormattedAppointmentDataSchema = z.object({
+  isDone: z.boolean(),
   clientName: z.string(),
   employeeId: z.string(),
   haircutName: z.string(),
