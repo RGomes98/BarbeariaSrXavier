@@ -13,11 +13,15 @@ export default function Page() {
       </div>
       <div className='flex flex-col items-center justify-center px-[10%] py-10 max-lg:px-10'>
         <div className='mb-auto flex w-full justify-between font-medium'>
-          <Button variant='secondary'>
-            <Link href='/'>Voltar</Link>
+          <Button variant='secondary' className='px-0 py-0'>
+            <Link href='/' className='w-full px-4 py-2'>
+              Voltar
+            </Link>
           </Button>
-          <Button variant='secondary'>
-            <Link href='/entrar'>Entrar</Link>
+          <Button variant='secondary' className='px-0 py-0'>
+            <Link href='/entrar' className='w-full px-4 py-2'>
+              Entrar
+            </Link>
           </Button>
         </div>
         <Card className='mb-auto max-w-[540px] border-none pb-20 text-center shadow-none'>
