@@ -1,9 +1,10 @@
 import { type NextRequest, NextResponse } from 'next/server';
 import { GetUserById } from '@/services/GetUserById';
+import { cookies } from 'next/headers';
 import { auth } from 'firebase-admin';
 
 export async function GET(request: NextRequest) {
-  const session = request.cookies.get('session')?.value;
+  const session = cookies().get('session')?.value;
   if (!session) return NextResponse.json({}, { status: 401 });
 
   const decodedToken = await auth().verifySessionCookie(session, true);

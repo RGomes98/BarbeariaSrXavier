@@ -18,14 +18,10 @@ export const useBarberShopActions = (barbers: User[]) => {
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
   const validEmployees = barbers.map(({ name }) => name);
   const scheduleEmployee = validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
+
+  const employeeParam = searchParams.get('employee') && scheduleEmployee;
+  const paymentParam = searchParams.get('payment') && paymentMethod;
   const dateParam = searchParams.get('date') && scheduleDate;
-
-  const paymentParam =
-    searchParams.get('payment') && validatePaymentMethod(searchParams.get('payment'), 'CARD');
-
-  const employeeParam =
-    searchParams.get('employee') &&
-    validateEmployee(searchParams.get('employee'), validEmployees, validEmployees[0]);
 
   const selectedEmployee = barbers.find((employee): employee is Employee => {
     return (
@@ -50,17 +46,13 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const handleCreateAppointment = async (params: CreateAppointment) => {
-    if (!dateParam || !paymentParam || !employeeParam) {
-      return toast.error(
-        'Para completar o agendamento, selecione o profissional, a data e o método de pagamento.',
-      );
-    }
     const appointment =
       params.type === 'REGULAR'
         ? {
             type: params.type,
             status: params.status,
             userId: params.userId,
+            isDone: params.isDone,
             haircutId: params.haircutId,
             employeeId: params.employeeId,
             paymentMethod: params.paymentMethod,
@@ -72,6 +64,7 @@ export const useBarberShopActions = (barbers: User[]) => {
             type: params.type,
             phone: params.phone,
             status: params.status,
+            isDone: params.isDone,
             haircutId: params.haircutId,
             employeeId: params.employeeId,
             paymentMethod: params.paymentMethod,
@@ -96,9 +89,12 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   return {
+    dateParam,
     paymentUrl,
+    paymentParam,
     scheduleDate,
     isFormActive,
+    employeeParam,
     paymentMethod,
     isPaymentActive,
     selectedEmployee,

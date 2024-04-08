@@ -1,5 +1,6 @@
 'use client';
 
+import { UpdateAppointmentPresence } from '@/services/UpdateAppointmentPresence';
 import { formatDate, formatDateGetDay, formatDateGetHour } from '@/utils/date';
 import { UpdateAppointmentStatus } from '@/services/UpdateAppointmentStatus';
 import { FormattedAppointmentData, Status } from '@/lib/schemas';
@@ -8,6 +9,7 @@ import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { formatToCurrency } from '@/utils/number';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
@@ -17,7 +19,11 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuPortal,
   DropdownMenuSeparator,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
@@ -33,7 +39,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-export const useDashboardTable = (employeeId: string) => {
+export const useDashboardTable = () => {
   const { refresh } = useRouter();
 
   const columns: ColumnDef<FormattedAppointmentData>[] = [
@@ -49,6 +55,38 @@ export const useDashboardTable = (employeeId: string) => {
       accessorKey: 'haircutPrice',
       header: () => <div>Preço</div>,
       cell: ({ row }) => <div className='font-medium'>{formatToCurrency(row.getValue('haircutPrice'))}</div>,
+    },
+
+    {
+      accessorKey: 'isDone',
+      header: 'Presença',
+      cell: ({ row }) => {
+        const oneHour = 1 * 60 * 60 * 1000;
+        const appointmentHour = new Date(row.getValue('appointmentDate')).getTime();
+
+        const userSchedule = appointmentHour + oneHour > new Date().getTime() &&
+          (Boolean(row.getValue('isDone')) || Boolean(!row.getValue('isDone'))) && (
+            <Badge className='flex w-full justify-center bg-orange-400 py-1.5 uppercase text-zinc-900 brightness-110 hover:bg-orange-300'>
+              Agendado
+            </Badge>
+          );
+
+        const userPresence = appointmentHour + oneHour < new Date().getTime() &&
+          Boolean(row.getValue('isDone')) && (
+            <Badge className='flex justify-center bg-green-500 py-1.5 uppercase text-zinc-900 brightness-110 hover:bg-green-400'>
+              Presente
+            </Badge>
+          );
+
+        const userAbsence = appointmentHour + oneHour < new Date().getTime() &&
+          Boolean(!row.getValue('isDone')) && (
+            <Badge className='flex justify-center bg-red-900 py-1.5 font-medium uppercase text-gray-200 brightness-110 hover:bg-red-800'>
+              Ausente
+            </Badge>
+          );
+
+        return <Fragment>{userSchedule || userPresence || userAbsence}</Fragment>;
+      },
     },
 
     {
@@ -78,6 +116,12 @@ export const useDashboardTable = (employeeId: string) => {
     },
 
     {
+      accessorKey: 'clientName',
+      header: () => <div>Cliente</div>,
+      cell: ({ row }) => <div className='font-medium'>{row.getValue('clientName')}</div>,
+    },
+
+    {
       accessorKey: 'paymentMethod',
       header: () => <div>Método de Pagamento</div>,
       cell: ({ row }) => {
@@ -88,13 +132,9 @@ export const useDashboardTable = (employeeId: string) => {
     {
       accessorKey: 'appointmentStatus',
       header: () => <div>Status</div>,
-      cell: ({ row }) => <div className='font-medium'>{row.getValue('appointmentStatus')}</div>,
-    },
-
-    {
-      accessorKey: 'clientName',
-      header: () => <div className='text-right'>Cliente</div>,
-      cell: ({ row }) => <div className='text-right font-medium'>{row.getValue('clientName')}</div>,
+      cell: ({ row }) => (
+        <div className='font-bold'>{String(row.getValue('appointmentStatus')).toUpperCase()}</div>
+      ),
     },
 
     {
@@ -107,10 +147,18 @@ export const useDashboardTable = (employeeId: string) => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const { appointmentId } = row.original;
+        const { employeeId, appointmentId } = row.original;
 
         const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
           const response = await UpdateAppointmentStatus(id, status, userId);
+          if (response.status === 'error') return toast.error(response.message);
+
+          refresh();
+          toast.success(response.message);
+        };
+
+        const updateAppointmentPresence = async (id: string, status: boolean, userId?: string) => {
+          const response = await UpdateAppointmentPresence(id, status, userId);
           if (response.status === 'error') return toast.error(response.message);
 
           refresh();
@@ -134,98 +182,158 @@ export const useDashboardTable = (employeeId: string) => {
                 Copiar ID
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
-                    Pago
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className='max-[550px]:max-w-[90%]'>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Confirmar Pagamento</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Tem certeza de que deseja marcar este agendamento como pago?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => updateAppointmentStatus(appointmentId, 'PAID', employeeId)}
-                    >
-                      Confirmar Pagamento
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
-                    Almoço
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className='max-[550px]:max-w-[90%]'>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Marcar como Horário de Almoço</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Tem certeza de que deseja marcar este agendamento como horário de almoço?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => updateAppointmentStatus(appointmentId, 'BREAK', employeeId)}
-                    >
-                      Confirmar Almoço
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
-                    Cancelar
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className='max-[550px]:max-w-[90%]'>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Confirmar Cancelamento</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Tem certeza de que deseja cancelar este agendamento?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Manter</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => updateAppointmentStatus(appointmentId, 'CANCELED', employeeId)}
-                    >
-                      Confirmar Cancelamento
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
-                    Pendente
-                  </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent className='max-[550px]:max-w-[90%]'>
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>Confirmar Pendência</AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Tem certeza de que deseja marcar este agendamento como pendente?
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => updateAppointmentStatus(appointmentId, 'PENDING', employeeId)}
-                    >
-                      Confirmar Pendência
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Status</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className='flex flex-col'>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
+                          Pago
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Pagamento</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza de que deseja marcar este agendamento como pago?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => updateAppointmentStatus(appointmentId, 'PAID', employeeId)}
+                          >
+                            Confirmar Pagamento
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
+                          Almoço
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Marcar como Horário de Almoço</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza de que deseja marcar este agendamento como horário de almoço?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => updateAppointmentStatus(appointmentId, 'BREAK', employeeId)}
+                          >
+                            Confirmar Almoço
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
+                          Pendente
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Pendência</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza de que deseja marcar este agendamento como pendente?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => updateAppointmentStatus(appointmentId, 'PENDING', employeeId)}
+                          >
+                            Confirmar Pendência
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
+                          Cancelado
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Cancelamento</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza de que deseja cancelar este agendamento?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Manter</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => updateAppointmentStatus(appointmentId, 'CANCELED', employeeId)}
+                          >
+                            Confirmar Cancelamento
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
+              <DropdownMenuSub>
+                <DropdownMenuSubTrigger>Presença</DropdownMenuSubTrigger>
+                <DropdownMenuPortal>
+                  <DropdownMenuSubContent className='flex flex-col'>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
+                          Ausente
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Ausencia</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza de que deseja registrar a ausência deste agendamento?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => updateAppointmentPresence(appointmentId, false, employeeId)}
+                          >
+                            Registrar Ausência
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant='ghost' className='h-8 w-full justify-start px-2 py-[0.375rem]'>
+                          Presente
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className='max-[550px]:max-w-[90%]'>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Presença</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza de que deseja confirmar a presença deste agendamento?
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => updateAppointmentPresence(appointmentId, true, employeeId)}
+                          >
+                            Confirmar Presença
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </DropdownMenuSubContent>
+                </DropdownMenuPortal>
+              </DropdownMenuSub>
             </DropdownMenuContent>
           </DropdownMenu>
         );

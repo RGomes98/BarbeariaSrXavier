@@ -7,6 +7,7 @@ import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
 import { useMounted } from '@/hooks/useMounted';
 import { Fragment } from 'react';
+import { toast } from 'sonner';
 
 import {
   AlertDialog,
@@ -36,10 +37,13 @@ export const AppointmentOption = ({
   const { isMounted } = useMounted();
 
   const {
+    dateParam,
     paymentUrl,
+    paymentParam,
     scheduleDate,
     isFormActive,
     paymentMethod,
+    employeeParam,
     isPaymentActive,
     scheduleEmployee,
     selectedEmployee,
@@ -59,6 +63,7 @@ export const AppointmentOption = ({
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
     handleCreateAppointment({
+      isDone: false,
       paymentMethod,
       type: 'REGULAR',
       status: 'PENDING',
@@ -73,6 +78,7 @@ export const AppointmentOption = ({
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
     handleCreateAppointment({
+      isDone: false,
       paymentMethod,
       type: 'REGULAR',
       status: 'BREAK',
@@ -92,12 +98,23 @@ export const AppointmentOption = ({
       name,
       phone,
       paymentMethod,
+      isDone: false,
       status: 'PENDING',
       type: 'SESSIONLESS',
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
     });
+  };
+
+  const handleShowModal = () => {
+    if (!dateParam || !paymentParam || !employeeParam) {
+      return toast.error(
+        'Para completar o agendamento, selecione o profissional, a data e o método de pagamento.',
+      );
+    }
+
+    setIsFormActive(true);
   };
 
   return (
@@ -121,10 +138,7 @@ export const AppointmentOption = ({
           </TableCell>
           <TableCell className='text-right'>{scheduleEmployee}</TableCell>
           {(!isEmployeeBusy || !isScheduleNotActive) && isMounted && (
-            <AlertDialogTrigger
-              onClick={() => setIsFormActive(true)}
-              className='absolute inset-0 h-full w-full'
-            />
+            <AlertDialogTrigger onClick={handleShowModal} className='absolute inset-0 h-full w-full' />
           )}
         </TableRow>
         <AlertDialogContent className='max-[550px]:max-w-[90%]'>

@@ -1,8 +1,9 @@
 import { type NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { User } from './lib/schemas';
 
 export async function middleware(request: NextRequest) {
-  const session = request.cookies.get('session');
+  const session = cookies().get('session');
 
   if (['/entrar', '/registrar'].some((path) => request.nextUrl.pathname.startsWith(path))) {
     if (session) return NextResponse.redirect(new URL('/', request.url));
