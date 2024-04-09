@@ -44,7 +44,17 @@ export const useAppointmentsTable = (session: Session) => {
   const { refresh } = useRouter();
 
   const columns: ColumnDef<FormattedAppointmentData>[] = [
-    { accessorKey: 'appointmentId' },
+    {
+      accessorKey: 'clientName',
+      header: () => <div>Cliente</div>,
+      cell: ({ row }) => <div>{row.getValue('clientName')}</div>,
+    },
+
+    {
+      accessorKey: 'employeeName',
+      header: () => <div>Profissional</div>,
+      cell: ({ row }) => <div>{row.getValue('employeeName')}</div>,
+    },
 
     {
       accessorKey: 'haircutName',
@@ -126,29 +136,17 @@ export const useAppointmentsTable = (session: Session) => {
 
     {
       accessorKey: 'appointmentStatus',
-      header: () => <div>Status</div>,
+      header: () => <div className='text-right'>Status</div>,
       cell: ({ row }) => (
-        <div className='font-bold'>{String(row.getValue('appointmentStatus')).toUpperCase()}</div>
+        <div className='text-right font-bold'>{String(row.getValue('appointmentStatus')).toUpperCase()}</div>
       ),
-    },
-
-    {
-      accessorKey: 'clientName',
-      header: () => <div className='text-right'>Cliente</div>,
-      cell: ({ row }) => <div className='text-right font-medium'>{row.getValue('clientName')}</div>,
-    },
-
-    {
-      accessorKey: 'employeeName',
-      header: () => <div className='text-right'>Profissional</div>,
-      cell: ({ row }) => <div className='text-right font-medium'>{row.getValue('employeeName')}</div>,
     },
 
     {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const { appointmentId } = row.original;
+        const { appointmentId, paymentLink, appointmentStatus } = row.original;
 
         const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
           const response = await UpdateAppointmentStatus(id, status, userId);
@@ -166,6 +164,36 @@ export const useAppointmentsTable = (session: Session) => {
           toast.success(response.message);
         };
 
+        if (session?.accountType === 'USER') {
+          return (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant='ghost' className='h-8 w-8 p-0'>
+                  <span className='sr-only'>Abrir Menu</span>
+                  <MoreHorizontal className='h-4 w-4' />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align='end' className='flex flex-col'>
+                <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem
+                  onClick={() => {
+                    if (appointmentStatus === 'Pago') {
+                      return toast.error('Pagamento já efetuado para este agendamento.');
+                    }
+
+                    navigator.clipboard.writeText(String(paymentLink));
+                    toast.success('Link de pagamento copiado para a área de transferência.');
+                  }}
+                  className='cursor-pointer'
+                >
+                  Copiar Link
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          );
+        }
+
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -177,10 +205,22 @@ export const useAppointmentsTable = (session: Session) => {
             <DropdownMenuContent align='end' className='flex flex-col'>
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(appointmentId)}
+                onClick={() => {
+                  navigator.clipboard.writeText(appointmentId);
+                  toast.success('ID do agendamento copiado para a área de transferência.');
+                }}
                 className='cursor-pointer'
               >
                 Copiar ID
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(String(paymentLink));
+                  toast.success('Link de pagamento copiado para a área de transferência.');
+                }}
+                className='cursor-pointer'
+              >
+                Copiar Link
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuSub>

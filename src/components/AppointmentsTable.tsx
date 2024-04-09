@@ -35,8 +35,8 @@ export const AppointmentsTable = <TData, TValue>({
 }) => {
   const isUserAuthorized = session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE';
   const columnsVisibility = {
+    actions: true,
     appointmentId: false,
-    actions: isUserAuthorized,
     clientName: isUserAuthorized,
     employeeName: !isUserAuthorized,
   };

@@ -1,4 +1,5 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
+import { UpdateAppointmentPaymentLink } from '@/services/UpdateAppointmentPaymentLink';
 import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
 import { formatDateGetHour, formatDateShort } from '@/utils/date';
 import { createPaymentLink } from '@/services/CreatePaymentLink';
@@ -76,6 +77,14 @@ export const useBarberShopActions = (barbers: User[]) => {
 
     const paymentLinkResponse = await createPaymentLink(appointmentData.data);
     if (paymentLinkResponse.status === 'error') return toast.error(paymentLinkResponse.message);
+
+    const appointmentPaymentLink = await UpdateAppointmentPaymentLink(
+      params.employeeId,
+      appointmentData.data.appointmentId,
+      paymentLinkResponse.paymentLink,
+    );
+
+    if (appointmentPaymentLink.status === 'error') return toast.error(appointmentPaymentLink.message);
 
     toast.success(
       `${appointmentData.message} para ${formatDateShort(String(appointment.appointmentDate))} às ${formatDateGetHour(String(appointment.appointmentDate))}h.`,
