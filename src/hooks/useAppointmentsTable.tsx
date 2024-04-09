@@ -182,7 +182,7 @@ export const useAppointmentsTable = (session: Session) => {
                       return toast.error('Pagamento já efetuado para este agendamento.');
                     }
 
-                    navigator.clipboard.writeText(paymentLink);
+                    navigator.clipboard.writeText(String(paymentLink));
                     toast.success('Link de pagamento copiado para a área de transferência.');
                   }}
                   className='cursor-pointer'
@@ -215,7 +215,7 @@ export const useAppointmentsTable = (session: Session) => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  navigator.clipboard.writeText(paymentLink);
+                  navigator.clipboard.writeText(String(paymentLink));
                   toast.success('Link de pagamento copiado para a área de transferência.');
                 }}
                 className='cursor-pointer'

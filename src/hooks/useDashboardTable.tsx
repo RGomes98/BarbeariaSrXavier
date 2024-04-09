@@ -184,7 +184,7 @@ export const useDashboardTable = () => {
               </DropdownMenuItem>
               <DropdownMenuItem
                 onClick={() => {
-                  navigator.clipboard.writeText(paymentLink);
+                  navigator.clipboard.writeText(String(paymentLink));
                   toast.success('Link de pagamento copiado para a área de transferência.');
                 }}
                 className='cursor-pointer'

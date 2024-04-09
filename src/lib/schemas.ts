@@ -77,9 +77,9 @@ export const AppointmentSchema = z
     employeeId: z.string(),
     status: z.enum(statuses),
     scheduleDate: z.string(),
-    paymentLink: z.string().url(),
     type: z.enum(appointmentTypes),
     paymentMethod: z.enum(paymentMethods),
+    paymentLink: z.string().url().optional(),
   })
   .and(scheduleDiscriminatedUnionSchema);
 
@@ -110,9 +110,9 @@ export const FormattedAppointmentDataSchema = z.object({
   employeeName: z.string(),
   appointmentId: z.string(),
   appointmentDate: z.string(),
-  paymentLink: z.string().url(),
   appointmentStatus: z.string(),
   paymentMethod: z.enum(paymentMethods),
+  paymentLink: z.string().url().optional(),
 });
 
 export const paymentLinkTokenSchema = z.object({
