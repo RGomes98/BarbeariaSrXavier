@@ -43,7 +43,11 @@ export const useDashboardTable = () => {
   const { refresh } = useRouter();
 
   const columns: ColumnDef<FormattedAppointmentData>[] = [
-    { accessorKey: 'appointmentId' },
+    {
+      accessorKey: 'clientName',
+      header: () => <div>Cliente</div>,
+      cell: ({ row }) => <div className='font-medium'>{row.getValue('clientName')}</div>,
+    },
 
     {
       accessorKey: 'haircutName',
@@ -116,12 +120,6 @@ export const useDashboardTable = () => {
     },
 
     {
-      accessorKey: 'clientName',
-      header: () => <div>Cliente</div>,
-      cell: ({ row }) => <div className='font-medium'>{row.getValue('clientName')}</div>,
-    },
-
-    {
       accessorKey: 'paymentMethod',
       header: () => <div>Método de Pagamento</div>,
       cell: ({ row }) => {
@@ -147,7 +145,7 @@ export const useDashboardTable = () => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const { employeeId, appointmentId } = row.original;
+        const { employeeId, appointmentId, paymentLink } = row.original;
 
         const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
           const response = await UpdateAppointmentStatus(id, status, userId);
@@ -176,10 +174,22 @@ export const useDashboardTable = () => {
             <DropdownMenuContent align='end' className='flex flex-col'>
               <DropdownMenuLabel>Ações</DropdownMenuLabel>
               <DropdownMenuItem
-                onClick={() => navigator.clipboard.writeText(appointmentId)}
+                onClick={() => {
+                  navigator.clipboard.writeText(appointmentId);
+                  toast.success('ID do agendamento copiado para a área de transferência.');
+                }}
                 className='cursor-pointer'
               >
                 Copiar ID
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={() => {
+                  navigator.clipboard.writeText(paymentLink);
+                  toast.success('Link de pagamento copiado para a área de transferência.');
+                }}
+                className='cursor-pointer'
+              >
+                Copiar Link
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuSub>

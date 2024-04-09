@@ -22,6 +22,7 @@ export const formatAppointmentsData = async (data: Appointment[]) => {
         employeeName: employee.name,
         haircutPrice: haircut.price,
         appointmentId: appointment.id,
+        paymentLink: appointment.paymentLink,
         paymentMethod: appointment.paymentMethod,
         appointmentDate: appointment.scheduleDate,
         appointmentStatus: formatScheduleCaption(appointment.status),
