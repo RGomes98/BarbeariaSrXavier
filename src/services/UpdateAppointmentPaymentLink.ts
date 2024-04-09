@@ -40,7 +40,7 @@ export const UpdateAppointmentPaymentLink = async (
 
     return {
       status: 'error',
-      message: 'Ops! Algo deu errado ao tentar salvar o link de pagamento.',
+      message: error.message,
     } as const;
   }
 };
