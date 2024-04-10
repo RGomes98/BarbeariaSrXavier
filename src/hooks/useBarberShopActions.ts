@@ -10,9 +10,7 @@ export const useBarberShopActions = (barbers: User[]) => {
   const [appointmentData, setAppointmentData] = useState<CreateAppointment>();
   const [isPaymentActive, setIsPaymentActive] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
-  const [paymentUrl, setPaymentUrl] = useState('');
   const searchParams = useSearchParams();
-  const { refresh } = useRouter();
 
   const scheduleDate = validateDate(searchParams.get('date'), String(new Date()), false);
   const paymentMethod = validatePaymentMethod(searchParams.get('payment'), 'CARD');
@@ -62,10 +60,8 @@ export const useBarberShopActions = (barbers: User[]) => {
       return { status: 'error', message: paymentLinkResponse.message, data: undefined } as const;
     }
 
-    setPaymentUrl(paymentLinkResponse?.paymentLink);
     setIsPaymentActive(true);
     setIsFormActive(false);
-    // refresh();
 
     return {
       status: 'success',
@@ -76,7 +72,6 @@ export const useBarberShopActions = (barbers: User[]) => {
 
   return {
     dateParam,
-    paymentUrl,
     paymentParam,
     scheduleDate,
     isFormActive,

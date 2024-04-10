@@ -39,7 +39,6 @@ export const AppointmentOption = ({
 
   const {
     dateParam,
-    paymentUrl,
     paymentParam,
     scheduleDate,
     isFormActive,
@@ -68,6 +67,8 @@ export const AppointmentOption = ({
     const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
+    toast.success(appointmentLink.message);
+
     setAppointmentData({
       paymentMethod,
       isDone: false,
@@ -87,6 +88,8 @@ export const AppointmentOption = ({
 
     const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    toast.success(appointmentLink.message);
 
     setAppointmentData({
       paymentMethod,
@@ -108,6 +111,8 @@ export const AppointmentOption = ({
 
     const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    toast.success(appointmentLink.message);
 
     setAppointmentData({
       cpf,
@@ -141,7 +146,7 @@ export const AppointmentOption = ({
     if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
 
     toast.success(appointmentResponse.message);
-    setTimeout(() => push(paymentUrl), 3000);
+    setTimeout(() => push(appointmentData.paymentLink), 3000);
   };
 
   return (
@@ -238,7 +243,7 @@ export const AppointmentOption = ({
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar Reserva</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleCreateAppointment}>Efetuar Pagamento</AlertDialogAction>
+            <AlertDialogAction onClick={handleCreateAppointment}>Efetuar Pagamento</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
