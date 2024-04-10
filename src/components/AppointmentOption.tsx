@@ -2,10 +2,12 @@ import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDate
 import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
+import { createAppointment } from '@/services/CreateAppointment';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
 import { useMounted } from '@/hooks/useMounted';
+import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
 
@@ -21,8 +23,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import Link from 'next/link';
-
 export const AppointmentOption = ({
   hour,
   haircut,
@@ -35,22 +35,24 @@ export const AppointmentOption = ({
   employees: User[];
 }) => {
   const { isMounted } = useMounted();
+  const { push } = useRouter();
 
   const {
     dateParam,
-    paymentUrl,
     paymentParam,
     scheduleDate,
     isFormActive,
     paymentMethod,
     employeeParam,
+    appointmentData,
     isPaymentActive,
     scheduleEmployee,
     selectedEmployee,
     setIsFormActive,
     getCurrentSchedule,
     setIsPaymentActive,
-    handleCreateAppointment,
+    setAppointmentData,
+    handleCreateAppointmentLink,
     getEmployeeCurrentHourSchedule,
   } = useBarberShopActions(employees);
 
@@ -62,30 +64,44 @@ export const AppointmentOption = ({
   const handleScheduleHaircut = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    handleCreateAppointment({
-      isDone: false,
+    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    toast.success(appointmentLink.message);
+
+    setAppointmentData({
       paymentMethod,
+      isDone: false,
       type: 'REGULAR',
       status: 'PENDING',
       userId: session.id,
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
+      paymentLink: appointmentLink.data.paymentLink,
+      appointmentId: appointmentLink.data.appointmenId,
     });
   };
 
   const handleScheduleBreak = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    handleCreateAppointment({
-      isDone: false,
+    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    toast.success(appointmentLink.message);
+
+    setAppointmentData({
       paymentMethod,
+      isDone: false,
       type: 'REGULAR',
       status: 'BREAK',
       userId: session.id,
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
+      paymentLink: appointmentLink.data.paymentLink,
+      appointmentId: appointmentLink.data.appointmenId,
     });
   };
 
@@ -93,7 +109,12 @@ export const AppointmentOption = ({
     if (!selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
 
-    handleCreateAppointment({
+    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    toast.success(appointmentLink.message);
+
+    setAppointmentData({
       cpf,
       name,
       phone,
@@ -104,17 +125,28 @@ export const AppointmentOption = ({
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
+      paymentLink: appointmentLink.data.paymentLink,
+      appointmentId: appointmentLink.data.appointmenId,
     });
   };
 
   const handleShowModal = () => {
     if (!dateParam || !paymentParam || !employeeParam) {
-      return toast.error(
-        'Para completar o agendamento, selecione o profissional, a data e o método de pagamento.',
-      );
+      toast.error('Para completar o agendamento, selecione o profissional, a data e o método de pagamento.');
+      return;
     }
 
     setIsFormActive(true);
+  };
+
+  const handleCreateAppointment = async () => {
+    if (!appointmentData) return;
+
+    const appointmentResponse = await createAppointment(appointmentData);
+    if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
+
+    toast.success(appointmentResponse.message);
+    setTimeout(() => push(appointmentData.paymentLink), 3000);
   };
 
   return (
@@ -201,11 +233,6 @@ export const AppointmentOption = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {
-        //alert payment
-      }
-
       <AlertDialog open={isPaymentActive}>
         <AlertDialogContent className='max-[550px]:max-w-[90%]'>
           <AlertDialogHeader>
@@ -216,11 +243,7 @@ export const AppointmentOption = ({
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar Reserva</AlertDialogCancel>
-            <AlertDialogAction>
-              <Link href={paymentUrl} rel='noopener noreferrer'>
-                Efetuar Pagamento
-              </Link>
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleCreateAppointment}>Efetuar Pagamento</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
