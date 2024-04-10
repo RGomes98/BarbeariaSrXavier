@@ -49,7 +49,7 @@ export const createAppointment = async (params: CreateAppointment) => {
 
     return {
       status: 'success',
-      message: 'Horário reservado com sucesso',
+      message: 'Horário reservado com sucesso! Estamos te redirecionando para o link de pagamento.',
     } as const;
   } catch (error) {
     return {

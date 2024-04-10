@@ -7,6 +7,7 @@ import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
 import { useMounted } from '@/hooks/useMounted';
+import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
 
@@ -22,8 +23,6 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
-import Link from 'next/link';
-
 export const AppointmentOption = ({
   hour,
   haircut,
@@ -36,6 +35,7 @@ export const AppointmentOption = ({
   employees: User[];
 }) => {
   const { isMounted } = useMounted();
+  const { push } = useRouter();
 
   const {
     dateParam,
@@ -134,9 +134,14 @@ export const AppointmentOption = ({
     setIsFormActive(true);
   };
 
-  const handleCreateAppointment = () => {
+  const handleCreateAppointment = async () => {
     if (!appointmentData) return;
-    createAppointment(appointmentData);
+
+    const appointmentResponse = await createAppointment(appointmentData);
+    if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
+
+    toast.success(appointmentResponse.message);
+    setTimeout(() => push(paymentUrl), 3000);
   };
 
   return (
@@ -233,11 +238,7 @@ export const AppointmentOption = ({
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar Reserva</AlertDialogCancel>
-            <AlertDialogAction onClick={() => handleCreateAppointment}>
-              <Link href={paymentUrl} rel='noopener noreferrer'>
-                Efetuar Pagamento
-              </Link>
-            </AlertDialogAction>
+            <AlertDialogAction onClick={() => handleCreateAppointment}>Efetuar Pagamento</AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
