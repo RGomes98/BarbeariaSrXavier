@@ -1,13 +1,14 @@
 import { addDoc, arrayUnion, collection, doc, updateDoc } from 'firebase/firestore';
 import { firestore } from '@/firebaseConfig/firebase';
 import { PaymentMethod, Status } from '@/lib/schemas';
-import { getHaircut } from './GetHairCuts';
 
 export type CreateAppointment = {
   status: Status;
   isDone: boolean;
   haircutId: number;
   employeeId: string;
+  paymentLink: string;
+  appointmentId: string;
   appointmentDate: Date;
   paymentMethod: PaymentMethod;
 } & ({ type: 'REGULAR'; userId: string } | { cpf: string; name: string; phone: string; type: 'SESSIONLESS' });
@@ -20,9 +21,10 @@ export const createAppointment = async (params: CreateAppointment) => {
           userId: params.userId,
           status: params.status,
           isDone: params.isDone,
-          id: crypto.randomUUID(),
+          id: params.appointmentId,
           haircutId: params.haircutId,
           employeeId: params.employeeId,
+          paymentLink: params.paymentLink,
           paymentMethod: params.paymentMethod,
           scheduleDate: String(params.appointmentDate),
         }
@@ -33,29 +35,21 @@ export const createAppointment = async (params: CreateAppointment) => {
           phone: params.phone,
           status: params.status,
           isDone: params.isDone,
-          id: crypto.randomUUID(),
+          id: params.appointmentId,
           haircutId: params.haircutId,
           employeeId: params.employeeId,
+          paymentLink: params.paymentLink,
           paymentMethod: params.paymentMethod,
           scheduleDate: String(params.appointmentDate),
         };
 
   try {
-    const haircut = await getHaircut(params.haircutId);
     await addDoc(collection(firestore, 'appointments'), appointment);
     await updateDoc(doc(firestore, 'users', params.employeeId), { schedules: arrayUnion(appointment) });
 
     return {
       status: 'success',
       message: 'Horário reservado com sucesso',
-      data: {
-        haircutId: haircut.id,
-        haircutName: haircut.name,
-        haircutPrice: haircut.price,
-        appointmentId: appointment.id,
-        haircutDescription: haircut.description,
-        paymentMethod: appointment.paymentMethod,
-      },
     } as const;
   } catch (error) {
     return {

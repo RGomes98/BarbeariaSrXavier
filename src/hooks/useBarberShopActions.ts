@@ -1,14 +1,13 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
-import { UpdateAppointmentPaymentLink } from '@/services/UpdateAppointmentPaymentLink';
 import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
-import { formatDateGetHour, formatDateShort } from '@/utils/date';
 import { createPaymentLink } from '@/services/CreatePaymentLink';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Employee, User } from '@/lib/schemas';
+import { Employee, PaymentMethod, User } from '@/lib/schemas';
+import { getHaircut } from '@/services/GetHairCuts';
 import { useState } from 'react';
-import { toast } from 'sonner';
 
 export const useBarberShopActions = (barbers: User[]) => {
+  const [appointmentData, setAppointmentData] = useState<CreateAppointment>();
   const [isPaymentActive, setIsPaymentActive] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
   const [paymentUrl, setPaymentUrl] = useState('');
@@ -46,55 +45,33 @@ export const useBarberShopActions = (barbers: User[]) => {
     });
   };
 
-  const handleCreateAppointment = async (params: CreateAppointment) => {
-    const appointment =
-      params.type === 'REGULAR'
-        ? {
-            type: params.type,
-            status: params.status,
-            userId: params.userId,
-            isDone: params.isDone,
-            haircutId: params.haircutId,
-            employeeId: params.employeeId,
-            paymentMethod: params.paymentMethod,
-            appointmentDate: params.appointmentDate,
-          }
-        : {
-            cpf: params.cpf,
-            name: params.name,
-            type: params.type,
-            phone: params.phone,
-            status: params.status,
-            isDone: params.isDone,
-            haircutId: params.haircutId,
-            employeeId: params.employeeId,
-            paymentMethod: params.paymentMethod,
-            appointmentDate: params.appointmentDate,
-          };
+  const handleCreateAppointmentLink = async (haircutId: number, paymentMethod: PaymentMethod) => {
+    const haircut = await getHaircut(haircutId);
+    const appointmentId = crypto.randomUUID();
 
-    const appointmentData = await createAppointment(appointment);
-    if (appointmentData.status === 'error') return toast.error(appointmentData.message);
+    const paymentLinkResponse = await createPaymentLink({
+      haircutId: haircut.id,
+      haircutName: haircut.name,
+      haircutPrice: haircut.price,
+      paymentMethod: paymentMethod,
+      appointmentId: appointmentId,
+      haircutDescription: haircut.description,
+    });
 
-    const paymentLinkResponse = await createPaymentLink(appointmentData.data);
-    if (paymentLinkResponse.status === 'error') return toast.error(paymentLinkResponse.message);
-
-    const appointmentPaymentLink = await UpdateAppointmentPaymentLink(
-      params.employeeId,
-      appointmentData.data.appointmentId,
-      paymentLinkResponse.paymentLink,
-    );
-
-    if (appointmentPaymentLink.status === 'error') return toast.error(appointmentPaymentLink.message);
-
-    toast.success(
-      `${appointmentData.message} para ${formatDateShort(String(appointment.appointmentDate))} às ${formatDateGetHour(String(appointment.appointmentDate))}h.`,
-      { duration: 10000 },
-    );
+    if (paymentLinkResponse.status === 'error') {
+      return { status: 'error', message: paymentLinkResponse.message, data: undefined } as const;
+    }
 
     setPaymentUrl(paymentLinkResponse?.paymentLink);
     setIsPaymentActive(true);
     setIsFormActive(false);
-    refresh();
+    // refresh();
+
+    return {
+      status: 'success',
+      message: 'Link de pagamento criado com sucesso!',
+      data: { appointmenId: appointmentId, paymentLink: paymentLinkResponse.paymentLink } as const,
+    } as const;
   };
 
   return {
@@ -105,13 +82,15 @@ export const useBarberShopActions = (barbers: User[]) => {
     isFormActive,
     employeeParam,
     paymentMethod,
+    appointmentData,
     isPaymentActive,
     selectedEmployee,
     scheduleEmployee,
     setIsFormActive,
     setIsPaymentActive,
     getCurrentSchedule,
-    handleCreateAppointment,
+    setAppointmentData,
+    handleCreateAppointmentLink,
     getEmployeeCurrentHourSchedule,
   };
 };

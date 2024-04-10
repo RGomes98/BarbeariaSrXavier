@@ -2,6 +2,7 @@ import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDate
 import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
+import { createAppointment } from '@/services/CreateAppointment';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
@@ -44,13 +45,15 @@ export const AppointmentOption = ({
     isFormActive,
     paymentMethod,
     employeeParam,
+    appointmentData,
     isPaymentActive,
     scheduleEmployee,
     selectedEmployee,
     setIsFormActive,
     getCurrentSchedule,
     setIsPaymentActive,
-    handleCreateAppointment,
+    setAppointmentData,
+    handleCreateAppointmentLink,
     getEmployeeCurrentHourSchedule,
   } = useBarberShopActions(employees);
 
@@ -62,30 +65,40 @@ export const AppointmentOption = ({
   const handleScheduleHaircut = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    handleCreateAppointment({
-      isDone: false,
+    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    setAppointmentData({
       paymentMethod,
+      isDone: false,
       type: 'REGULAR',
       status: 'PENDING',
       userId: session.id,
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
+      paymentLink: appointmentLink.data.paymentLink,
+      appointmentId: appointmentLink.data.appointmenId,
     });
   };
 
   const handleScheduleBreak = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    handleCreateAppointment({
-      isDone: false,
+    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    setAppointmentData({
       paymentMethod,
+      isDone: false,
       type: 'REGULAR',
       status: 'BREAK',
       userId: session.id,
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
+      paymentLink: appointmentLink.data.paymentLink,
+      appointmentId: appointmentLink.data.appointmenId,
     });
   };
 
@@ -93,7 +106,10 @@ export const AppointmentOption = ({
     if (!selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
 
-    handleCreateAppointment({
+    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
+
+    setAppointmentData({
       cpf,
       name,
       phone,
@@ -104,17 +120,23 @@ export const AppointmentOption = ({
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentDate: getCurrentSchedule(hour),
+      paymentLink: appointmentLink.data.paymentLink,
+      appointmentId: appointmentLink.data.appointmenId,
     });
   };
 
   const handleShowModal = () => {
     if (!dateParam || !paymentParam || !employeeParam) {
-      return toast.error(
-        'Para completar o agendamento, selecione o profissional, a data e o método de pagamento.',
-      );
+      toast.error('Para completar o agendamento, selecione o profissional, a data e o método de pagamento.');
+      return;
     }
 
     setIsFormActive(true);
+  };
+
+  const handleCreateAppointment = () => {
+    if (!appointmentData) return;
+    createAppointment(appointmentData);
   };
 
   return (
@@ -201,11 +223,6 @@ export const AppointmentOption = ({
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-
-      {
-        //alert payment
-      }
-
       <AlertDialog open={isPaymentActive}>
         <AlertDialogContent className='max-[550px]:max-w-[90%]'>
           <AlertDialogHeader>
@@ -216,7 +233,7 @@ export const AppointmentOption = ({
           </AlertDialogDescription>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsPaymentActive(false)}>Cancelar Reserva</AlertDialogCancel>
-            <AlertDialogAction>
+            <AlertDialogAction onClick={() => handleCreateAppointment}>
               <Link href={paymentUrl} rel='noopener noreferrer'>
                 Efetuar Pagamento
               </Link>
