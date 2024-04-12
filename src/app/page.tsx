@@ -1,5 +1,5 @@
+import { getHaircuts } from '@/services/server-side/getHaircuts';
 import { HaircutGrid } from '@/components/HaircutGrid';
-import { getHaircuts } from '@/services/GetHairCuts';
 import { SearchBar } from '@/components/SearchBar';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -21,7 +21,10 @@ export default async function Home() {
           </div>
           <SearchBar />
         </div>
-        <HaircutGrid haircuts={haircuts} />
+        {haircuts.status === 'error' && (
+          <span className='m-auto py-60 font-raleway text-3xl'>{haircuts.message}</span>
+        )}
+        {haircuts.status === 'success' && <HaircutGrid haircuts={haircuts.data} />}
       </div>
       <Footer />
     </Fragment>

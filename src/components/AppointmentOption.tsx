@@ -1,8 +1,8 @@
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
 import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
+import { createAppointment } from '@/services/client-side/createAppointment';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
-import { createAppointment } from '@/services/CreateAppointment';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';

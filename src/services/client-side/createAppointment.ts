@@ -11,7 +11,7 @@ export type CreateAppointment = {
   appointmentId: string;
   appointmentDate: Date;
   paymentMethod: PaymentMethod;
-} & ({ type: 'REGULAR'; userId: string } | { cpf: string; name: string; phone: string; type: 'SESSIONLESS' });
+} & ({ userId: string; type: 'REGULAR' } | { cpf: string; name: string; phone: string; type: 'SESSIONLESS' });
 
 export const createAppointment = async (params: CreateAppointment) => {
   const appointment =
@@ -52,10 +52,10 @@ export const createAppointment = async (params: CreateAppointment) => {
       message: 'Horário reservado com sucesso! Estamos te redirecionando para o link de pagamento.',
     } as const;
   } catch (error) {
+    if (!(error instanceof Error)) throw error;
     return {
       status: 'error',
       message: 'Houve um problema ao processar a reserva do horário.',
-      data: undefined,
     } as const;
   }
 };

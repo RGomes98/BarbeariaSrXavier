@@ -1,7 +1,7 @@
 'use client';
 
+import { createFirebaseUserAccount, createUserAccount } from '@/services/client-side/createUserAccount';
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
-import { createFirebaseUserAccount, createUserAccount } from '@/services/CreateUserAccount';
 import { type Register, RegisterSchema } from '@/lib/schemas';
 import { formatCPF, formatPhoneNumber } from '@/utils/input';
 import { zodResolver } from '@hookform/resolvers/zod';

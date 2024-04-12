@@ -1,9 +1,9 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
-import { CreateAppointment, createAppointment } from '@/services/CreateAppointment';
-import { createPaymentLink } from '@/services/CreatePaymentLink';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { CreateAppointment } from '@/services/client-side/createAppointment';
+import { createPaymentLink } from '@/services/client-side/createPaymentLink';
 import { Employee, PaymentMethod, User } from '@/lib/schemas';
-import { getHaircut } from '@/services/GetHairCuts';
+import { getHaircut } from '@/services/client-side/getHaircut';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 export const useBarberShopActions = (barbers: User[]) => {

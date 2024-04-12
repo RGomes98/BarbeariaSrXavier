@@ -4,7 +4,7 @@ import { firestore } from 'firebase-admin';
 
 initApp();
 
-export const MarkAppointmentAsPaid = async (appointmentId: string) => {
+export const markAppointmentAsPaid = async (appointmentId: string) => {
   try {
     const appointments = await firestore().collection('appointments').where('id', '==', appointmentId).get();
     const appointmentRef = appointments.docs[0].ref;
@@ -22,12 +22,13 @@ export const MarkAppointmentAsPaid = async (appointmentId: string) => {
       return schedule.id === appointmentId;
     });
 
-    if (!appointmentToUpdate) throw new Error('appointment not found');
+    if (!appointmentToUpdate || !appointmentEmployee) throw new Error('something went wrong.');
+
     appointmentToUpdate.status = 'PAID';
 
     const employeeToUpdate = await firestore()
       .collection('users')
-      .where('id', '==', appointmentEmployee?.id)
+      .where('id', '==', appointmentEmployee.id)
       .get();
 
     const employeeRef = employeeToUpdate.docs[0].ref;

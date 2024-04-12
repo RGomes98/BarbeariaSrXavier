@@ -1,7 +1,7 @@
-import { getHaircutWithRedirect } from '@/services/GetHairCuts';
+import { getEmployeesWithRedirect } from '@/services/server-side/getEmployees';
+import { getHaircutWithRedirect } from '@/services/server-side/getHaircuts';
 import { HaircutCarousel } from '@/components/HaircutCarousel';
 import { HaircutTable } from '@/components/HaircutTable';
-import { getEmployees } from '@/services/getEmployees';
 import { getSession } from '@/helpers/getSession';
 import { Navbar } from '@/components/Navbar';
 import { Footer } from '@/components/Footer';
@@ -10,7 +10,7 @@ import { Fragment } from 'react';
 export default async function Page({ params: { id } }: { params: { id: string } }) {
   const [haircut, employees, session] = await Promise.all([
     getHaircutWithRedirect(Number(id)),
-    getEmployees(),
+    getEmployeesWithRedirect(),
     getSession(),
   ]);
 

@@ -1,5 +1,5 @@
-import { GetUserById } from '@/services/GetUserById';
-import type { AccountType, User } from '@/lib/schemas';
+import { getUserById } from '@/services/server-side/getUserById';
+import type { AccountType } from '@/lib/schemas';
 import { cookies } from 'next/headers';
 import { auth } from 'firebase-admin';
 
@@ -12,7 +12,7 @@ export const getSession = async () => {
   const decodedToken = await auth().verifySessionCookie(session.value, true);
   if (!decodedToken) return null;
 
-  const { data, status } = await GetUserById(decodedToken.uid);
+  const { data, status } = await getUserById(decodedToken.uid);
   if (status !== 200) return null;
 
   return { id: data.id, name: data.name, accountType: data.accountType };

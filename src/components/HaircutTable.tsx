@@ -2,7 +2,7 @@
 
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDateGetDayAndYear, formatDateGetWeekday } from '@/utils/date';
-import { getAppoimentWithCallback } from '@/services/GetAppointments';
+import { getAppoimentWithCallback } from '@/services/client-side/getAppointment';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Haircut, User, workingHours } from '@/lib/schemas';

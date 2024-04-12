@@ -2,11 +2,11 @@
 
 import { Form, FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { type Login, LoginSchema } from '@/lib/schemas';
+import { signIn } from '@/services/client-side/signIn';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useRouter } from 'next/navigation';
-import { SignIn } from '@/services/SignIn';
 import { useForm } from 'react-hook-form';
 
 export const LoginForm = () => {
@@ -18,7 +18,7 @@ export const LoginForm = () => {
   const { push, refresh } = useRouter();
 
   function onSubmit(formData: Login) {
-    SignIn({
+    signIn({
       formData,
       onSuccess: () => {
         push('/');
