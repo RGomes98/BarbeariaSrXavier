@@ -1,3 +1,4 @@
+import { GoogleReCaptchaProvider } from '@/components/GoogleReCaptchaProvider';
 import { Galada, Poppins, Raleway } from 'next/font/google';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from '@/ThemeProvider';
@@ -44,7 +45,7 @@ export default function RootLayout({
     <html lang='pt-BR'>
       <body className={`${fonts} flex flex-col`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
-          {children}
+          <GoogleReCaptchaProvider>{children}</GoogleReCaptchaProvider>
           <Toaster richColors position='bottom-right' />
         </ThemeProvider>
       </body>
