@@ -2,7 +2,7 @@ import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore
 import { firestore } from '@/firebaseConfig/firebase';
 import { AppointmentsSchema } from '@/lib/schemas';
 
-export const UpdateAppointmentPresence = async (id: string, presence: boolean, userId?: string) => {
+export const updateAppointmentPresence = async (id: string, presence: boolean, userId?: string) => {
   try {
     const appointment = await getDocs(query(collection(firestore, 'appointments'), where('id', '==', id)));
     const user = await getDocs(query(collection(firestore, 'users'), where('id', '==', userId)));

@@ -1,7 +1,7 @@
-import { GetUserByIdClient } from '@/services/GetUserByIdClient';
+import { getEmployeeWithRedirect } from '@/services/server-side/getEmployees';
+import { getUserByIdWithRedirect } from '@/services/server-side/getUserById';
+import { getHaircutWithRedirect } from '@/services/server-side/getHaircuts';
 import { formatScheduleCaption } from '@/utils/caption';
-import { getEmployee } from '@/services/getEmployees';
-import { getHaircut } from '@/services/GetHairCuts';
 import { Appointment } from '@/lib/schemas';
 
 export const formatAppointmentsData = async (data: Appointment[]) => {
@@ -9,9 +9,9 @@ export const formatAppointmentsData = async (data: Appointment[]) => {
     data?.map(async (appointment) => {
       const isAppointmentRegular = appointment.type === 'REGULAR';
       const [haircut, employee, client] = await Promise.all([
-        getHaircut(appointment.haircutId),
-        getEmployee(appointment.employeeId),
-        isAppointmentRegular ? GetUserByIdClient(appointment.userId) : { name: appointment.name },
+        getHaircutWithRedirect(appointment.haircutId),
+        getEmployeeWithRedirect(appointment.employeeId),
+        isAppointmentRegular ? getUserByIdWithRedirect(appointment.userId) : { name: appointment.name },
       ]);
 
       return {

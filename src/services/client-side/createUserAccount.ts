@@ -1,5 +1,5 @@
 import { createUserWithEmailAndPassword, type UserCredential } from 'firebase/auth';
-import { auth, firestore } from '../firebaseConfig/firebase';
+import { auth, firestore } from '../../firebaseConfig/firebase';
 import { doc, setDoc } from 'firebase/firestore';
 import { Register } from '@/lib/schemas';
 
@@ -8,8 +8,8 @@ export const createFirebaseUserAccount = async (email: string, password: string)
     const user = await createUserWithEmailAndPassword(auth, email, password);
     return { status: 'success', message: 'Usuário criado com sucesso!', data: user } as const;
   } catch (error) {
-    if (error instanceof Error) return { status: 'error', message: error.message, data: undefined } as const;
-    throw error;
+    if (!(error instanceof Error)) throw error;
+    return { status: 'error', message: error.message, data: undefined } as const;
   }
 };
 
@@ -29,7 +29,7 @@ export const createUserAccount = async (registerData: Register, userCredentials:
 
     return { status: 'success', message: 'Conta criada com sucesso!' } as const;
   } catch (error) {
-    if (error instanceof Error) return { status: 'error', message: error.message } as const;
-    throw error;
+    if (!(error instanceof Error)) throw error;
+    return { status: 'error', message: error.message } as const;
   }
 };

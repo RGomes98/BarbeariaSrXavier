@@ -2,7 +2,7 @@
 
 import { Table, TableBody, TableCaption, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatDateGetDayAndYear, formatDateGetWeekday } from '@/utils/date';
-import { getAppoimentWithCallback } from '@/services/GetAppointments';
+import { getAppoimentWithCallback } from '@/services/client-side/getAppointment';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Haircut, User, workingHours } from '@/lib/schemas';
@@ -22,7 +22,7 @@ export const HaircutTable = ({
   session: Session;
   employees: User[];
 }) => {
-  const { scheduleDate } = useBarberShopActions(employees);
+  const { scheduleDate } = useBarberShopActions(employees, haircut);
   const SearchParams = useSearchParams();
   const appointmentId = SearchParams.get('id')?.trim();
 

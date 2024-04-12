@@ -1,8 +1,8 @@
 'use client';
 
-import { UpdateAppointmentPresence } from '@/services/UpdateAppointmentPresence';
+import { updateAppointmentPresence } from '@/services/client-side/updateAppointmentPresence';
+import { updateAppointmentStatus } from '@/services/client-side/updateAppointmentStatus';
 import { formatDate, formatDateGetDay, formatDateGetHour } from '@/utils/date';
-import { UpdateAppointmentStatus } from '@/services/UpdateAppointmentStatus';
 import { FormattedAppointmentData, Status } from '@/lib/schemas';
 import { formatPaymentMethodCaption } from '@/utils/caption';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
@@ -148,16 +148,16 @@ export const useAppointmentsTable = (session: Session) => {
       cell: ({ row }) => {
         const { appointmentId, paymentLink, appointmentStatus } = row.original;
 
-        const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
-          const response = await UpdateAppointmentStatus(id, status, userId);
+        const handleUpdateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
+          const response = await updateAppointmentStatus(id, status, userId);
           if (response.status === 'error') return toast.error(response.message);
 
           refresh();
           toast.success(response.message);
         };
 
-        const updateAppointmentPresence = async (id: string, status: boolean, userId?: string) => {
-          const response = await UpdateAppointmentPresence(id, status, userId);
+        const handleUpdateAppointmentPresence = async (id: string, status: boolean, userId?: string) => {
+          const response = await updateAppointmentPresence(id, status, userId);
           if (response.status === 'error') return toast.error(response.message);
 
           refresh();
@@ -243,7 +243,7 @@ export const useAppointmentsTable = (session: Session) => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => updateAppointmentStatus(appointmentId, 'PAID', session?.id)}
+                            onClick={() => handleUpdateAppointmentStatus(appointmentId, 'PAID', session?.id)}
                           >
                             Confirmar Pagamento
                           </AlertDialogAction>
@@ -266,7 +266,7 @@ export const useAppointmentsTable = (session: Session) => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => updateAppointmentStatus(appointmentId, 'BREAK', session?.id)}
+                            onClick={() => handleUpdateAppointmentStatus(appointmentId, 'BREAK', session?.id)}
                           >
                             Confirmar Almoço
                           </AlertDialogAction>
@@ -289,7 +289,9 @@ export const useAppointmentsTable = (session: Session) => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => updateAppointmentStatus(appointmentId, 'PENDING', session?.id)}
+                            onClick={() =>
+                              handleUpdateAppointmentStatus(appointmentId, 'PENDING', session?.id)
+                            }
                           >
                             Confirmar Pendência
                           </AlertDialogAction>
@@ -312,7 +314,9 @@ export const useAppointmentsTable = (session: Session) => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Manter</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => updateAppointmentStatus(appointmentId, 'CANCELED', session?.id)}
+                            onClick={() =>
+                              handleUpdateAppointmentStatus(appointmentId, 'CANCELED', session?.id)
+                            }
                           >
                             Confirmar Cancelamento
                           </AlertDialogAction>
@@ -342,7 +346,7 @@ export const useAppointmentsTable = (session: Session) => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => updateAppointmentPresence(appointmentId, false, session?.id)}
+                            onClick={() => handleUpdateAppointmentPresence(appointmentId, false, session?.id)}
                           >
                             Registrar Ausência
                           </AlertDialogAction>
@@ -365,7 +369,7 @@ export const useAppointmentsTable = (session: Session) => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => updateAppointmentPresence(appointmentId, true, session?.id)}
+                            onClick={() => handleUpdateAppointmentPresence(appointmentId, true, session?.id)}
                           >
                             Confirmar Presença
                           </AlertDialogAction>

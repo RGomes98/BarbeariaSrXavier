@@ -7,7 +7,7 @@ import Link from 'next/link';
 
 export default function Page() {
   return (
-    <div className='mx-auto grid min-h-screen grid-cols-2 max-lg:grid-cols-1'>
+    <div className='grid min-h-screen grid-cols-2 max-lg:grid-cols-1'>
       <div className='flex h-full items-center justify-center border-r border-zinc-800 bg-zinc-900 py-10 pl-[10%] pr-10 max-lg:hidden'>
         <Logo />
       </div>

@@ -26,18 +26,19 @@ export const createPaymentLink = async (paymentLinkOptions: PaymentLinkOptions) 
     const response = await fetch('/api/paymentLink', { method: 'POST', body: JSON.stringify(options) });
     const paymentData = await response.json();
 
-    if (!response.ok)
+    if (!response.ok) {
       throw new Error(
         'Ops! Parece que algo deu errado ao criar o link de pagamento. Por favor, tente novamente mais tarde.',
       );
+    }
 
     return {
       status: 'success',
-      paymentLink: paymentData.data.url,
       message: 'Link de pagamento criado com sucesso!',
+      paymentLink: paymentData.data.url,
     } as const;
   } catch (error) {
     if (!(error instanceof Error)) throw error;
-    return { status: 'error', paymentLink: undefined, message: error.message } as const;
+    return { status: 'error', message: error.message, paymentLink: undefined } as const;
   }
 };
