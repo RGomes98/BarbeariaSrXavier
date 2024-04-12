@@ -38,9 +38,11 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fonts = `${GeistSans.className} ${poppins.variable} ${raleway.variable} ${galada.variable}`;
+
   return (
     <html lang='pt-BR'>
-      <body className={`${GeistSans.className} ${poppins.variable} ${raleway.variable} ${galada.variable}`}>
+      <body className={`${fonts} flex flex-col`}>
         <ThemeProvider attribute='class' defaultTheme='system' enableSystem disableTransitionOnChange>
           {children}
           <Toaster richColors position='bottom-right' />
