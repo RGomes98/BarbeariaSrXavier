@@ -1,8 +1,10 @@
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
+import { handleReCaptchaVerifyResponse } from '@/helpers/handleReCaptchaVerifyResponse';
 import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { createAppointment } from '@/services/client-side/createAppointment';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
@@ -34,6 +36,7 @@ export const AppointmentOption = ({
   session: Session;
   employees: User[];
 }) => {
+  const { executeRecaptcha } = useGoogleReCaptcha();
   const { isMounted } = useMounted();
   const { push } = useRouter();
 
@@ -106,8 +109,12 @@ export const AppointmentOption = ({
   };
 
   const handleScheduleHaircutSessionless = async (formData: ScheduleFormType) => {
-    if (!selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
+    if (!executeRecaptcha || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
+
+    const reCaptchaToken = await executeRecaptcha('createSessionlessAppointment');
+    const { isHuman, message } = await handleReCaptchaVerifyResponse(reCaptchaToken);
+    if (!isHuman) return toast.error(message);
 
     const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
