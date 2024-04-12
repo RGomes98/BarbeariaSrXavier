@@ -1,12 +1,11 @@
 import { validateDate, validateEmployee, validatePaymentMethod } from '@/helpers/validateSearchParams';
 import { CreateAppointment } from '@/services/client-side/createAppointment';
 import { createPaymentLink } from '@/services/client-side/createPaymentLink';
-import { Employee, PaymentMethod, User } from '@/lib/schemas';
-import { getHaircut } from '@/services/client-side/getHaircut';
+import type { Employee, Haircut, PaymentMethod, User } from '@/lib/schemas';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
-export const useBarberShopActions = (barbers: User[]) => {
+export const useBarberShopActions = (barbers: User[], haircut: Haircut) => {
   const [appointmentData, setAppointmentData] = useState<CreateAppointment>();
   const [isPaymentActive, setIsPaymentActive] = useState(false);
   const [isFormActive, setIsFormActive] = useState(false);
@@ -44,7 +43,6 @@ export const useBarberShopActions = (barbers: User[]) => {
   };
 
   const handleCreateAppointmentLink = async (haircutId: number, paymentMethod: PaymentMethod) => {
-    const haircut = await getHaircut(haircutId);
     const appointmentId = crypto.randomUUID();
 
     const paymentLinkResponse = await createPaymentLink({

@@ -22,7 +22,7 @@ export const HaircutTable = ({
   session: Session;
   employees: User[];
 }) => {
-  const { scheduleDate } = useBarberShopActions(employees);
+  const { scheduleDate } = useBarberShopActions(employees, haircut);
   const SearchParams = useSearchParams();
   const appointmentId = SearchParams.get('id')?.trim();
 

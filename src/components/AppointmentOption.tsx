@@ -54,7 +54,7 @@ export const AppointmentOption = ({
     setAppointmentData,
     handleCreateAppointmentLink,
     getEmployeeCurrentHourSchedule,
-  } = useBarberShopActions(employees);
+  } = useBarberShopActions(employees, haircut);
 
   const isScheduleNotActive = hour < new Date().getHours() && new Date() >= new Date(scheduleDate);
   const currentHourSchedule = getEmployeeCurrentHourSchedule(hour);
