@@ -1,36 +1,53 @@
 import { collection, getDocs, query, updateDoc, where } from 'firebase/firestore';
 import { AppointmentsSchema, Status } from '@/lib/schemas';
+import { formatScheduleCaption } from '@/utils/caption';
 import { firestore } from '@/firebaseConfig/firebase';
 
-export const updateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
-  const appointment = await getDocs(query(collection(firestore, 'appointments'), where('id', '==', id)));
-  const user = await getDocs(query(collection(firestore, 'users'), where('id', '==', userId)));
-  const appointmentRef = appointment.docs[0].ref;
-  const userRef = user.docs[0].ref;
+export type UpdateAppointmentStatus = {
+  id: string;
+  status: Status;
+  clientName: string;
+  employeeId?: string;
+};
 
+export const updateAppointmentStatus = async ({
+  id,
+  status,
+  clientName,
+  employeeId,
+}: UpdateAppointmentStatus) => {
   try {
-    const userAppointments = AppointmentsSchema.safeParse(user.docs[0].data().schedules);
-    if (!userAppointments.success) throw new Error('invalid appointments structure');
+    const appointment = await getDocs(query(collection(firestore, 'appointments'), where('id', '==', id)));
+    const employee = await getDocs(query(collection(firestore, 'users'), where('id', '==', employeeId)));
+    const appointmentRef = appointment.docs[0].ref;
+    const employeeRef = employee.docs[0].ref;
 
-    const appointmentToUpdate = userAppointments.data.find((appointment) => appointment.id === id);
-    if (!appointmentToUpdate) throw new Error('appointment not found');
+    const employeeAppointments = AppointmentsSchema.safeParse(employee.docs[0].data().schedules);
+    if (!employeeAppointments.success) {
+      throw new Error('Algo inesperado aconteceu. Por favor, tente novamente em breve.');
+    }
+
+    const appointmentToUpdate = employeeAppointments.data.find((appointment) => appointment.id === id);
+    if (!appointmentToUpdate) throw new Error('Agendamento não encontrado.');
 
     appointmentToUpdate.status = status;
 
-    const filteredAppointments = userAppointments.data.filter((appointmentsToKeep) => {
+    const filteredAppointments = employeeAppointments.data.filter((appointmentsToKeep) => {
       return appointmentsToKeep.id !== appointmentToUpdate.id;
     });
 
     await updateDoc(appointmentRef, { status: status });
-    await updateDoc(userRef, { schedules: [...filteredAppointments, appointmentToUpdate] });
+    await updateDoc(employeeRef, { schedules: [...filteredAppointments, appointmentToUpdate] });
 
-    return { status: 'sucess', message: 'Status do agendamento atualizado com sucesso!' } as const;
+    return {
+      status: 'sucess',
+      message: `O status do agendamento de ${clientName.toUpperCase()} foi alterado para ${formatScheduleCaption(status).toUpperCase()}.`,
+    } as const;
   } catch (error) {
-    if (error instanceof Error)
-      return {
-        status: 'error',
-        message: 'Ops! Algo deu errado ao tentar alterar o status do agendamento.',
-      } as const;
-    throw error;
+    if (!(error instanceof Error)) throw error;
+    return {
+      status: 'error',
+      message: 'Ops! Algo deu errado ao tentar alterar o status do agendamento.',
+    } as const;
   }
 };

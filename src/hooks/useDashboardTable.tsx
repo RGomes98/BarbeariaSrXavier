@@ -1,11 +1,9 @@
 'use client';
 
-import { updateAppointmentPresence } from '@/services/client-side/updateAppointmentPresence';
-import { updateAppointmentStatus } from '@/services/client-side/updateAppointmentStatus';
 import { formatDate, formatDateGetDay, formatDateGetHour } from '@/utils/date';
-import { FormattedAppointmentData, Status } from '@/lib/schemas';
 import { formatPaymentMethodCaption } from '@/utils/caption';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { FormattedAppointmentData } from '@/lib/schemas';
 import { formatToCurrency } from '@/utils/number';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
@@ -13,6 +11,16 @@ import { Badge } from '@/components/ui/badge';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
+
+import {
+  updateAppointmentPresence,
+  type UpdateAppointmentPresence,
+} from '@/services/client-side/updateAppointmentPresence';
+
+import {
+  updateAppointmentStatus,
+  type UpdateAppointmentStatus,
+} from '@/services/client-side/updateAppointmentStatus';
 
 import {
   DropdownMenu,
@@ -68,7 +76,7 @@ export const useDashboardTable = () => {
         const oneHour = 1 * 60 * 60 * 1000;
         const appointmentHour = new Date(row.getValue('appointmentDate')).getTime();
 
-        const userSchedule = appointmentHour + oneHour > new Date().getTime() &&
+        const userAppointment = appointmentHour + oneHour > new Date().getTime() &&
           (Boolean(row.getValue('isDone')) || Boolean(!row.getValue('isDone'))) && (
             <Badge className='flex w-full justify-center bg-orange-400 py-1.5 uppercase text-zinc-900 brightness-110 hover:bg-orange-300'>
               Agendado
@@ -89,7 +97,7 @@ export const useDashboardTable = () => {
             </Badge>
           );
 
-        return <Fragment>{userSchedule || userPresence || userAbsence}</Fragment>;
+        return <Fragment>{userAppointment || userPresence || userAbsence}</Fragment>;
       },
     },
 
@@ -145,18 +153,28 @@ export const useDashboardTable = () => {
       id: 'actions',
       enableHiding: false,
       cell: ({ row }) => {
-        const { employeeId, appointmentId, paymentLink } = row.original;
+        const { employeeId, appointmentId, paymentLink, clientName } = row.original;
 
-        const handleUpdateAppointmentStatus = async (id: string, status: Status, userId?: string) => {
-          const response = await updateAppointmentStatus(id, status, userId);
+        const handleUpdateAppointmentStatus = async ({
+          id,
+          status,
+          clientName,
+          employeeId,
+        }: UpdateAppointmentStatus) => {
+          const response = await updateAppointmentStatus({ id, status, employeeId, clientName });
           if (response.status === 'error') return toast.error(response.message);
 
           refresh();
           toast.success(response.message);
         };
 
-        const handleUpdateAppointmentPresence = async (id: string, status: boolean, userId?: string) => {
-          const response = await updateAppointmentPresence(id, status, userId);
+        const handleUpdateAppointmentPresence = async ({
+          id,
+          presence,
+          clientName,
+          employeeId,
+        }: UpdateAppointmentPresence) => {
+          const response = await updateAppointmentPresence({ id, presence, employeeId, clientName });
           if (response.status === 'error') return toast.error(response.message);
 
           refresh();
@@ -212,7 +230,14 @@ export const useDashboardTable = () => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleUpdateAppointmentStatus(appointmentId, 'PAID', employeeId)}
+                            onClick={() =>
+                              handleUpdateAppointmentStatus({
+                                id: appointmentId,
+                                status: 'PAID',
+                                employeeId,
+                                clientName,
+                              })
+                            }
                           >
                             Confirmar Pagamento
                           </AlertDialogAction>
@@ -235,7 +260,14 @@ export const useDashboardTable = () => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleUpdateAppointmentStatus(appointmentId, 'BREAK', employeeId)}
+                            onClick={() =>
+                              handleUpdateAppointmentStatus({
+                                id: appointmentId,
+                                status: 'BREAK',
+                                employeeId,
+                                clientName,
+                              })
+                            }
                           >
                             Confirmar Almoço
                           </AlertDialogAction>
@@ -259,7 +291,12 @@ export const useDashboardTable = () => {
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() =>
-                              handleUpdateAppointmentStatus(appointmentId, 'PENDING', employeeId)
+                              handleUpdateAppointmentStatus({
+                                id: appointmentId,
+                                status: 'PENDING',
+                                employeeId,
+                                clientName,
+                              })
                             }
                           >
                             Confirmar Pendência
@@ -284,7 +321,12 @@ export const useDashboardTable = () => {
                           <AlertDialogCancel>Manter</AlertDialogCancel>
                           <AlertDialogAction
                             onClick={() =>
-                              handleUpdateAppointmentStatus(appointmentId, 'CANCELED', employeeId)
+                              handleUpdateAppointmentStatus({
+                                id: appointmentId,
+                                status: 'CANCELED',
+                                employeeId,
+                                clientName,
+                              })
                             }
                           >
                             Confirmar Cancelamento
@@ -315,7 +357,14 @@ export const useDashboardTable = () => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleUpdateAppointmentPresence(appointmentId, false, employeeId)}
+                            onClick={() =>
+                              handleUpdateAppointmentPresence({
+                                id: appointmentId,
+                                presence: false,
+                                employeeId,
+                                clientName,
+                              })
+                            }
                           >
                             Registrar Ausência
                           </AlertDialogAction>
@@ -338,7 +387,14 @@ export const useDashboardTable = () => {
                         <AlertDialogFooter>
                           <AlertDialogCancel>Cancelar</AlertDialogCancel>
                           <AlertDialogAction
-                            onClick={() => handleUpdateAppointmentPresence(appointmentId, true, employeeId)}
+                            onClick={() =>
+                              handleUpdateAppointmentPresence({
+                                id: appointmentId,
+                                presence: true,
+                                employeeId,
+                                clientName,
+                              })
+                            }
                           >
                             Confirmar Presença
                           </AlertDialogAction>
