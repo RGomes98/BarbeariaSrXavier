@@ -9,6 +9,7 @@ import { formatScheduleCaption } from '@/utils/caption';
 import { EmployeeEarnings } from './EmployeeEarnings';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { DashboardTable } from './DashboardTable';
+import { CreateHaircut } from './CreateHaircut';
 import { formatDateShort } from '@/utils/date';
 import { Session } from '@/helpers/getSession';
 import { Fragment } from 'react';
@@ -39,6 +40,7 @@ export const Dashboard = ({
 
   return (
     <Fragment>
+      <CreateHaircut />
       {children}
       <div className='flex w-full flex-col gap-12 px-28 pb-20 pt-14 max-xl:px-14 max-lg:gap-8 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
         <div className='grid grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:gap-8'>

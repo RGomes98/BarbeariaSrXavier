@@ -21,3 +21,7 @@ export const formatPhoneNumber = (input: string) => {
 
   return formattedPhone;
 };
+
+export const formatFloatNumber = (input: string) => {
+  return input.replace(/[^\d.]/g, '');
+};

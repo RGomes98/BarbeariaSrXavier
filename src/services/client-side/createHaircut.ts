@@ -1,8 +1,6 @@
+import { collection, getDocs, query, orderBy, limit, addDoc } from 'firebase/firestore';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { firestore } from '../../firebaseConfig/firebase';
-import { type UserCredential } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
 import { Haircut } from '@/lib/schemas';
 
 export const uploadHaircutImage = async (file: File): Promise<string> => {
@@ -36,18 +34,14 @@ export const getLastHaircutIndex = async () => {
   }
 };
 
-export const createHaircut = async (haircut: Haircut, userCredentials: UserCredential, files: File[]) => {
+export const createHaircut = async (images: File[], haircut: Omit<Haircut, 'id' | 'photoUri'>) => {
   try {
-    let idNum = (await getLastHaircutIndex()) + 1;
-    let photoUri: string[] = [];
-
-    files.forEach(async (file) => photoUri.push(await uploadHaircutImage(file)));
-    await setDoc(doc(firestore, 'users', userCredentials.user.uid), {
-      id: idNum,
+    await addDoc(collection(firestore, 'haircuts'), {
       name: haircut.name,
       price: haircut.price,
       description: haircut.description,
-      photoUri: photoUri,
+      id: (await getLastHaircutIndex()) + 1,
+      photoUri: await Promise.all(images.map(async (file) => uploadHaircutImage(file))),
     });
 
     return { status: 'success', message: 'Corte criado com sucesso!' } as const;
