@@ -119,6 +119,54 @@ export const paymentLinkTokenSchema = z.object({
   data: z.object({ h: z.number(), a: z.string() }),
 });
 
+export const CreateHaircutSchema = z
+  .object({
+    images: z.custom<File[]>(),
+    name: z
+      .string({
+        errorMap: () => ({
+          message: 'É necessário adicionar um nome.',
+        }),
+      })
+      .trim()
+      .min(1, {
+        message: 'O nome deve conter pelo menos 1 caractere.',
+      }),
+    price: z.coerce
+      .number({ errorMap: () => ({ message: 'O campo de preço aceita apenas números.' }) })
+      .positive({ message: 'Apenas valores positivos são permitidos para o preço.' }),
+    description: z
+      .string({ errorMap: () => ({ message: 'É necessário adicionar uma descrição.' }) })
+      .trim()
+      .min(5, {
+        message: 'O nome deve conter pelo menos 5 caracteres.',
+      }),
+  })
+  .superRefine(({ images }, refinementContext) => {
+    const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const imageFiles = images ?? [];
+
+    const isFileTypeNotValid = Array.from(imageFiles).some((file) => {
+      return !ACCEPTED_IMAGE_TYPES.includes(file.type);
+    });
+
+    if (!imageFiles.length) {
+      refinementContext.addIssue({
+        path: ['images'],
+        code: z.ZodIssueCode.custom,
+        message: 'É necessário adicionar uma imagem.',
+      });
+    }
+
+    if (isFileTypeNotValid) {
+      refinementContext.addIssue({
+        path: ['images'],
+        code: z.ZodIssueCode.custom,
+        message: 'Formato de arquivo não suportado.',
+      });
+    }
+  });
+
 export const FormattedAppointmentsDataSchema = z.array(FormattedAppointmentDataSchema);
 export const AppointmentsSchema = z.array(AppointmentSchema);
 export const paymentMethodSchema = z.enum(paymentMethods);
@@ -132,6 +180,7 @@ export type Roles = (typeof accountTypes)[number];
 export type Status = (typeof statuses)[number];
 
 export type FormattedAppointmentData = z.infer<typeof FormattedAppointmentDataSchema>;
+export type CreateHaircutForm = z.infer<typeof CreateHaircutSchema>;
 export type ScheduleForm = z.infer<typeof ScheduleFormSchema>;
 export type AccountType = z.infer<typeof AccountTypeSchema>;
 export type Appointment = z.infer<typeof AppointmentSchema>;

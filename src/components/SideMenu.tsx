@@ -7,10 +7,12 @@ import { Session } from '@/helpers/getSession';
 import { usePathname } from 'next/navigation';
 import { LogoSVG } from './LogoSVG';
 import { Menu } from 'lucide-react';
+import { useStore } from '@/store';
 
 import Link from 'next/link';
 
 export const SideMenu = ({ session }: { session: Session }) => {
+  const setIsCreateHaircutActive = useStore().setIsCreateHaircutActive;
   const path = usePathname();
 
   const isAtSchedules = path === '/agendamentos';
@@ -39,10 +41,12 @@ export const SideMenu = ({ session }: { session: Session }) => {
           {session && (
             <div className='flex flex-col justify-center gap-4'>
               {isAtDashboard && (
-                <Button variant='outline' className='relative py-6'>
-                  <Link className='absolute flex h-full w-full items-center justify-center' href='#'>
-                    Editar Cortes
-                  </Link>
+                <Button
+                  onClick={() => setIsCreateHaircutActive(true)}
+                  className='relative py-6'
+                  variant='outline'
+                >
+                  Criar Corte
                 </Button>
               )}
               {!isAtDashboard && session.accountType === 'ADMIN' && (
