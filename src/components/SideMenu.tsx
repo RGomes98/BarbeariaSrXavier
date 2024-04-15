@@ -8,11 +8,12 @@ import { usePathname } from 'next/navigation';
 import { LogoSVG } from './LogoSVG';
 import { Menu } from 'lucide-react';
 import { useStore } from '@/store';
+import { Fragment } from 'react';
 
 import Link from 'next/link';
 
 export const SideMenu = ({ session }: { session: Session }) => {
-  const setIsCreateHaircutActive = useStore().setIsCreateHaircutActive;
+  const { setIsCreateHaircutActive, setIsUpdateHaircutActive } = useStore();
   const path = usePathname();
 
   const isAtSchedules = path === '/agendamentos';
@@ -34,20 +35,29 @@ export const SideMenu = ({ session }: { session: Session }) => {
           {!isAtHome && (
             <Button variant='outline' className='mb-4 py-6'>
               <Link className='absolute flex h-full w-full items-center justify-center' href='/'>
-                Voltar
+                Início
               </Link>
             </Button>
           )}
           {session && (
             <div className='flex flex-col justify-center gap-4'>
               {isAtDashboard && (
-                <Button
-                  onClick={() => setIsCreateHaircutActive(true)}
-                  className='relative py-6'
-                  variant='outline'
-                >
-                  Criar Corte
-                </Button>
+                <Fragment>
+                  <Button
+                    onClick={() => setIsCreateHaircutActive(true)}
+                    className='relative py-6'
+                    variant='outline'
+                  >
+                    Criar Corte
+                  </Button>
+                  <Button
+                    onClick={() => setIsUpdateHaircutActive(true)}
+                    className='relative py-6'
+                    variant='outline'
+                  >
+                    Editar Corte
+                  </Button>
+                </Fragment>
               )}
               {!isAtDashboard && session.accountType === 'ADMIN' && (
                 <Button variant='outline' className='relative py-6'>
