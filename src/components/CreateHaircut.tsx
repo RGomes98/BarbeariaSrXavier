@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { formatFloatNumber } from '@/utils/input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Fragment, useRef } from 'react';
 import { useStore } from '@/store';
@@ -22,16 +23,17 @@ import {
 
 export const CreateHaircut = () => {
   const form = useForm<CreateHaircutForm>({ resolver: zodResolver(CreateHaircutSchema) });
-  const setIsCreateHaircutActive = useStore().setIsCreateHaircutActive;
-  const isCreateHaircutActive = useStore().isCreateHaircutActive;
+  const { isCreateHaircutActive, setIsCreateHaircutActive } = useStore();
   const priceInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { refresh } = useRouter();
 
   const handleCreateHaircut = async (formData: CreateHaircutForm) => {
     const { name, price, images, description } = formData;
     const createHaircutResponse = await createHaircut(images, { name, price, description });
     if (createHaircutResponse.status === 'error') return toast.error(createHaircutResponse.message);
 
+    refresh();
     setIsCreateHaircutActive(false);
     toast.success(createHaircutResponse.message);
     form.reset({ name: '', description: '', images: [] });
@@ -62,7 +64,7 @@ export const CreateHaircut = () => {
                   <FormControl>
                     <Fragment>
                       <Label className='px-0.5' htmlFor='name'>
-                        Nome
+                        Nome:
                       </Label>
                       <Input {...field} id='name' />
                     </Fragment>
@@ -79,7 +81,7 @@ export const CreateHaircut = () => {
                   <FormControl>
                     <Fragment>
                       <Label htmlFor='description' className='px-0.5'>
-                        Descrição
+                        Descrição:
                       </Label>
                       <Input {...field} id='description' />
                     </Fragment>
@@ -96,7 +98,7 @@ export const CreateHaircut = () => {
                   <FormControl>
                     <Fragment>
                       <Label htmlFor='price' className='px-0.5'>
-                        Preço
+                        Preço:
                       </Label>
                       <Input
                         {...field}
@@ -119,7 +121,7 @@ export const CreateHaircut = () => {
                   <FormControl>
                     <Fragment>
                       <Label htmlFor='images' className='px-0.5'>
-                        Fotos
+                        Fotos:
                       </Label>
                       <Input
                         {...fieldProps}
