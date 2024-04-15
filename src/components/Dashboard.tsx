@@ -2,14 +2,15 @@
 
 import { CheckCircle2, Circle, CircleDot, CircleSlash, Contact, UserCircle, XCircle } from 'lucide-react';
 import { useDashboardTableFilter } from '@/hooks/useDashboardTableFilter';
+import { FormattedAppointmentData, Haircut, User } from '@/lib/schemas';
 import { DashboardTableFilters } from './DashboardTableFilters';
-import { FormattedAppointmentData, User } from '@/lib/schemas';
 import { useDashboardTable } from '@/hooks/useDashboardTable';
 import { formatScheduleCaption } from '@/utils/caption';
 import { EmployeeEarnings } from './EmployeeEarnings';
 import { CalendarIcon } from '@radix-ui/react-icons';
 import { DashboardTable } from './DashboardTable';
 import { CreateHaircut } from './CreateHaircut';
+import { UpdateHaircut } from './UpdateHaircut';
 import { formatDateShort } from '@/utils/date';
 import { Session } from '@/helpers/getSession';
 import { Fragment } from 'react';
@@ -17,11 +18,13 @@ import { Fragment } from 'react';
 export const Dashboard = ({
   session,
   children,
+  haircuts,
   employees,
   appointmentsData,
 }: {
   session: Session;
   employees: User[];
+  haircuts: Haircut[];
   children: React.ReactNode;
   appointmentsData: FormattedAppointmentData[];
 }) => {
@@ -41,6 +44,7 @@ export const Dashboard = ({
   return (
     <Fragment>
       <CreateHaircut />
+      <UpdateHaircut haircuts={haircuts} />
       {children}
       <div className='flex w-full flex-col gap-12 px-28 pb-20 pt-14 max-xl:px-14 max-lg:gap-8 max-lg:px-8 max-sm:px-6 max-sm:pt-6'>
         <div className='grid grid-cols-2 gap-4 max-lg:grid-cols-1 max-lg:gap-8'>

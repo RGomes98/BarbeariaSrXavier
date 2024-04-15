@@ -139,7 +139,7 @@ export const CreateHaircutSchema = z
       .string({ errorMap: () => ({ message: 'É necessário adicionar uma descrição.' }) })
       .trim()
       .min(5, {
-        message: 'O nome deve conter pelo menos 5 caracteres.',
+        message: 'A descrição deve conter pelo menos 5 caracteres.',
       }),
   })
   .superRefine(({ images }, refinementContext) => {

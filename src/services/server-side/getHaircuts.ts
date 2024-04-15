@@ -32,3 +32,13 @@ export const getHaircutWithRedirect = async (id: number) => {
     redirect('/');
   }
 };
+
+export const getHaircutsWithRedirect = async () => {
+  try {
+    const docSnap = await getDocs(collection(firestore, 'haircuts'));
+    return HaircutsSchema.parse(docSnap.docs.map((doc) => doc.data()));
+  } catch (error) {
+    if (!(error instanceof Error)) throw error;
+    redirect('/');
+  }
+};

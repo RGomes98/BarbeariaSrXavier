@@ -41,7 +41,7 @@ export const createHaircut = async (images: File[], haircut: Omit<Haircut, 'id' 
       price: haircut.price,
       description: haircut.description,
       id: (await getLastHaircutIndex()) + 1,
-      photoUri: await Promise.all(images.map(async (file) => uploadHaircutImage(file))),
+      photoUri: await Promise.all(images.map((file) => uploadHaircutImage(file))),
     });
 
     return { status: 'success', message: 'Corte criado com sucesso!' } as const;
