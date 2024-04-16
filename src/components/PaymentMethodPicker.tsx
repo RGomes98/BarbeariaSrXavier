@@ -1,6 +1,6 @@
+import { Banknote, CircleDollarSign, CreditCard, QrCode } from 'lucide-react';
 import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validatePaymentMethod } from '@/helpers/validateSearchParams';
-import { Banknote, CreditCard, QrCode } from 'lucide-react';
 import { formatPaymentMethod } from '@/utils/caption';
 import { useSearchParams } from 'next/navigation';
 import { paymentMethods } from '@/lib/schemas';
@@ -30,7 +30,10 @@ export const PaymentMethodPicker = () => {
       {formatPaymentMethod(selectedPaymentMethod)}
     </div>
   ) : (
-    'Método de Pagamento'
+    <div className='flex gap-2'>
+      <CircleDollarSign className='size-5' />
+      Método de Pagamento
+    </div>
   );
 
   return (

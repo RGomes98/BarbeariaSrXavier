@@ -1,6 +1,7 @@
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form';
 import { CreateHaircutForm, CreateHaircutSchema, Haircut } from '@/lib/schemas';
 import { updateHaircut } from '@/services/client-side/updateHaircut';
+import { deleteHaircut } from '@/services/client-side/deleteHaircut';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Fragment, useRef, useState } from 'react';
 import { formatFloatNumber } from '@/utils/input';
@@ -12,6 +13,18 @@ import { Scissors } from 'lucide-react';
 import { useStore } from '@/store';
 import { Label } from './ui/label';
 import { toast } from 'sonner';
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 import {
   Select,
@@ -34,10 +47,24 @@ import {
 export const UpdateHaircut = ({ haircuts }: { haircuts: Haircut[] }) => {
   const form = useForm<CreateHaircutForm>({ resolver: zodResolver(CreateHaircutSchema) });
   const [activeHaircut, setActiveHaircut] = useState<Haircut | undefined>(undefined);
+  const [isDeleteHaircutActive, setIsDeleteHaircutActive] = useState(false);
   const { isUpdateHaircutActive, setIsUpdateHaircutActive } = useStore();
   const priceInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { refresh } = useRouter();
+
+  const handleUpdateUI = () => {
+    refresh();
+    setActiveHaircut(undefined);
+    form.reset({ name: '', description: '', images: [] });
+    if (fileInputRef?.current?.value) fileInputRef.current.value = '';
+    if (priceInputRef?.current?.value) priceInputRef.current.value = '';
+  };
+
+  const handleShowDeleteHaircut = () => {
+    if (!activeHaircut) return toast.error('Selecione um corte para deletar!');
+    setIsDeleteHaircutActive(true);
+  };
 
   const handleUpdateHaircut = async (formData: CreateHaircutForm) => {
     const { name, price, images, description } = formData;
@@ -52,13 +79,20 @@ export const UpdateHaircut = ({ haircuts }: { haircuts: Haircut[] }) => {
 
     if (updateHaircutResponse.status === 'error') return toast.error(updateHaircutResponse.message);
 
-    refresh();
-    setActiveHaircut(undefined);
+    handleUpdateUI();
     setIsUpdateHaircutActive(false);
     toast.success(updateHaircutResponse.message);
-    form.reset({ name: '', description: '', images: [] });
-    if (fileInputRef?.current?.value) fileInputRef.current.value = '';
-    if (priceInputRef?.current?.value) priceInputRef.current.value = '';
+  };
+
+  const handleDeleteHaircut = async (haircutId?: number) => {
+    if (!haircutId) return;
+
+    const deleteHaircutResponse = await deleteHaircut(haircutId);
+    if (deleteHaircutResponse.status === 'error') return toast.error(deleteHaircutResponse.message);
+
+    handleUpdateUI();
+    setIsDeleteHaircutActive(false);
+    toast.success(deleteHaircutResponse.message);
   };
 
   return (
@@ -192,9 +226,33 @@ export const UpdateHaircut = ({ haircuts }: { haircuts: Haircut[] }) => {
             />
           </form>
         </Form>
-        <DialogFooter>
+        <DialogFooter className='flex gap-1.5'>
+          <AlertDialog open={isDeleteHaircutActive}>
+            <AlertDialogTrigger onClick={handleShowDeleteHaircut}>
+              <Button variant='destructive' className='w-full'>
+                Deletar
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Está realmente certo disso?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Essa ação é irreversível. Ela removerá permanentemente o corte de cabelo do site, junto com
+                  todas as suas informações associadas.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel onClick={() => setIsDeleteHaircutActive(false)}>
+                  Cancelar
+                </AlertDialogCancel>
+                <AlertDialogAction onClick={() => handleDeleteHaircut(activeHaircut?.id)}>
+                  Continuar
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
           <Button type='submit' form='updateHaircut'>
-            Atualizar Corte
+            Atualizar
           </Button>
         </DialogFooter>
       </DialogContent>

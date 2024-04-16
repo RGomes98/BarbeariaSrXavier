@@ -1,7 +1,7 @@
 import { createSelectInputQueryString } from '@/helpers/createQueryString';
 import { validateEmployee } from '@/helpers/validateSearchParams';
+import { CircleUser, Contact } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { Contact } from 'lucide-react';
 import { User } from '@/lib/schemas';
 
 import {
@@ -24,7 +24,10 @@ export const EmployeePicker = ({ employees }: { employees: User[] }) => {
       {selectedEmployee}
     </div>
   ) : (
-    'Escolha do Profissional'
+    <div className='flex gap-2'>
+      <CircleUser className='size-5' />
+      Escolha do Profissional
+    </div>
   );
 
   return (
