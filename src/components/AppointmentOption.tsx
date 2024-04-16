@@ -184,7 +184,7 @@ export const AppointmentOption = ({
           <AlertDialogHeader>
             <AlertDialogTitle>
               {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') &&
-                'Horário de Almoço'}
+                'Opções de Horário'}
               {paymentMethod === 'CASH' &&
                 (session?.accountType === 'USER' || !session) &&
                 'Pagamento em Dinheiro'}
@@ -193,8 +193,12 @@ export const AppointmentOption = ({
                 'Confirmar Agendamento'}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') &&
-                `Tem certeza de que deseja definir o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h como o seu horário de almoço?`}
+              {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') && (
+                <Fragment>
+                  {`Você prefere agendar um compromisso com o cliente para ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h, ou transformar este horário em seu intervalo de almoço?`}
+                  <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                </Fragment>
+              )}
               {paymentMethod === 'CASH' &&
                 (session?.accountType === 'USER' || !session) &&
                 `Tem certeza de que deseja pagar pelo agendamento com dinheiro no momento da visita para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h?`}
@@ -207,11 +211,16 @@ export const AppointmentOption = ({
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setIsFormActive(false)}>Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className='mr-auto max-sm:w-full' onClick={() => setIsFormActive(false)}>
+              Cancelar
+            </AlertDialogCancel>
             {(session?.accountType === 'ADMIN' || session?.accountType === 'EMPLOYEE') && (
-              <AlertDialogAction onClick={handleScheduleBreak}>
-                Definir como Horário de Almoço
-              </AlertDialogAction>
+              <div className='flex gap-2 max-sm:flex-col'>
+                <AlertDialogAction onClick={handleScheduleBreak}>Horário de Almoço</AlertDialogAction>
+                <AlertDialogAction type='submit' form='sessionless'>
+                  Agendar para Cliente
+                </AlertDialogAction>
+              </div>
             )}
             {paymentMethod === 'CASH' && (
               <Fragment>
