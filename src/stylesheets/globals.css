@@ -45,6 +45,10 @@ li {
   text-wrap: pretty;
 }
 
+div.grecaptcha-badge {
+  z-index: 999;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
