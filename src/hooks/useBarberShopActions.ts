@@ -42,7 +42,7 @@ export const useBarberShopActions = (barbers: User[], haircut: Haircut) => {
     });
   };
 
-  const handleCreateAppointmentLink = async (haircutId: number, paymentMethod: PaymentMethod) => {
+  const handleCreateAppointmentLink = async (paymentMethod: PaymentMethod) => {
     const appointmentId = crypto.randomUUID();
 
     const paymentLinkResponse = await createPaymentLink({

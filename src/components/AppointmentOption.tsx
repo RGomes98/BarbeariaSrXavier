@@ -67,7 +67,7 @@ export const AppointmentOption = ({
   const handleScheduleHaircut = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
     toast.success(appointmentLink.message);
@@ -89,7 +89,7 @@ export const AppointmentOption = ({
   const handleScheduleBreak = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
     toast.success(appointmentLink.message);
@@ -116,7 +116,7 @@ export const AppointmentOption = ({
     const { isHuman, message } = await handleReCaptchaVerifyResponse(reCaptchaToken);
     if (!isHuman) return toast.error(message);
 
-    const appointmentLink = await handleCreateAppointmentLink(haircut.id, paymentMethod);
+    const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
     toast.success(appointmentLink.message);
