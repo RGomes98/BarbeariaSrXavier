@@ -1,13 +1,15 @@
 import { formatDateGetWeekAndDay, formatDateGetHour, formatDateShort, formatDateGetDay } from '@/utils/date';
 import { handleReCaptchaVerifyResponse } from '@/helpers/handleReCaptchaVerifyResponse';
-import { Haircut, ScheduleForm as ScheduleFormType, User } from '@/lib/schemas';
 import { formatScheduleStatus, getScheduleStatusColor } from '@/utils/caption';
 import { createAppointment } from '@/services/client-side/createAppointment';
 import { useBarberShopActions } from '@/hooks/useBarberShopActions';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { paymentConditions } from '@/utils/paymentConditions';
 import { TableCell, TableRow } from '@/components/ui/table';
+import { Haircut, ScheduleForm, User } from '@/lib/schemas';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
+import { ReCaptchaBadge } from './ReCaptchaBadge';
 import { useMounted } from '@/hooks/useMounted';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
@@ -37,8 +39,8 @@ export const AppointmentOption = ({
   employees: User[];
 }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const { push, refresh } = useRouter();
   const { isMounted } = useMounted();
-  const { push } = useRouter();
 
   const {
     dateParam,
@@ -67,6 +69,9 @@ export const AppointmentOption = ({
   const handleScheduleHaircut = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
+    const { paymentStatus, paymentMessage } = paymentConditions(selectedEmployee, paymentMethod);
+    if (paymentStatus === 'error') return toast.error(paymentMessage);
+
     const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
@@ -89,28 +94,32 @@ export const AppointmentOption = ({
   const handleScheduleBreak = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
-    const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
-    if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
-
-    toast.success(appointmentLink.message);
-
-    setAppointmentData({
+    const appointmentResponse = await createAppointment({
+      isDone: true,
       paymentMethod,
-      isDone: false,
       type: 'REGULAR',
       status: 'BREAK',
       userId: session.id,
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
+      appointmentId: crypto.randomUUID(),
+      paymentLink: window.location.origin,
       appointmentDate: getCurrentSchedule(hour),
-      paymentLink: appointmentLink.data.paymentLink,
-      appointmentId: appointmentLink.data.appointmenId,
     });
+
+    if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
+
+    refresh();
+    setIsFormActive(false);
+    toast.success('Horário de almoço confirmado!');
   };
 
-  const handleScheduleHaircutSessionless = async (formData: ScheduleFormType) => {
+  const handleScheduleHaircutSessionless = async (formData: ScheduleForm) => {
     if (!executeRecaptcha || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
     const { cpf, name, phone } = formData;
+
+    const { paymentStatus, paymentMessage } = paymentConditions(selectedEmployee, paymentMethod);
+    if (paymentStatus === 'error') return toast.error(paymentMessage);
 
     const reCaptchaToken = await executeRecaptcha('createSessionlessAppointment');
     const { isHuman, message } = await handleReCaptchaVerifyResponse(reCaptchaToken);
@@ -152,6 +161,7 @@ export const AppointmentOption = ({
     const appointmentResponse = await createAppointment(appointmentData);
     if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
 
+    refresh();
     toast.success(appointmentResponse.message);
     setTimeout(() => push(appointmentData.paymentLink), 3000);
   };
@@ -197,6 +207,7 @@ export const AppointmentOption = ({
                 <Fragment>
                   {`Você prefere agendar um compromisso com o cliente para ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h, ou transformar este horário em seu intervalo de almoço?`}
                   <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                  <ReCaptchaBadge />
                 </Fragment>
               )}
               {paymentMethod === 'CASH' &&
@@ -206,7 +217,10 @@ export const AppointmentOption = ({
                 (session?.accountType === 'USER' || !session) &&
                 `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h?`}
               {!session && (
-                <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                <Fragment>
+                  <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                  <ReCaptchaBadge />
+                </Fragment>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
