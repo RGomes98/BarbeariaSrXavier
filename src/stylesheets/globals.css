@@ -46,7 +46,7 @@ li {
 }
 
 div.grecaptcha-badge {
-  z-index: 999;
+  visibility: hidden;
 }
 
 @layer base {

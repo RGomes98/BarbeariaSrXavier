@@ -8,6 +8,7 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
+import { ReCaptchaBadge } from './ReCaptchaBadge';
 import { useMounted } from '@/hooks/useMounted';
 import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
@@ -197,6 +198,7 @@ export const AppointmentOption = ({
                 <Fragment>
                   {`Você prefere agendar um compromisso com o cliente para ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h, ou transformar este horário em seu intervalo de almoço?`}
                   <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                  <ReCaptchaBadge />
                 </Fragment>
               )}
               {paymentMethod === 'CASH' &&
@@ -206,7 +208,10 @@ export const AppointmentOption = ({
                 (session?.accountType === 'USER' || !session) &&
                 `Tem certeza de que deseja confirmar o agendamento para o horário ${formatDateShort(String(getCurrentSchedule(hour)))} às ${formatDateGetHour(String(getCurrentSchedule(hour)))}h?`}
               {!session && (
-                <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                <Fragment>
+                  <AppointmentForm handleScheduleHaircutSessionless={handleScheduleHaircutSessionless} />
+                  <ReCaptchaBadge />
+                </Fragment>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
