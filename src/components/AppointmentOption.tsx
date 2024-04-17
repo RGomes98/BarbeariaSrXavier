@@ -39,8 +39,8 @@ export const AppointmentOption = ({
   employees: User[];
 }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const { push, refresh } = useRouter();
   const { isMounted } = useMounted();
-  const { push } = useRouter();
 
   const {
     dateParam,
@@ -109,6 +109,7 @@ export const AppointmentOption = ({
 
     if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
 
+    refresh();
     setIsFormActive(false);
     toast.success('Horário de almoço confirmado!');
   };
@@ -160,6 +161,7 @@ export const AppointmentOption = ({
     const appointmentResponse = await createAppointment(appointmentData);
     if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
 
+    refresh();
     toast.success(appointmentResponse.message);
     setTimeout(() => push(appointmentData.paymentLink), 3000);
   };
