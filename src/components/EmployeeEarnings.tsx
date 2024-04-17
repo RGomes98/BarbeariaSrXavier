@@ -4,10 +4,15 @@ import { Activity, DollarSign } from 'lucide-react';
 import { formatToCurrency } from '@/utils/number';
 
 export const EmployeeEarnings = ({ filteredData }: { filteredData: FormattedAppointmentData[] }) => {
-  const futureEarnings = filteredData.reduce((futureEarnings, { haircutPrice, appointmentStatus }) => {
-    appointmentStatus === 'Pendente' && (futureEarnings += haircutPrice);
-    return futureEarnings;
-  }, 0);
+  const futureEarnings = filteredData.reduce(
+    (futureEarnings, { haircutPrice, appointmentStatus, appointmentDate }) => {
+      appointmentStatus === 'Pendente' &&
+        new Date(appointmentDate).getTime() > new Date().getTime() &&
+        (futureEarnings += haircutPrice);
+      return futureEarnings;
+    },
+    0,
+  );
 
   const earnings = filteredData.reduce((earnings, { haircutPrice, appointmentStatus }) => {
     appointmentStatus === 'Pago' && (earnings += haircutPrice);
