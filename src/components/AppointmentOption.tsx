@@ -95,8 +95,8 @@ export const AppointmentOption = ({
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
     const appointmentResponse = await createAppointment({
+      isDone: true,
       paymentMethod,
-      isDone: false,
       type: 'REGULAR',
       status: 'BREAK',
       userId: session.id,
@@ -108,6 +108,8 @@ export const AppointmentOption = ({
     });
 
     if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
+
+    setIsFormActive(false);
     toast.success('Horário de almoço confirmado!');
   };
 
