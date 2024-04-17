@@ -93,20 +93,22 @@ export const AppointmentOption = ({
 
   const handleScheduleBreak = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
-    const { origin } = window.location;
 
-    setAppointmentData({
+    const appointmentResponse = await createAppointment({
       paymentMethod,
       isDone: false,
       type: 'REGULAR',
       status: 'BREAK',
       userId: session.id,
-      paymentLink: origin,
       haircutId: haircut.id,
       employeeId: selectedEmployee.id,
       appointmentId: crypto.randomUUID(),
+      paymentLink: window.location.origin,
       appointmentDate: getCurrentSchedule(hour),
     });
+
+    if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
+    toast.success('Horário de almoço confirmado!');
   };
 
   const handleScheduleHaircutSessionless = async (formData: ScheduleForm) => {
