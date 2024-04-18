@@ -16,7 +16,7 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 - **ASAAS**: `API` para facilitar operações financeiras, oferecendo recursos como formas de pagamento, gestão de cobranças, emissão de notas fiscais, antecipação de recebíveis e pagamentos a fornecedores, tudo centralizado em uma única plataforma para simplificar a administração financeira.
 - **Firebase**: Plataforma completa para desenvolvimento de aplicativos, oferecendo serviços integrados como autenticação de usuários, armazenamento em nuvem e banco de dados em tempo real.
 - **Shadcn/ui**: Biblioteca de componentes prontos para uso, oferecendo uma variedade de elementos de interface flexíveis e personalizáveis para aprimorar o desenvolvimento e a experiência do usuário.
-- **Tanstack React Table**: Uma biblioteca altamente personalizável para criar tabelas avançadas em aplicações React.
+- **TanStack Table**: Uma biblioteca altamente personalizável para criar tabelas avançadas em aplicações React.
 
 ## Funcionalidades Principais
 
