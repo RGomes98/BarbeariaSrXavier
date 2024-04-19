@@ -6,8 +6,10 @@ import { formatToCurrency } from '@/utils/number';
 export const EmployeeEarnings = ({ filteredData }: { filteredData: FormattedAppointmentData[] }) => {
   const futureEarnings = filteredData.reduce(
     (futureEarnings, { haircutPrice, appointmentStatus, appointmentDate }) => {
+      const oneHour = 1 * 60 * 60 * 1000;
+
       appointmentStatus === 'Pendente' &&
-        new Date(appointmentDate).getTime() > new Date().getTime() &&
+        new Date(appointmentDate).getTime() + oneHour > new Date().getTime() &&
         (futureEarnings += haircutPrice);
       return futureEarnings;
     },
