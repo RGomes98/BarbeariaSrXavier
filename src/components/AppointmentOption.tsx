@@ -7,6 +7,8 @@ import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 import { paymentConditions } from '@/utils/paymentConditions';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { Haircut, ScheduleForm, User } from '@/lib/schemas';
+import { usePromiseToast } from '@/hooks/usePromiseToast';
+import { ToastLoadingState } from './ToastLoadingState';
 import { type Session } from '@/helpers/getSession';
 import { AppointmentForm } from './AppointmentForm';
 import { ReCaptchaBadge } from './ReCaptchaBadge';
@@ -39,6 +41,7 @@ export const AppointmentOption = ({
   employees: User[];
 }) => {
   const { executeRecaptcha } = useGoogleReCaptcha();
+  const { createPromiseToast } = usePromiseToast();
   const { push, refresh } = useRouter();
   const { isMounted } = useMounted();
 
@@ -72,9 +75,12 @@ export const AppointmentOption = ({
     const { paymentStatus, paymentMessage } = paymentConditions(selectedEmployee, paymentMethod);
     if (paymentStatus === 'error') return toast.error(paymentMessage);
 
+    const toastId = toast.message(<ToastLoadingState loadingMessage='Criando link de pagamento.' />);
+
     const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
+    toast.dismiss(toastId);
     toast.success(appointmentLink.message);
 
     setAppointmentData({
@@ -94,6 +100,8 @@ export const AppointmentOption = ({
   const handleScheduleBreak = async () => {
     if (!session || !selectedEmployee || isEmployeeBusy || isScheduleNotActive) return;
 
+    const toastId = toast.message(<ToastLoadingState loadingMessage='Criando horário de almoço.' />);
+
     const appointmentResponse = await createAppointment({
       isDone: true,
       paymentMethod,
@@ -110,6 +118,7 @@ export const AppointmentOption = ({
     if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
 
     refresh();
+    toast.dismiss(toastId);
     setIsFormActive(false);
     toast.success('Horário de almoço confirmado!');
   };
@@ -123,11 +132,14 @@ export const AppointmentOption = ({
 
     const reCaptchaToken = await executeRecaptcha('createSessionlessAppointment');
     const { isHuman, message } = await handleReCaptchaVerifyResponse(reCaptchaToken);
+
     if (!isHuman) return toast.error(message);
+    const toastId = toast.message(<ToastLoadingState loadingMessage='Criando link de pagamento.' />);
 
     const appointmentLink = await handleCreateAppointmentLink(paymentMethod);
     if (appointmentLink.status === 'error') return toast.error(appointmentLink.message);
 
+    toast.dismiss(toastId);
     toast.success(appointmentLink.message);
 
     setAppointmentData({
@@ -155,15 +167,13 @@ export const AppointmentOption = ({
     setIsFormActive(true);
   };
 
-  const handleCreateAppointment = async () => {
+  const handleCreateAppointment = () => {
     if (!appointmentData) return;
 
-    const appointmentResponse = await createAppointment(appointmentData);
-    if (appointmentResponse.status === 'error') return toast.error(appointmentResponse.message);
-
-    refresh();
-    toast.success(appointmentResponse.message);
-    setTimeout(() => push(appointmentData.paymentLink), 3000);
+    const createAppointmentPromise = createAppointment(appointmentData);
+    createPromiseToast('Criando agendamento.', createAppointmentPromise, () => {
+      setTimeout(() => push(appointmentData.paymentLink), 3000);
+    });
   };
 
   return (

@@ -2,12 +2,12 @@ import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form';
 import { CreateHaircutForm, CreateHaircutSchema, Haircut } from '@/lib/schemas';
 import { updateHaircut } from '@/services/client-side/updateHaircut';
 import { deleteHaircut } from '@/services/client-side/deleteHaircut';
+import { usePromiseToast } from '@/hooks/usePromiseToast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Fragment, useRef, useState } from 'react';
 import { formatFloatNumber } from '@/utils/input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Scissors } from 'lucide-react';
 import { useStore } from '@/store';
@@ -51,10 +51,9 @@ export const UpdateHaircut = ({ haircuts }: { haircuts: Haircut[] }) => {
   const { isUpdateHaircutActive, setIsUpdateHaircutActive } = useStore();
   const priceInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { refresh } = useRouter();
+  const { createPromiseToast } = usePromiseToast();
 
   const handleUpdateUI = () => {
-    refresh();
     setActiveHaircut(undefined);
     form.reset({ name: '', description: '', images: [] });
     if (fileInputRef?.current?.value) fileInputRef.current.value = '';
@@ -66,33 +65,31 @@ export const UpdateHaircut = ({ haircuts }: { haircuts: Haircut[] }) => {
     setIsDeleteHaircutActive(true);
   };
 
-  const handleUpdateHaircut = async (formData: CreateHaircutForm) => {
+  const handleUpdateHaircut = (formData: CreateHaircutForm) => {
     const { name, price, images, description } = formData;
     if (!activeHaircut) return toast.error('Selecione um corte para editar!');
 
-    const updateHaircutResponse = await updateHaircut(images, {
+    const updateHaircutPromise = updateHaircut(images, {
       name,
       price,
       description,
       id: activeHaircut.id,
     });
 
-    if (updateHaircutResponse.status === 'error') return toast.error(updateHaircutResponse.message);
-
-    handleUpdateUI();
-    setIsUpdateHaircutActive(false);
-    toast.success(updateHaircutResponse.message);
+    createPromiseToast('Atualizando o corte.', updateHaircutPromise, () => {
+      handleUpdateUI();
+      setIsUpdateHaircutActive(false);
+    });
   };
 
-  const handleDeleteHaircut = async (haircutId?: number) => {
+  const handleDeleteHaircut = (haircutId?: number) => {
     if (!haircutId) return;
 
-    const deleteHaircutResponse = await deleteHaircut(haircutId);
-    if (deleteHaircutResponse.status === 'error') return toast.error(deleteHaircutResponse.message);
-
-    handleUpdateUI();
-    setIsDeleteHaircutActive(false);
-    toast.success(deleteHaircutResponse.message);
+    const deleteHaircutPromise = deleteHaircut(haircutId);
+    createPromiseToast('Deletando o corte.', deleteHaircutPromise, () => {
+      handleUpdateUI();
+      setIsDeleteHaircutActive(false);
+    });
   };
 
   return (

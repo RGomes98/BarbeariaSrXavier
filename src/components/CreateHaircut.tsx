@@ -1,16 +1,15 @@
 import { Form, FormControl, FormField, FormItem, FormMessage } from './ui/form';
 import { CreateHaircutForm, CreateHaircutSchema } from '@/lib/schemas';
 import { createHaircut } from '@/services/client-side/createHaircut';
+import { usePromiseToast } from '@/hooks/usePromiseToast';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatFloatNumber } from '@/utils/input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { Fragment, useRef } from 'react';
 import { useStore } from '@/store';
 import { Label } from './ui/label';
-import { toast } from 'sonner';
 
 import {
   Dialog,
@@ -26,19 +25,18 @@ export const CreateHaircut = () => {
   const { isCreateHaircutActive, setIsCreateHaircutActive } = useStore();
   const priceInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { refresh } = useRouter();
+  const { createPromiseToast } = usePromiseToast();
 
-  const handleCreateHaircut = async (formData: CreateHaircutForm) => {
+  const handleCreateHaircut = (formData: CreateHaircutForm) => {
     const { name, price, images, description } = formData;
-    const createHaircutResponse = await createHaircut(images, { name, price, description });
-    if (createHaircutResponse.status === 'error') return toast.error(createHaircutResponse.message);
 
-    refresh();
-    setIsCreateHaircutActive(false);
-    toast.success(createHaircutResponse.message);
-    form.reset({ name: '', description: '', images: [] });
-    if (fileInputRef?.current?.value) fileInputRef.current.value = '';
-    if (priceInputRef?.current?.value) priceInputRef.current.value = '';
+    const createHaircutPromise = createHaircut(images, { name, price, description });
+    createPromiseToast('Criando o corte.', createHaircutPromise, () => {
+      setIsCreateHaircutActive(false);
+      form.reset({ name: '', description: '', images: [] });
+      if (fileInputRef?.current?.value) fileInputRef.current.value = '';
+      if (priceInputRef?.current?.value) priceInputRef.current.value = '';
+    });
   };
 
   return (

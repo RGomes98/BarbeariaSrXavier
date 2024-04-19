@@ -4,12 +4,12 @@ import { formatDate, formatDateGetDay, formatDateGetHour } from '@/utils/date';
 import { formatPaymentMethodCaption } from '@/utils/caption';
 import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
 import { FormattedAppointmentData } from '@/lib/schemas';
+import { usePromiseToast } from './usePromiseToast';
 import { formatToCurrency } from '@/utils/number';
 import { ColumnDef } from '@tanstack/react-table';
 import { Button } from '@/components/ui/button';
 import { Session } from '@/helpers/getSession';
 import { Badge } from '@/components/ui/badge';
-import { useRouter } from 'next/navigation';
 import { Fragment } from 'react';
 import { toast } from 'sonner';
 
@@ -49,7 +49,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export const useAppointmentsTable = (session: Session) => {
-  const { refresh } = useRouter();
+  const { createPromiseToast } = usePromiseToast();
 
   const columns: ColumnDef<FormattedAppointmentData>[] = [
     {
@@ -156,30 +156,36 @@ export const useAppointmentsTable = (session: Session) => {
       cell: ({ row }) => {
         const { appointmentId, paymentLink, appointmentStatus, clientName } = row.original;
 
-        const handleUpdateAppointmentStatus = async ({
+        const handleUpdateAppointmentStatus = ({
           id,
           status,
           clientName,
           employeeId,
         }: UpdateAppointmentStatus) => {
-          const response = await updateAppointmentStatus({ id, status, employeeId, clientName });
-          if (response.status === 'error') return toast.error(response.message);
+          const updateAppointmentStatusPromise = updateAppointmentStatus({
+            id,
+            status,
+            employeeId,
+            clientName,
+          });
 
-          refresh();
-          toast.success(response.message);
+          createPromiseToast('Atualizando o status.', updateAppointmentStatusPromise);
         };
 
-        const handleUpdateAppointmentPresence = async ({
+        const handleUpdateAppointmentPresence = ({
           id,
           presence,
           clientName,
           employeeId,
         }: UpdateAppointmentPresence) => {
-          const response = await updateAppointmentPresence({ id, presence, employeeId, clientName });
-          if (response.status === 'error') return toast.error(response.message);
+          const updateAppointmentPresencePromise = updateAppointmentPresence({
+            id,
+            presence,
+            employeeId,
+            clientName,
+          });
 
-          refresh();
-          toast.success(response.message);
+          createPromiseToast('Atualizando a presença.', updateAppointmentPresencePromise);
         };
 
         if (session?.accountType === 'USER') {
