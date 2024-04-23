@@ -16,6 +16,7 @@ export const SideMenu = ({ session }: { session: Session }) => {
   const { setIsCreateHaircutActive, setIsUpdateHaircutActive } = useStore();
   const path = usePathname();
 
+  const isAtSchedulesList = path === '/horarios';
   const isAtSchedules = path === '/agendamentos';
   const isAtDashboard = path === '/dashboard';
   const isAtHome = path === '/';
@@ -36,6 +37,13 @@ export const SideMenu = ({ session }: { session: Session }) => {
             <Button variant='outline' className='mb-4 py-6'>
               <Link className='absolute flex h-full w-full items-center justify-center' href='/'>
                 Início
+              </Link>
+            </Button>
+          )}
+          {!isAtSchedulesList && (
+            <Button variant='outline' className='mb-4 py-6'>
+              <Link className='absolute flex h-full w-full items-center justify-center' href='/horarios'>
+                Horários
               </Link>
             </Button>
           )}
