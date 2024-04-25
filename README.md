@@ -44,6 +44,8 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 
   - Os três métodos de pagamento disponíveis são `Cartão de Crédito`, `PIX` e `Dinheiro`.
 
+  - Usuários têm acesso aos horários reservados para o dia atual, com atualização em tempo real das informações de agendamento e status, semelhante a uma sala de espera virtual.
+
   - É possível filtrar por data e status do agendamento na tela de agendamentos, além de ver as informações do agendamento, como nome do cliente, nome do profissional, status, preço do corte, nome do corte, presença, data do agendamento e método de pagamento.
 
 - **Dashboard**
@@ -55,3 +57,14 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
   - Realizar ações relacionadas aos agendamentos, como alterar o status, alterar a presença dos usuários (se compareceram ou não), cancelar agendamentos e obter o `ID` do agendamento ou o link de pagamento, se necessário.
 
   - `ADMINS` também podem criar, editar e excluir cortes de cabelo, definindo nome, preço, descrição e fazendo upload de imagens para serem mostradas no site.
+
+- **Transações**
+
+  Esta seção também é exclusiva para `ADMINISTRADORES`, fornecendo funcionalidades essenciais para o gerenciamento financeiro da barbearia:
+
+  - Facilita transferências através de opções como transferência bancária ou PIX.
+
+  - Fornece acesso rápido ao saldo atual da conta da barbearia, garantindo uma visão financeira clara.
+  - Apresenta uma lista das transferências mais recentes, permitindo um acompanhamento eficiente das transações mais recentes.
+
+  - Disponibiliza um extrato financeiro detalhado, registrando todas as transferências realizadas, incluindo informações como nome, data e valor.
