@@ -62,7 +62,7 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 
   Esta seção também é exclusiva para `ADMINISTRADORES`, fornecendo funcionalidades essenciais para o gerenciamento financeiro da barbearia:
 
-  - Facilita transferências através de opções como transferência bancária ou PIX.
+  - Facilita transferências através de opções como `TED` ou `PIX`.
 
   - Fornece acesso rápido ao saldo atual da conta da barbearia, garantindo uma visão financeira clara.
   - Apresenta uma lista das transferências mais recentes, permitindo um acompanhamento eficiente das transações mais recentes.
