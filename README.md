@@ -46,6 +46,8 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 
   - Usuários têm acesso aos horários reservados para o dia atual, com atualização em tempo real das informações de agendamento e status, semelhante a uma sala de espera virtual.
 
+  - Os `EMPLOYEES` têm acesso aos detalhes diários dos agendamentos marcados com eles, incluindo ganhos, presenças, ausências e o total de cortes realizados.
+
   - É possível filtrar por data e status do agendamento na tela de agendamentos, além de ver as informações do agendamento, como nome do cliente, nome do profissional, status, preço do corte, nome do corte, presença, data do agendamento e método de pagamento.
 
 - **Dashboard**
