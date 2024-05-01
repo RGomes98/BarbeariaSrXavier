@@ -60,6 +60,10 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 
   - `ADMINS` também podem criar, editar e excluir cortes de cabelo, definindo nome, preço, descrição e fazendo upload de imagens para serem mostradas no site.
 
+  - Visualizar gráficos de todos os meses do ano com a receita gerada de cada dia do mês, fornecendo uma visão detalhada do faturamento diário, bem como o faturamento total do mês.
+
+  - Ver o histórico dos últimos clientes com nome, corte realizado e preço do corte, oferecendo uma visão detalhada das transações recentes.
+
 - **Transações**
 
   Esta seção também é exclusiva para `ADMINISTRADORES`, fornecendo funcionalidades essenciais para o gerenciamento financeiro da barbearia:
@@ -70,3 +74,13 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
   - Apresenta uma lista das transferências mais recentes, permitindo um acompanhamento eficiente das transações mais recentes.
 
   - Disponibiliza um extrato financeiro detalhado, registrando todas as transferências realizadas, incluindo informações como nome, data e valor.
+
+## Screenshots
+
+- **Dashboard** `ADMINS`
+
+![Dashboard](./screenshots/dashboard.png)
+
+- **Agendamentos** `EMPLOYEES`
+
+![Agendamentos](./screenshots/appointments_employees.png)
