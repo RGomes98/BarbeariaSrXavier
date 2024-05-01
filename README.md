@@ -17,6 +17,7 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 - **Firebase**: Plataforma completa para desenvolvimento de aplicativos, oferecendo serviços integrados como autenticação de usuários, armazenamento em nuvem e banco de dados em tempo real.
 - **Shadcn/ui**: Biblioteca de componentes prontos para uso, oferecendo uma variedade de elementos de interface flexíveis e personalizáveis para aprimorar o desenvolvimento e a experiência do usuário.
 - **TanStack Table**: Uma biblioteca altamente personalizável para criar tabelas avançadas em aplicações React.
+- **Recharts**: Biblioteca de gráficos para React que permite criar visualizações de dados interativas e responsivas de forma flexível, oferecendo uma ampla variedade de tipos de gráficos e personalizações.
 
 ## Funcionalidades Principais
 
