@@ -39,13 +39,15 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 
   - Se um `EMPLOYEE` tentar realizar um agendamento, ele poderá marcar um agendamento para um cliente presente no estabelecimento ou marcar o horário como horário de almoço.
 
-  - Os horários dos agendamentos são dinâmicos, alternando entre `Disponível`, `Reservado`, `Almoço` e `Expirado`.
+  - Os horários dos agendamentos são dinâmicos, alternando entre `Disponível`, `Reservado`, `Indisponível`, `Almoço` e `Expirado`.
 
   - Os Agendamentos são feitos com base em um calendário, onde os usuários podem selecionar uma data e hora, bem como o profissional que realizará o serviço.
 
   - Os três métodos de pagamento disponíveis são `Cartão de Crédito`, `PIX` e `Dinheiro`.
 
   - Usuários têm acesso aos horários reservados para o dia atual, com atualização em tempo real das informações de agendamento e status, semelhante a uma sala de espera virtual.
+
+  - Os `EMPLOYEES` têm a capacidade de definir períodos de datas em que não estarão disponíveis para agendamentos. Por exemplo, eles podem marcar todos os horários dos sábados e domingos como `Indisponível`. Esta funcionalidade permite aos `EMPLOYEES` gerenciar eficientemente sua disponibilidade e garantir que apenas os horários em que estão disponíveis sejam oferecidos aos clientes para agendamento.
 
   - Os `EMPLOYEES` têm acesso aos detalhes diários dos agendamentos marcados com eles, incluindo ganhos, presenças, ausências e o total de cortes realizados.
 
