@@ -84,6 +84,10 @@ O Barbershop Template é um repositório de código-fonte que oferece uma estrut
 
 ![Dashboard](./screenshots/dashboard.png)
 
+- **Transações** `ADMINS`
+
+![Transações](./screenshots/transactions.png)
+
 - **Agendamentos** `EMPLOYEES`
 
 ![Agendamentos](./screenshots/appointments_employees.png)
